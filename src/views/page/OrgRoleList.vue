@@ -55,7 +55,7 @@
         <div class="control-table" id="WorkThreadsLoad" style="margin-left:10px;">
             <div class="table-box">
               <el-table
-                :data="organizaDataList"
+                :data="roleizaDataList"
                 height="400"
                 row-key="id"
                 border
@@ -95,21 +95,60 @@
     </el-row>
 
 <!--    用户信息-->
-    <el-table :data="allSessionData"  style="margin-top: 1rem;">
-      <el-table-column align="center" prop="peer_ip" label="姓名" ></el-table-column>
-      <el-table-column align="center" prop="peer_ip" label="账号" ></el-table-column>
-      <el-table-column align="center" prop="peer_ip" label="手机" ></el-table-column>
-      <el-table-column align="center" prop="peer_ip" label="邮箱" ></el-table-column>
-      <el-table-column align="center" prop="local_ip" label="所属角色"></el-table-column>
-      <el-table-column align="center" prop="typeid" label="所属组织"></el-table-column>
-      <el-table-column align="center" label="操作" >
-        <template v-slot:default="scope" >
-          <el-button size="mini" icon="el-icon-refresh-right" circle @click="getAllSession()"></el-button>
-          <el-button @click.native.prevent="deleteRow(scope.$index, allSessionData)" type="text" size="small">移除
-          </el-button>
+    <el-table :data="uerDataList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
+      <el-table-column align="center" prop="fullname" label="姓名" min-width="200">
+      </el-table-column>
+
+      <el-table-column align="center" prop="username" label="用户账号名" min-width="200" >
+      </el-table-column>
+
+
+      <el-table-column align="center" prop="email" label="邮箱" min-width="140" >
+
+      </el-table-column>
+
+      <el-table-column align="center" prop="mobile" label="手机号" min-width="120" >
+      </el-table-column>
+
+      <el-table-column align="center" label="status" min-width="120">
+        <template slot-scope="scope">
+          <div slot="reference" class="name-wrapper">
+            <el-tag size="medium" v-if="scope.row.status == 1">正常</el-tag>
+            <el-tag size="medium" type="info" v-if="scope.row.status == 0">禁用</el-tag>
+            <el-tag size="medium" type="info" v-if="scope.row.status == 2">新注册</el-tag>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" prop="keepaliveTime" label="负责部门" min-width="160" >
+      </el-table-column>
+      <el-table-column align="center" prop="keepaliveTime" label="所属部门" min-width="160" >
+      </el-table-column>
+      <el-table-column align="center" prop="registerTime" label="所属角色"  min-width="160">
+      </el-table-column>
+      <el-table-column align="center" prop="createTime" label="创建时间"  min-width="160">
+      </el-table-column>
+      <el-table-column align="center" prop="createUserId" label="创建人"  min-width="160">
+      </el-table-column>
+
+      <el-table-column align="center" label="操作" min-width="450" fixed="right">
+        <template slot-scope="scope">
+          <el-divider direction="vertical"></el-divider>
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">编辑</el-button>
+          <el-divider direction="vertical"></el-divider>
+          <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteDevice(scope.row)" style="color: #f56c6c">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+        style="float: right"
+        @size-change="handleSizeChange"
+        @current-change="currentChange"
+        :current-page="currentPage"
+        :page-size="count"
+        :page-sizes="[15, 25, 35, 50]"
+        layout="total, sizes, prev, pager, next"
+        :total="total">
+    </el-pagination>
 
   </div>
 </template>
@@ -117,6 +156,7 @@
 
 <script>
 import { isNull,treeDataTranslate } from "../../utils/utils.js";
+import { postAction, getAction,deleteAction,putAction} from '../../api/manage'
 
 export default {
   name: "",
@@ -125,114 +165,17 @@ export default {
   watch: {},
   data() {
     return {
-      organizaDataList: [
-        {
-          city: "唐山市",
-          createdTime: "2021-12-27 17:15:36",
-          deleted: 0,
-          districtCounty: "路北区",
-          id: 6,
-          lastUpdatedTime: "2022-02-22 16:34:31",
-          name: "中信银行",
-          optimisticLock: 1,
-          parentId: 7,
-          province: "河北省",
-          supervisePastures: "[3]",
-          type: 3,
-        },
-        {
-          city: "成都市",
-          createdTime: "2022-01-20 14:38:45",
-          deleted: 0,
-          districtCounty: "锦江区",
-          id: 7,
-          lastUpdatedTime: "2022-02-24 11:09:01",
-          name: "金投银行",
-          optimisticLock: 1,
-          parentId: 0,
-          province: "四川省",
-          supervisePastures: "[1,2]",
-          type: 3,
-        },
-        {
-          city: "成都市",
-          createdTime: "2022-01-20 14:39:02",
-          deleted: 0,
-          districtCounty: "锦江区",
-          id: 8,
-          lastUpdatedTime: "2022-02-24 11:09:02",
-          name: "中国建设银行",
-          optimisticLock: 1,
-          parentId: 0,
-          province: "四川省",
-          supervisePastures: "[1,2]",
-          type: 3,
-        },
-        {
-          city: "成都市",
-          createdTime: "2022-01-28 14:26:28",
-          deleted: 0,
-          districtCounty: "锦江区",
-          id: 9,
-          lastUpdatedTime: "2022-02-24 11:09:02",
-          name: "中信银行成都分行",
-          optimisticLock: 1,
-          parentId: 6,
-          province: "四川省",
-          supervisePastures: "[1,2,3,4,5,6,7,8,9,10]",
-          type: 3,
-        },
-        {
-          city: "成都市",
-          createdTime: "2022-01-28 14:26:39",
-          deleted: 0,
-          districtCounty: "锦江区",
-          id: 10,
-          lastUpdatedTime: "2022-02-24 11:09:02",
-          name: "中信银行成都分行娇子大道支行",
-          optimisticLock: 1,
-          parentId: 9,
-          province: "四川省",
-          supervisePastures: null,
-          type: 3,
-        },
-        {
-          city: "绵阳市",
-          createdTime: "2022-01-28 14:27:08",
-          deleted: 0,
-          districtCounty: "锦江区",
-          id: 11,
-          lastUpdatedTime: "2022-02-24 11:09:02",
-          name: "中信银行绵阳分行",
-          optimisticLock: 1,
-          parentId: 6,
-          province: "四川省",
-          supervisePastures: null,
-          type: 3,
-        },
-        {
-          city: "成都市",
-          createdTime: "2022-02-08 14:44:27",
-          deleted: 0,
-          districtCounty: "锦江区",
-          id: 15,
-          lastUpdatedTime: "2022-02-24 11:09:02",
-          name: "招商银行",
-          optimisticLock: 1,
-          parentId: 0,
-          province: "四川省",
-          supervisePastures: "[]",
-          type: 3,
-        }
-      ],
+      uerDataList:null,
+      organizaDataList: [],
+      roleizaDataList: [],
       organizaColumns: [
-        { label: "组织名称", props: "name", width: "" },
-        { label: "创建时间", props: "createdTime", width: "" },
+        { label: "组织名称", props: "departName", width: "" },
+        { label: "创建时间", props: "createTime", width: "" },
       ],
 
       roleColumns: [
-        { label: "角色名称", props: "name", width: "" },
-        { label: "创建时间", props: "createdTime", width: "" },
+        { label: "角色名称", props: "roleName", width: "" },
+        { label: "创建时间", props: "createTime", width: "" },
       ],
     };
   },
@@ -245,13 +188,48 @@ export default {
     }
   },
   created() {
-    this.changeData()
+    //this.changeData()
+    this.getDeparts();
+    this.getRoles();
+    this.getUser();
   },
-  mounted() {},
+  mounted() {
+
+  },
   methods: {
-    // 树形数据转换
+
+    // 组织信息
+    getDeparts() {
+      getAction("/sysDepart/getDepart").then((data) => {
+        if (data && data.code === 200) {
+          this.organizaDataList = data.result
+          this.changeData()
+        }
+      })
+    },
+    //角色信息
+    getRoles() {
+      getAction("/sys/role/getRoleList").then((data) => {
+        if (data && data.code === 200) {
+          this.roleizaDataList = data.result
+          this.changeRoleData()
+        }
+      })
+    },
+    //用户列表
+    getUser() {
+      getAction("/sys/user/getUser").then((data) => {
+        if (data && data.code === 200) {
+          this.uerDataList = data.result
+          this.changeRoleData()
+        }
+      })
+    },
     changeData() {
       this.organizaDataList = treeDataTranslate( this.organizaDataList, 'id')
+    },
+    changeRoleData() {
+      this.organizaDataList = treeDataTranslate( this.organizaDataList, 'roleId')
     },
     // 更改单元格样式
     columnStyle({ row, column, rowIndex, columnIndex }) {
@@ -283,7 +261,8 @@ export default {
       };
     },
     deleteHandle() {},
-  }
+  },
+
 };
 
 

@@ -64,7 +64,7 @@ export default {
           //消息弹框
           this.$message({
             message: data.msg,
-            type: 'success'
+            type: '操作成功'
           });
           localStorage.setItem('X-Access-Token',null);
           this.$router.replace('/login')
