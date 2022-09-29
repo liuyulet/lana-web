@@ -2,7 +2,6 @@ import axios from 'axios'
 import {VueAxios} from './axios'
 
 let apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
-/*let apiBaseUrl = '/sys';*/
 
 // 创建 axios 实例
 const service = axios.create({

@@ -115,5 +115,4 @@
     .el-table-column {
         text-align: center;
     }
-
 </style>

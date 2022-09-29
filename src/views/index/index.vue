@@ -1,6 +1,6 @@
 <template v-slot:default>
   <div class="content-currency">
-    <el-header>
+    <el-header style="padding: 0">
       <el-menu
         :default-active="activeIndex"
         class="el-menu-demo"
