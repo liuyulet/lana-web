@@ -1,5 +1,5 @@
 <template>
-    <div id="app" style="width: 98%;margin: auto;">
+    <div id="app">
         <div class="page-header">
             <div class="page-title">申请管理列表</div>
             <div class="page-header-btn">

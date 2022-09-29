@@ -1,5 +1,5 @@
 <template>
-    <div id="app" style="width: 98%;margin: auto;">
+    <div id="app">
         <!--统计列表-->
         <el-row style="width: 100%;padding-top: 2rem;">
             <el-col :span="12">
