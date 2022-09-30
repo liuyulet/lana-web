@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="添加平台"
+      title="添加组织"
       width="70%"
       top="2rem"
       :close-on-click-modal="false"
@@ -101,9 +101,7 @@
                 <el-checkbox label="RTCP保活" v-model="platform.rtcp" @change="rtcpCheckBoxChange"></el-checkbox>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="onSubmit">{{
-                  onSubmit_text
-                }}</el-button>
+                <el-button type="primary" @click="onSubmit">保存</el-button>
                 <el-button @click="close">取消</el-button>
               </el-form-item>
             </el-form>
@@ -120,24 +118,10 @@ export default {
   props: {},
   computed: {},
   data() {
-    var deviceGBIdRules = async (rule, value, callback) => {
-      console.log(value);
-      if (value === "") {
-        callback(new Error("请输入设备国标编号"));
-      } else {
-        var exit = await this.deviceGBIdExit(value);
-        if (exit) {
-          callback(new Error("设备国标编号已存在"));
-        } else {
-          callback();
-        }
-      }
-    };
     return {
       listChangeCallback: null,
       showDialog: false,
       isLoging: false,
-      onSubmit_text: "立即创建",
       saveUrl: "/api/platform/save",
 
       platform: {
@@ -174,7 +158,6 @@ export default {
         ],
         serverIP: [{ required: true, message: "请输入SIP服务IP", trigger: "blur" }],
         serverPort: [{ required: true, message: "请输入SIP服务端口", trigger: "blur" }],
-        deviceGBId: [{ validator: deviceGBIdRules, trigger: "blur" }],
         username: [{ required: false, message: "请输入SIP认证用户名", trigger: "blur" }],
         password: [{ required: false, message: "请输入SIP认证密码", trigger: "blur" }],
         expires: [{ required: true, message: "请输入注册周期", trigger: "blur" }],
@@ -188,7 +171,6 @@ export default {
     openDialog: function (platform, callback) {
       var that = this;
       if (platform == null) {
-        this.onSubmit_text = "立即创建";
         this.saveUrl = "/api/platform/add";
         this.$axios({
           method: 'get',
@@ -232,7 +214,6 @@ export default {
         this.platform.catalogGroup = platform.catalogGroup;
         this.platform.administrativeDivision = platform.administrativeDivision;
         this.platform.treeType = platform.treeType;
-        this.onSubmit_text = "保存";
         this.saveUrl = "/api/platform/save";
       }
       this.showDialog = true;
