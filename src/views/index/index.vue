@@ -15,7 +15,7 @@
         <!--我的管理-->
         <el-menu-item index="/taskmanagement">任务管理</el-menu-item>
         <el-menu-item index="/defectList">缺陷管理</el-menu-item>
-        <el-menu-item index="/applyList">审批管理</el-menu-item>
+        <el-menu-item index="/applyList">变更管理</el-menu-item>
         <!--项目信息-->
         <el-menu-item index="/projectList">项目管理</el-menu-item>
         <el-menu-item index="/demandList">需求管理</el-menu-item>

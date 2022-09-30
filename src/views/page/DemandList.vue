@@ -9,21 +9,20 @@
     </div>
     <!--设备列表-->
     <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
-      <el-table-column align="center" prop="demanName" label="名称" min-width="200">
+      <el-table-column align="center" prop="demanName" label="名称" min-width="160">
       </el-table-column>
 
       <el-table-column align="center" prop="demanNum" label="任务编号" min-width="200" >
       </el-table-column>
 
-      <el-table-column align="center" prop="demanDisclose" label="交底文件" min-width="200" >
+      <el-table-column align="center" prop="demanDisclose" label="需求交底文件" min-width="200" >
+      </el-table-column>
 
+      <el-table-column align="center" prop="demanProject" label="关联项目" min-width="200" >
       </el-table-column>
 
       <el-table-column align="center" prop="demanConsci" label="需求负责人" min-width="140" >
 
-      </el-table-column>
-
-      <el-table-column align="center" prop="demanDeadline" label="截止日期" min-width="120" >
       </el-table-column>
 
       <el-table-column align="center" prop="demanStatus" label="需求状态"  min-width="120">
@@ -55,19 +54,24 @@
       </el-table-column>
 
 
-      <el-table-column align="center" prop="demanChange" label="变更次数" min-width="160" >
+      <el-table-column align="center" prop="demanChange" label="变更次数" min-width="100" >
       </el-table-column>
-      <el-table-column align="center" prop="demanProject" label="所属项目"  min-width="160">
+
+      <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
+      </el-table-column>
+      <el-table-column align="center" prop="createTime" label="创建时间"  min-width="160">
       </el-table-column>
       <!--      <el-table-column prop="updateTime" label="更新时间"  width="140">-->
       <!--      </el-table-column>-->
       <!--      <el-table-column prop="createTime" label="创建时间"  width="140">-->
       <!--      </el-table-column>-->
+      <el-table-column align="center" prop="demanDeadline" label="截止日期" min-width="160" >
+      </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="450" fixed="right">
+      <el-table-column align="center" label="操作" min-width="350" fixed="right">
         <template slot-scope="scope">
           <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-refresh" @click="refDevice(scope.row)"
-                     @mouseover="getTooltipContent(scope.row.deviceId)">刷新
+                     @mouseover="getTooltipContent(scope.row.deviceId)">分配流转
           </el-button>
           <el-divider direction="vertical"></el-divider>
           <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">变更</el-button>

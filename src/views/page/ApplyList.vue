@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <div class="page-header">
-      <div class="page-title">审批管理列表</div>
+      <div class="page-title">变更管理列表</div>
       <div class="page-header-btn">
         <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
       </div>
