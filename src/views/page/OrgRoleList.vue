@@ -3,7 +3,9 @@
     <div class="page-header">
       <div class="page-title">组织角色管理</div>
       <div class="page-header-btn">
-        <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addParentPlatform">添加组织</el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addParentPlatform">添加角色</el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addParentPlatform">添加人员</el-button>
       </div>
     </div>
     <div style="width: 100%;">
@@ -38,7 +40,7 @@
                     <div class="operation">
                       <div>
                         <el-button size="medium" icon="el-icon-edit" type="text">绑定人员</el-button>
-                        <el-button size="medium" icon="el-icon-edit" type="text">添加下级</el-button>
+<!--                        <el-button size="medium" icon="el-icon-edit" type="text">添加下级</el-button>-->
                         <el-button size="medium" icon="el-icon-edit" type="text">修改</el-button>
                         <el-button size="medium" icon="el-icon-delete" type="text" style="color: #f56c6c"
                                    @click="deleteHandle(scope.row.id)">删除
@@ -109,7 +111,7 @@
         </el-table-column>
         <el-table-column align="center" prop="mobile" label="手机号" min-width="120">
         </el-table-column>
-        <el-table-column align="center" label="status" min-width="120">
+        <el-table-column align="center" label="状态" min-width="120">
           <template slot-scope="scope">
             <div slot="reference" class="name-wrapper">
               <el-tag size="medium" v-if="scope.row.status == 1">正常</el-tag>
@@ -148,18 +150,23 @@
           :total="totalPage"
           layout="total, sizes, prev, pager, next, jumper">
       </el-pagination>
+      <!--添加组织-->
+      <orgEdit ref="orgEdit" ></orgEdit>
     </div>
   </div>
 </template>
 
 
 <script>
+import orgEdit from './edit/orgEdit.vue'
 import {isNull, treeDataTranslate} from "../../utils/utils.js";
 import {postAction, getAction, deleteAction, putAction} from '../../api/manage'
 
 export default {
   name: "",
-  components: {},
+  components: {
+    orgEdit
+  },
   props: {},
   watch: {},
   data() {
@@ -199,9 +206,9 @@ export default {
 
   },
   methods: {
-
-    deleteDevice(row) {
-      console.log(row)
+    //新增组织
+    addParentPlatform() {
+      this.$refs.orgEdit.openDialog(null, this.initData)
     },
 
     // 组织信息
