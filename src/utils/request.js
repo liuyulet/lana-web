@@ -1,5 +1,7 @@
 import axios from 'axios'
 import {VueAxios} from './axios'
+import {Notification} from 'element-ui'
+import router from "../router";
 
 let apiBaseUrl = process.env.VUE_APP_API_BASE_URL;
 
@@ -10,17 +12,18 @@ const service = axios.create({
 });
 
 const err = (error) => {
-    if (error.response) {
-        let data = error.response.data;
+    console.log('error', error)
+    if (error) {
+        let data = error;
         const token = localStorage.getItem('X-Access-Token');
         console.log("------异常响应------", token);
-        console.log("------异常响应------", error.response.status);
-        switch (error.response.status) {
+        console.log("------异常响应------", error);
+        switch (error) {
             case 403:
                 console.log('拒绝访问');
                 break;
             case 500:
-                console.log("------error.response------", error.response);
+                console.log("------error.response------", error);
                 break;
             case 404:
                 console.log('很抱歉，资源未找到!');
@@ -30,34 +33,40 @@ const err = (error) => {
                 break;
             case 401:
                 console.log('很抱歉，登录已过期，请重新登录');
+                Notification.error({
+                    title: '错误',
+                    message: '很抱歉，登录已过期，请重新登录'
+                });
+                localStorage.removeItem('X-Access-Token')
+                router.push('/')
                 break;
             default:
-                console.log(data.message);
-                break
+                console.log(data);
+                break;
         }
-    } else if (error.message) {
-        if (error.message.includes('timeout')) {
-            console.log('网络超时')
-        } else {
-            console.log(error.message)
-        }
+        return error;
     }
-    return Promise.reject(error)
 };
 
 service.interceptors.request.use((config) => {
+    console.log('config', config)
     const token = localStorage.getItem('X-Access-Token');
     if (token) {
         config.headers['X-Access-Token'] = `${token}`
     }
     return config;
-}, (error) => {
-    return Promise.reject(error)
 });
 
 service.interceptors.response.use((response) => {
-    return response.data
-}, err);
+    console.log('response', response)
+    if (response.data.code === 200) {
+        return response.data
+    } else {
+        let error = err(response.data.code)
+        console.log(error)
+        return error
+    }
+});
 
 const installer = {
     vm: {},

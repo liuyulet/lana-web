@@ -94,6 +94,7 @@ export default {
         password: this.loginForm.password
       }
       postAction("/sys/login",params).then((data) => {
+        console.log('Login',data)
         if (data && data.code === 200) {
           localStorage.setItem('X-Access-Token',data.result.token);
           this.$router.replace('/deviceList')
