@@ -2,7 +2,7 @@
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
       title="添加组织"
-      width="70%"
+      width="50%"
       top="2rem"
       :close-on-click-modal="false"
       :visible.sync="showDialog"
@@ -10,95 +10,17 @@
       @close="close()"
     >
       <div id="shared" style="text-align: right; margin-top: 1rem">
-        <el-row :gutter="24">
-          <el-col :span="11">
+        <el-row >
+          <el-col :span="20">
             <el-form ref="platform1" :rules="rules" :model="platform" label-width="160px">
-              <el-form-item label="名称" prop="name">
-                <el-input v-model="platform.name"></el-input>
+              <el-form-item label="机构名称" prop="name">
+                <el-input v-model="platform.name" placeholder="机构名称请区分明确，不要重复哦"></el-input>
               </el-form-item>
-              <el-form-item label="SIP服务国标编码" prop="serverGBId">
-                <el-input v-model="platform.serverGBId" clearable @input="serverGBIdChange"></el-input>
+              <el-form-item label="机构编码" prop="serverGBId">
+                <el-input v-model="platform.serverGBId" clearable @input="serverGBIdChange" placeholder="机构编码唯一"></el-input>
               </el-form-item>
-              <el-form-item label="SIP服务国标域" prop="serverGBDomain">
-                <el-input v-model="platform.serverGBDomain" clearable></el-input>
-              </el-form-item>
-              <el-form-item label="SIP服务IP" prop="serverIP">
-                <el-input v-model="platform.serverIP" clearable></el-input>
-              </el-form-item>
-              <el-form-item label="SIP服务端口" prop="serverPort">
-                <el-input v-model="platform.serverPort" clearable type="number"></el-input>
-              </el-form-item>
-              <el-form-item label="设备国标编号" prop="deviceGBId">
-                <el-input v-model="platform.deviceGBId" clearable @input="deviceGBIdChange"></el-input>
-              </el-form-item>
-              <el-form-item label="本地IP" prop="deviceIp">
-                <el-input v-model="platform.deviceIp" :disabled="true"></el-input>
-              </el-form-item>
-              <el-form-item label="本地端口" prop="devicePort">
-                <el-input v-model="platform.devicePort" :disabled="true" type="number"></el-input>
-              </el-form-item>
-              <el-form-item label="SIP认证用户名" prop="username">
-                <el-input v-model="platform.username"></el-input>
-              </el-form-item>
-            </el-form>
-          </el-col>
-          <el-col :span="12">
-            <el-form ref="platform2" :rules="rules" :model="platform" label-width="160px">
-              <el-form-item label="行政区划" prop="administrativeDivision">
-                <el-input v-model="platform.administrativeDivision" clearable></el-input>
-              </el-form-item>
-              <el-form-item label="SIP认证密码" prop="password">
-                <el-input v-model="platform.password" ></el-input>
-              </el-form-item>
-              <el-form-item label="注册周期(秒)" prop="expires">
-                <el-input v-model="platform.expires"></el-input>
-              </el-form-item>
-              <el-form-item label="心跳周期(秒)" prop="keepTimeout">
-                <el-input v-model="platform.keepTimeout"></el-input>
-              </el-form-item>
-              <el-form-item label="信令传输" prop="transport">
-                <el-select
-                  v-model="platform.transport"
-                  style="width: 100%"
-                  placeholder="请选择信令传输方式"
-                >
-                  <el-option label="UDP" value="UDP"></el-option>
-                  <el-option label="TCP" value="TCP"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="目录分组" prop="catalogGroup">
-                <el-select
-                  v-model="platform.catalogGroup"
-                  style="width: 100%"
-                  placeholder="请选择目录分组"
-                >
-                  <el-option label="1" value="1"></el-option>
-                  <el-option label="2" value="2"></el-option>
-                  <el-option label="4" value="4"></el-option>
-                  <el-option label="8" value="8"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="目录结构" prop="treeType" >
-                <el-select v-model="platform.treeType" style="width: 100%" @change="treeTypeChange">
-                  <el-option key="WGS84" label="行政区划" value="CivilCode"></el-option>
-                  <el-option key="GCJ02" label="业务分组" value="BusinessGroup"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="字符集" prop="characterSet">
-                <el-select
-                  v-model="platform.characterSet"
-                  style="width: 100%"
-                  placeholder="请选择字符集"
-                >
-                  <el-option label="GB2312" value="GB2312"></el-option>
-                  <el-option label="UTF-8" value="UTF-8"></el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="其他选项">
-                <el-checkbox label="启用" v-model="platform.enable" @change="checkExpires"></el-checkbox>
-                <el-checkbox label="云台控制" v-model="platform.ptz"></el-checkbox>
-                <el-checkbox label="拉起离线推流" v-model="platform.startOfflinePush"></el-checkbox>
-                <el-checkbox label="RTCP保活" v-model="platform.rtcp" @change="rtcpCheckBoxChange"></el-checkbox>
+              <el-form-item label="所属机构" prop="serverGBDomain">
+                <el-input v-model="platform.serverGBDomain" clearable placeholder="请输选择所属机构"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-button type="primary" @click="onSubmit">保存</el-button>
