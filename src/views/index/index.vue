@@ -19,16 +19,18 @@
         <!--项目信息-->
         <el-menu-item index="/projectList">项目管理</el-menu-item>
         <el-menu-item index="/demandList">需求管理</el-menu-item>
+        <el-menu-item index="/demandList">版本迭代管理</el-menu-item>
         <!--组织角色人员管理-->
         <el-menu-item index="/orgRoleList">组织角色管理</el-menu-item>
 
 
+
         <el-submenu index="" style="float: right;">
-          <template slot="title">欢迎，admin</template>
+          <template slot="title">欢迎，{{this.userFullname}}[{{this.userAccount}}]</template>
   <!--        <el-menu-item >
             <el-switch v-model="alarmNotify" inactive-text="信息推送" @change="alarmNotifyChannge"></el-switch>
           </el-menu-item>-->
-          <el-menu-item >修改密码</el-menu-item>
+<!--          <el-menu-item >修改密码</el-menu-item>-->
           <el-menu-item @click="loginout">注销</el-menu-item>
         </el-submenu>
       </el-menu>
@@ -48,10 +50,15 @@ export default {
   data() {
     return {
       activeIndex: '/deviceList',
-      Indexs:''
+      Indexs: '',
+      userAccount: '',
+      userFullname: ''
     };
   },
-
+  created() {
+    this.userAccount = localStorage.getItem('userAccount');
+    this.userFullname = localStorage.getItem('userFullname');
+  },
   methods: {
     handleSelect(key, keyPath) {
 
@@ -66,6 +73,8 @@ export default {
             message: data.msg,
             type: '操作成功'
           });
+          localStorage.setItem('userAccount',null);
+          localStorage.setItem('userFullname',null);
           localStorage.setItem('X-Access-Token',null);
           this.$router.replace('/login')
         }

@@ -43,7 +43,7 @@
 <!--                        <el-button size="medium" icon="el-icon-edit" type="text">添加下级</el-button>-->
                         <el-button size="medium" icon="el-icon-edit" type="text">修改</el-button>
                         <el-button size="medium" icon="el-icon-delete" type="text" style="color: #f56c6c"
-                                   @click="deleteHandle(scope.row.id)">删除
+                                   @click="deleteDepart(scope.row.id)">删除
                         </el-button>
                       </div>
                     </div>
@@ -128,10 +128,10 @@
         </el-table-column>
         <el-table-column align="center" prop="createTime" label="创建时间" min-width="160">
         </el-table-column>
-        <el-table-column align="center" label="操作" min-width="340" fixed="right">
+        <el-table-column align="center" label="操作" min-width="140" fixed="right">
           <template slot-scope="scope">
-            <el-button size="medium" icon="el-icon-edit" type="text">关联组织</el-button>
-            <el-button size="medium" icon="el-icon-edit" type="text">关联角色</el-button>
+<!--            <el-button size="medium" icon="el-icon-edit" type="text">关联组织</el-button>
+            <el-button size="medium" icon="el-icon-edit" type="text">关联角色</el-button>-->
             <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">编辑</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button size="medium" icon="el-icon-delete" type="text" @click="delUser(scope.row.userId)"
@@ -206,12 +206,16 @@ export default {
 
   },
   methods: {
+
+    /*
+    * 组织信息
+    */
     //新增组织
     addParentPlatform() {
       this.$refs.orgEdit.openDialog(null, this.initData)
     },
 
-    // 组织信息
+    // 组织列表
     getDeparts() {
       getAction("/sysDepart/getDepart").then((data) => {
         if (data && data.code === 200) {
@@ -220,6 +224,34 @@ export default {
         }
       })
     },
+    //删除组织
+    deleteDepart(id) {
+      let parms = {
+        userIds : id
+      }
+      getAction("/sysDepart/delDepart",parms).then((data) => {
+        if (data && data.code === 200) {
+          this.$message({
+            showClose: true,
+            message: '操作成功',
+            type: 'success'
+          });
+          this.getDeparts();
+        }else {
+          this.$message({
+            showClose: true,
+            message: data.message,
+            type: 'error'
+          });
+        }
+      })
+    },
+
+
+    /*
+    * 角色信息
+    */
+
     //角色信息
     getRoles() {
       getAction("/sys/role/getRoleList").then((data) => {

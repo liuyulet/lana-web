@@ -96,6 +96,8 @@ export default {
       postAction("/sys/login",params).then((data) => {
         console.log('Login',data)
         if (data && data.code === 200) {
+          localStorage.setItem('userAccount',data.result.userAccount);
+          localStorage.setItem('userFullname',data.result.userFullname);
           localStorage.setItem('X-Access-Token',data.result.token);
           this.$router.replace('/deviceList')
         }

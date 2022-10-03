@@ -13,7 +13,7 @@ yarn install
 
 ### 用于开发的编译和热加载
 ```
-yarn run dev
+yarn run serve
 ```
 
 ### 用于生产的编译和缩减
