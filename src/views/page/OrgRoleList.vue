@@ -34,14 +34,14 @@
                 <el-table-column
                     header-align="center"
                     align="center"
-                    width="440"
+                    width="300"
                     label="操作">
                   <template slot-scope="scope">
                     <div class="operation">
                       <div>
-                        <el-button size="medium" icon="el-icon-edit" type="text">绑定人员</el-button>
+                        <el-button size="medium" icon="el-icon-edit" type="text" @click="userForDepart(scope.row.id)">绑定人员</el-button>
 <!--                        <el-button size="medium" icon="el-icon-edit" type="text">添加下级</el-button>-->
-                        <el-button size="medium" icon="el-icon-edit" type="text">修改</el-button>
+                        <el-button size="medium" icon="el-icon-edit" type="text" @click="editParentPlatform(scope.row)">修改</el-button>
                         <el-button size="medium" icon="el-icon-delete" type="text" style="color: #f56c6c"
                                    @click="deleteDepart(scope.row.id)">删除
                         </el-button>
@@ -99,10 +99,19 @@
       </el-row>
 
       <!--    用户信息-->
-      <el-table :data="uerDataList" style="width: 100%;font-size: 13px;margin-top: 2rem;"
-                header-row-class-name="table-header">
+      <el-table
+          :data="uerDataList"
+          style="width: 100%;font-size: 13px;margin-top: 2rem;"
+          header-row-class-name="table-header"
+          @selection-change="handleSelectionChange">
+        <el-table-column
+            type="selection"
+            style="color: #1e1e1e"
+            width="55">
+        </el-table-column>
         <el-table-column align="center" type="index" label="序号" width="80">
         </el-table-column>
+
         <el-table-column align="center" prop="fullname" label="姓名" min-width="200">
         </el-table-column>
         <el-table-column align="center" prop="username" label="用户账号名" min-width="200">
@@ -120,13 +129,13 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column align="center" prop="keepaliveTime" label="负责部门" min-width="160">
+        <el-table-column align="center" prop="dutyName" label="负责部门" min-width="160">
         </el-table-column>
-        <el-table-column align="center" prop="keepaliveTime" label="所属部门" min-width="160">
+        <el-table-column align="center" prop="departName" label="所属部门" min-width="160">
         </el-table-column>
-        <el-table-column align="center" prop="registerTime" label="所属角色" min-width="160">
+        <el-table-column align="center" prop="roleName" label="所属角色" min-width="160">
         </el-table-column>
-        <el-table-column align="center" prop="createTime" label="创建时间" min-width="160">
+        <el-table-column align="center" prop="createTimer" label="创建时间" min-width="160">
         </el-table-column>
         <el-table-column align="center" label="操作" min-width="140" fixed="right">
           <template slot-scope="scope">
@@ -177,9 +186,11 @@ export default {
       uerDataList: null,
       organizaDataList: [],
       roleizaDataList: [],
+      userSelection: [],
       organizaColumns: [
         {label: "组织名称", props: "departName", width: ""},
         {label: "创建时间", props: "createTime", width: ""},
+        {label: "组织编码", props: "departCode", width: ""},
       ],
 
       roleColumns: [
@@ -214,6 +225,10 @@ export default {
     addParentPlatform() {
       this.$refs.orgEdit.openDialog(null, this.initData)
     },
+    //编辑组织
+    editParentPlatform(orgDepartData) {
+      this.$refs.orgEdit.openDialog(orgDepartData, this.initData)
+    },
 
     // 组织列表
     getDeparts() {
@@ -236,7 +251,8 @@ export default {
             message: '操作成功',
             type: 'success'
           });
-          this.getDeparts();
+          //刷新用户列表信息
+          this.getUser();
         }else {
           this.$message({
             showClose: true,
@@ -245,6 +261,39 @@ export default {
           });
         }
       })
+    },
+
+    //绑定人员信息
+    userForDepart (departId) {
+      if(this.userSelection.length<=0) {
+        this.$message({
+          showClose: true,
+          message: "请先选择要绑定的用户",
+          type: 'error'
+        });
+      }else {
+        let parms ={
+          "departId": departId,
+          "userId": this.userSelection
+        }
+        postAction("/sysDepart/userForDepart",parms).then((data) => {
+          if (data && data.code === 200) {
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            });
+            this.getDeparts();
+          }else {
+            this.$message({
+              showClose: true,
+              message: data.message,
+              type: 'error'
+            });
+          }
+        })
+      }
+
     },
 
 
@@ -267,7 +316,7 @@ export default {
         'page': this.pageIndex,
         'limit': this.pageSize
       }
-      getAction("/sys/user/getUser", params).then((data) => {
+      getAction("/sys/UserDepartRole/getUserMessage", params).then((data) => {
         if (data && data.code === 200) {
           this.uerDataList = data.result.list
           //处理数据
@@ -303,6 +352,16 @@ export default {
         })
       })
     },
+
+    //选择用户
+    handleSelectionChange(val) {
+
+      this.userSelection = [];
+      val.forEach(item => {
+        this.userSelection.push(item.userId);
+      });
+    },
+
 
 
     // 每页数

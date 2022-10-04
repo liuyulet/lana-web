@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="添加组织"
+      title="维护组织"
       width="30%"
       top="2rem"
       :close-on-click-modal="false"
@@ -67,6 +67,21 @@ export default {
 
   methods: {
     openDialog: function (platform, callback) {
+      //组织列表
+      this.getDepart();
+      //判断是新增还是修改
+      if (platform == null) {
+        //新增
+      }else {
+        this.orgEdit.departName = platform.departName
+        this.orgEdit.departCode = platform.departCode
+        this.orgEdit.parentId = platform.parentId
+      }
+      this.showDialog = true;
+      this.listChangeCallback = callback;
+    },
+
+    getDepart () {
       getAction("/sysDepart/getDepart").then((data) => {
         if (data && data.code === 200) {
           this.organizaDataList = data.result
@@ -78,9 +93,8 @@ export default {
           });
         }
       })
-      this.showDialog = true;
-      this.listChangeCallback = callback;
     },
+
     onSubmit () {
       let params = {
         departName: this.orgEdit.departName,
