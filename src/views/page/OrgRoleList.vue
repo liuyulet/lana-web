@@ -4,8 +4,8 @@
       <div class="page-title">组织角色管理</div>
       <div class="page-header-btn">
         <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addParentPlatform">添加组织</el-button>
-        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addParentPlatform">添加角色</el-button>
-        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addParentPlatform">添加人员</el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addRolePlatform">添加角色</el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addUserPlatform">添加人员</el-button>
       </div>
     </div>
     <div style="width: 100%;">
@@ -84,9 +84,9 @@
                       <div>
                         <el-button size="medium" icon="el-icon-edit" type="text">绑定菜单</el-button>
                         <el-button size="medium" icon="el-icon-edit" type="text">绑定人员</el-button>
-                        <el-button size="medium" icon="el-icon-edit" type="text">修改</el-button>
+                        <el-button size="medium" icon="el-icon-edit" type="text" @click="editRolePlatform(scope.row)">修改</el-button>
                         <el-button size="medium" icon="el-icon-delete" type="text" style="color: #f56c6c"
-                                   @click="deleteHandle(scope.row.id)">删除
+                                   @click="deleteRole(scope.row.roleId)">删除
                         </el-button>
                       </div>
                     </div>
@@ -141,7 +141,7 @@
           <template slot-scope="scope">
 <!--            <el-button size="medium" icon="el-icon-edit" type="text">关联组织</el-button>
             <el-button size="medium" icon="el-icon-edit" type="text">关联角色</el-button>-->
-            <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">编辑</el-button>
+            <el-button size="medium" icon="el-icon-edit" type="text" @click="editUserPlatform(scope.row)">编辑</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button size="medium" icon="el-icon-delete" type="text" @click="delUser(scope.row.userId)"
                        style="color: #f56c6c">删除
@@ -161,6 +161,8 @@
       </el-pagination>
       <!--添加组织-->
       <orgEdit ref="orgEdit" ></orgEdit>
+      <roleEdit ref="roleEdit" ></roleEdit>
+      <userEdit ref="userEdit" ></userEdit>
     </div>
   </div>
 </template>
@@ -168,13 +170,20 @@
 
 <script>
 import orgEdit from './edit/orgEdit.vue'
+import roleEdit from './edit/roleEdit.vue'
+import userEdit from './edit/userEdit.vue'
+
+
+
 import {isNull, treeDataTranslate} from "../../utils/utils.js";
 import {postAction, getAction, deleteAction, putAction} from '../../api/manage'
 
 export default {
   name: "",
   components: {
-    orgEdit
+    orgEdit,
+    roleEdit,
+    userEdit
   },
   props: {},
   watch: {},
@@ -244,23 +253,29 @@ export default {
       let parms = {
         userIds : id
       }
-      getAction("/sysDepart/delDepart",parms).then((data) => {
-        if (data && data.code === 200) {
-          this.$message({
-            showClose: true,
-            message: '操作成功',
-            type: 'success'
-          });
-          //刷新组织列表信息
-          this.getDeparts();
+      this.$confirm(`确定删除该组织吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        getAction("/sysDepart/delDepart",parms).then((data) => {
+          if (data && data.code === 200) {
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            });
+            //刷新组织列表信息
+            this.getDeparts();
 
-        }else {
-          this.$message({
-            showClose: true,
-            message: data.message,
-            type: 'error'
-          });
-        }
+          }else {
+            this.$message({
+              showClose: true,
+              message: data.message,
+              type: 'error'
+            });
+          }
+        })
       })
     },
 
@@ -294,7 +309,6 @@ export default {
           }
         })
       }
-
     },
 
 
@@ -311,6 +325,48 @@ export default {
         }
       })
     },
+
+    //新增角色
+    addRolePlatform() {
+      this.$refs.roleEdit.openDialog(null, this.initData)
+    },
+    //编辑角色
+    editRolePlatform(orgDepartData) {
+
+      this.$refs.roleEdit.openDialog(orgDepartData, this.initData)
+    },
+
+    //删除角色
+    deleteRole(id) {
+      let parms = {
+        userIds : id
+      }
+      this.$confirm(`确定删除该角色吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        getAction("/sys/role/delRole",parms).then((data) => {
+          if (data && data.code === 200) {
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            });
+            //刷新角色列表信息
+            this.getRoles();
+          }else {
+            this.$message({
+              showClose: true,
+              message: data.message,
+              type: 'error'
+            });
+          }
+        })
+      })
+    },
+
+
     //用户列表
     getUser() {
       let params = {
@@ -325,6 +381,15 @@ export default {
           this.totalPage = data.result.totalCount
         }
       })
+    },
+    //新增用户
+    addUserPlatform() {
+      this.$refs.userEdit.openDialog(null, this.initData)
+    },
+    //编辑用户
+    editUserPlatform(userDepartData) {
+
+      this.$refs.userEdit.openDialog(userDepartData, this.initData)
     },
     //删除用户
     delUser(userId) {
@@ -362,9 +427,6 @@ export default {
         this.userSelection.push(item.userId);
       });
     },
-
-
-
     // 每页数
     sizeChangeHandle(val) {
       this.pageSize = val
