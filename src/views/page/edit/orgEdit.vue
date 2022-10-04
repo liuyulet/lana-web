@@ -30,7 +30,8 @@
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary" @click="onSubmit">保存</el-button>
+                <el-button type="primary" v-if="this.edits" @click="onEdits()">修改</el-button>
+                <el-button type="primary" v-if="!this.edits" @click="onSubmit">新增</el-button>
                 <el-button @click="close">取消</el-button>
               </el-form-item>
             </el-form>
@@ -49,11 +50,13 @@ export default {
   computed: {},
   data() {
     return {
+      edits: false,
       listChangeCallback: null,
       showDialog: false,
       isLoging: false,
       organizaDataList: null,
       orgEdit: {
+        id: '',
         departName: '',
         departCode: '',
         parentId: '',
@@ -71,8 +74,12 @@ export default {
       this.getDepart();
       //判断是新增还是修改
       if (platform == null) {
+
         //新增
+        this.edits = false;
       }else {
+        this.edits = true;
+        this.orgEdit.id = platform.id
         this.orgEdit.departName = platform.departName
         this.orgEdit.departCode = platform.departCode
         this.orgEdit.parentId = platform.parentId
@@ -94,6 +101,35 @@ export default {
         }
       })
     },
+
+    //修改
+    onEdits () {
+      let params = {
+        id: this.orgEdit.id,
+        departName: this.orgEdit.departName,
+        departCode: this.orgEdit.departCode,
+        parentId: this.orgEdit.parentId,
+        createUser: localStorage.getItem('userAccount')
+      }
+      postAction("/sysDepart/updateDepart",params).then((data) => {
+        if (data && data.code === 200) {
+          this.$message({
+            showClose: true,
+            message: '操作成功',
+            type: 'success'
+          });
+          this.close()
+
+        }else {
+          this.$message({
+            showClose: true,
+            message: data.message,
+            type: 'error'
+          });
+        }
+      })
+    },
+
 
     onSubmit () {
       let params = {

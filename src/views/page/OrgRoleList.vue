@@ -251,8 +251,9 @@ export default {
             message: '操作成功',
             type: 'success'
           });
-          //刷新用户列表信息
-          this.getUser();
+          //刷新组织列表信息
+          this.getDeparts();
+
         }else {
           this.$message({
             showClose: true,
