@@ -98,6 +98,7 @@ export default {
         if (data && data.code === 200) {
           localStorage.setItem('userAccount',data.result.userAccount);
           localStorage.setItem('userFullname',data.result.userFullname);
+          localStorage.setItem('userId',data.result.userId);
           localStorage.setItem('X-Access-Token',data.result.token);
           this.$router.replace('/deviceList')
         }

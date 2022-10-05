@@ -33,7 +33,6 @@ export const constantRouterMap = [
         meta: {
             requiresAuth: false
         },
-
     },
     {
         path: '/tinymce',
@@ -43,7 +42,6 @@ export const constantRouterMap = [
             requiresAuth: false
         },
     },
-
     {
         path: '/indexs',
         name: 'indexs',
@@ -98,6 +96,14 @@ export const constantRouterMap = [
             {
                 path: '/demandList',
                 component: () => import('../views/page/DemandList'),
+                meta: {
+                    requiresAuth: false
+                },
+            },
+            //需求信息；
+            {
+                path: '/versioniteraList',
+                component: () => import('../views/page/VersioniteraList'),
                 meta: {
                     requiresAuth: false
                 },

@@ -13,13 +13,16 @@
         <!--进度/缺陷/考核统计信息-->
         <el-menu-item index="/deviceList">统计信息</el-menu-item>
         <!--我的管理-->
+
         <el-menu-item index="/taskmanagement">任务管理</el-menu-item>
         <el-menu-item index="/defectList">缺陷管理</el-menu-item>
         <el-menu-item index="/applyList">变更管理</el-menu-item>
+
         <!--项目信息-->
         <el-menu-item index="/projectList">项目管理</el-menu-item>
         <el-menu-item index="/demandList">需求管理</el-menu-item>
-        <el-menu-item index="/demandList">版本迭代管理</el-menu-item>
+        <el-menu-item index="/versioniteraList">版本迭代管理</el-menu-item>
+
         <!--组织角色人员管理-->
         <el-menu-item index="/orgRoleList">组织角色管理</el-menu-item>
 
@@ -75,6 +78,7 @@ export default {
           });
           localStorage.setItem('userAccount',null);
           localStorage.setItem('userFullname',null);
+          localStorage.setItem('userId',null);
           localStorage.setItem('X-Access-Token',null);
           this.$router.replace('/login')
         }

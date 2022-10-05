@@ -93,7 +93,8 @@
                                     <template slot-scope="scope">
                                         <div class="operation">
                                             <div>
-                                                <el-button size="medium" icon="el-icon-edit" type="text">绑定菜单
+                                                <el-button size="medium" icon="el-icon-edit" type="text"
+                                                           @click="menuForRole(scope.row.roleId)">绑定菜单
                                                 </el-button>
                                                 <el-button size="medium" icon="el-icon-edit" type="text"
                                                            @click="userForRole(scope.row.roleId)">绑定人员
@@ -182,6 +183,7 @@
             <orgEdit ref="orgEdit"></orgEdit>
             <roleEdit ref="roleEdit"></roleEdit>
             <userEdit ref="userEdit"></userEdit>
+            <roleMenuEdit ref="roleMenuEdit"></roleMenuEdit>
         </div>
     </div>
 </template>
@@ -191,6 +193,7 @@
     import orgEdit from './edit/orgEdit.vue'
     import roleEdit from './edit/roleEdit.vue'
     import userEdit from './edit/userEdit.vue'
+    import roleMenuEdit from './edit/roleMenuEdit.vue'
 
 
     import {isNull, treeDataTranslate} from "../../utils/utils.js";
@@ -201,7 +204,8 @@
         components: {
             orgEdit,
             roleEdit,
-            userEdit
+            userEdit,
+            roleMenuEdit
         },
         props: {},
         watch: {},
@@ -356,6 +360,13 @@
 
                 this.$refs.roleEdit.openDialog(orgDepartData, this.initData)
             },
+
+          //角色绑定菜单
+          menuForRole(roleId) {
+            this.$refs.roleMenuEdit.openDialog(roleId, this.initData)
+          },
+
+
             //角色绑定人员信息
             userForRole(roleId) {
                 if (this.userSelectionRole.length <= 0 && this.userUpdaSelectionRole.length <= 0) {
