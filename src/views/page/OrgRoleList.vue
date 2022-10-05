@@ -83,7 +83,7 @@
                     <div class="operation">
                       <div>
                         <el-button size="medium" icon="el-icon-edit" type="text">绑定菜单</el-button>
-                        <el-button size="medium" icon="el-icon-edit" type="text">绑定人员</el-button>
+                        <el-button size="medium" icon="el-icon-edit" type="text" @click="userForRole(scope.row.roleId)">绑定人员</el-button>
                         <el-button size="medium" icon="el-icon-edit" type="text" @click="editRolePlatform(scope.row)">修改</el-button>
                         <el-button size="medium" icon="el-icon-delete" type="text" style="color: #f56c6c"
                                    @click="deleteRole(scope.row.roleId)">删除
@@ -196,6 +196,7 @@ export default {
       organizaDataList: [],
       roleizaDataList: [],
       userSelection: [],
+      userUpdateSelection: [],
       organizaColumns: [
         {label: "组织名称", props: "departName", width: ""},
         {label: "创建时间", props: "createTime", width: ""},
@@ -279,18 +280,19 @@ export default {
       })
     },
 
-    //绑定人员信息
-    userForDepart (departId) {
-      if(this.userSelection.length<=0) {
+    //组织绑定人员信息
+    userForDepart(departId) {
+      if(this.userSelection.length<=0 && this.userUpdateSelection.length<=0) {
         this.$message({
           showClose: true,
-          message: "请先选择要绑定的用户",
+          message: "请先选择要绑定或修改绑定的用户",
           type: 'error'
         });
       }else {
         let parms ={
           "departId": departId,
-          "userId": this.userSelection
+          "userId": this.userSelection,
+          "userUpdateId": this.userUpdateSelection
         }
         postAction("/sysDepart/userForDepart",parms).then((data) => {
           if (data && data.code === 200) {
@@ -299,7 +301,8 @@ export default {
               message: '操作成功',
               type: 'success'
             });
-            this.getDeparts();
+            //获取新的数据
+            this.getUser();
           }else {
             this.$message({
               showClose: true,
@@ -335,7 +338,39 @@ export default {
 
       this.$refs.roleEdit.openDialog(orgDepartData, this.initData)
     },
-
+    //角色绑定人员信息
+    userForRole(roleId) {
+      if(this.userSelectionRole.length<=0 && this.userUpdaSelectionRole.length<=0) {
+        this.$message({
+          showClose: true,
+          message: "请先选择要绑定或修改绑定的用户",
+          type: 'error'
+        });
+      }else {
+        let parms ={
+          "roleId": roleId,
+          "userId": this.userSelectionRole,
+          "userUpdateId": this.userUpdaSelectionRole
+        }
+        postAction("/sys/role/userForRole",parms).then((data) => {
+          if (data && data.code === 200) {
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            });
+            //获取新的数据
+            this.getUser();
+          }else {
+            this.$message({
+              showClose: true,
+              message: data.message,
+              type: 'error'
+            });
+          }
+        })
+      }
+    },
     //删除角色
     deleteRole(id) {
       let parms = {
@@ -422,9 +457,25 @@ export default {
     //选择用户
     handleSelectionChange(val) {
 
+      //绑定角色维护两个，一个是未授权用户的，一个是修改已授权用户的
+      this.userSelectionRole = [];
+      this.userUpdaSelectionRole = [];
+      //绑定组织维护两个，一个是未授权用户的，一个是修改已授权用户的
       this.userSelection = [];
+      this.userUpdateSelection = [];
       val.forEach(item => {
-        this.userSelection.push(item.userId);
+        //处理组织
+        if(item.departId!=null && item.departId!=''){
+          this.userUpdateSelection.push(item.userId);
+        }else {
+          this.userSelection.push(item.userId);
+        }
+        //处理角色
+        if(item.roleid!=null && item.roleid!=''){
+          this.userUpdaSelectionRole.push(item.userId);
+        }else {
+          this.userSelectionRole.push(item.userId);
+        }
       });
     },
     // 每页数
