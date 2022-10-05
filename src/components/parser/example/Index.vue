@@ -173,8 +173,8 @@ export default {
               `,
               'color:#409EFF;font-size: 15px'
             )
-            console.log('表单的Model：', this.formData)
-            console.log('表单的ref：', this.$refs.elForm)
+          /*  console.log('表单的Model：', this.formData)
+            console.log('表单的ref：', this.$refs.elForm)*/
           }
         },
         formRef: 'elForm',
@@ -306,10 +306,10 @@ export default {
       this.formConf2 = t
     },
     sumbitForm1(data) {
-      console.log('sumbitForm1提交数据：', data)
+     /* console.log('sumbitForm1提交数据：', data)*/
     },
     sumbitForm2(data) {
-      console.log('sumbitForm2提交数据：', data)
+      /*console.log('sumbitForm2提交数据：', data)*/
     }
   }
 }

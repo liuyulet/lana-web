@@ -34,7 +34,7 @@ export default class signMd5Utils {
     let jsonObj = this.mergeObject(urlParams, requestParams);
     //console.log("sign jsonObj: ",jsonObj)
     let requestBody = this.sortAsc(jsonObj);
-    console.log("sign requestBody: ",requestBody)
+    //console.log("sign requestBody: ",requestBody)
     return md5(JSON.stringify(requestBody) + signatureSecret).toUpperCase();
   }
 

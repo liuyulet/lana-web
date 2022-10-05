@@ -111,8 +111,8 @@ export default {
       })
     },
     onSubmit: function () {
-      console.log("onSubmit");
-      console.log(this.form);
+      //console.log("onSubmit");
+      //console.log(this.form);
       this.form.subscribeCycleForCatalog = this.form.subscribeCycleForCatalog||0
       this.form.subscribeCycleForMobilePosition = this.form.subscribeCycleForMobilePosition||0
       this.form.mobilePositionSubmissionInterval = this.form.mobilePositionSubmissionInterval||0
@@ -121,7 +121,7 @@ export default {
         url:`/api/device/query/device/update/`,
         params: this.form
       }).then((res) => {
-        console.log(res.data)
+        //console.log(res.data)
         if (res.data.code === 0) {
           this.listChangeCallback()
         }else {
@@ -132,7 +132,7 @@ export default {
           });
         }
       }).catch(function (error) {
-        console.log(error);
+        //console.log(error);
       });
     },
     close: function () {

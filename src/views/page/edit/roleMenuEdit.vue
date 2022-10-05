@@ -11,6 +11,7 @@
     >
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <el-table
+            ref="multipleTable"
             :data="roleMenuDataList"
             style="width: 100%;font-size: 13px;margin-top: 2rem;"
             header-row-class-name="table-header"
@@ -22,12 +23,17 @@
           </el-table-column>
           <el-table-column align="center" type="index" label="序号" width="80">
           </el-table-column>
-          <el-table-column align="center" prop="fullname" label="姓名" min-width="200">
+          <el-table-column align="center" prop="name" label="菜单名称" min-width="200">
           </el-table-column>
-          <el-table-column align="center" prop="username" label="用户账号名" min-width="200">
+          <el-table-column align="center" prop="url" label="菜单路径" min-width="200">
           </el-table-column>
         </el-table>
+        <div style="margin-top: 2%;">
+          <el-button type="primary" v-if="!this.edits" @click="onSubmit">保存</el-button>
+          <el-button @click="close">取消</el-button>
+        </div>
       </div>
+
     </el-dialog>
   </div>
 </template>
@@ -45,28 +51,48 @@ export default {
       showDialog: false,
       isLoging: false,
       roleMenuDataList: null,
+      userSelection: [],
+      userUpdaSelectionRole: [],
+      roleId: '',
       roleMenuData: {
         userId: '',
-
       },
-
       rules: {
-
       },
     };
   },
 
   methods: {
     openDialog: function (platform, callback) {
-      console.log(platform);
+      //console.log(platform);
       //判断是新增还是修改
       if (platform != null) {
+        this.roleId = platform
         let params = {
           roleId: platform
         }
         getAction("/sysMenu/navList",params).then((data) => {
           if (data && data.code === 200) {
-            this.roleMenuDataList = data.result
+            this.roleMenuDataList = data.result.AllMenu
+            //已选的数据处理   HavaMenu
+
+            this.$nextTick(() => {
+              if (data.result.HavaMenu.length > 0) {
+                //每次进入之后置为空
+                this.userSelection = []
+                for (let i = 0; i < data.result.HavaMenu.length; i++) {
+                  for (let j = 0; j < data.result.AllMenu.length; j++) {
+                    if (data.result.HavaMenu[i].menuId === data.result.AllMenu[j].menuId) {
+                      //如果相等，则记录下这个行号，将数据默认选择上；
+                      this.userSelection.push(data.result.AllMenu[j])
+                    }
+                  }
+                }
+                //触发默认选中机制
+                this.toggleSelection(this.userSelection)
+              }
+            })
+
           }else {
             this.$message({
               showClose: true,
@@ -83,22 +109,32 @@ export default {
       this.listChangeCallback = callback;
     },
 
+    toggleSelection(rows) {
+      if (rows) {
+        rows.forEach(row => {
+          this.$refs.multipleTable.toggleRowSelection(row);
+        });
+      } else {
+        this.$refs.multipleTable.clearSelection();
+      }
+    },
+
     handleSelectionChange(val) {
-      console.log(val)
+      this.userUpdaSelectionRole = [];
+      val.forEach(item => {
+        //处理角色
+        if (item.menuId != null && item.menuId != '') {
+          this.userUpdaSelectionRole.push(item.menuId);
+        }
+      });
     },
 
     onSubmit () {
       let params = {
-        fullname: this.orgEdit.fullname,
-        username: this.orgEdit.username,
-        email: this.orgEdit.email,
-        mobile: this.orgEdit.mobile,
-        status: this.orgEdit.status,
-        parentId: this.orgEdit.parentId,
-        departIds: this.orgEdit.departIds,
-        createUser: localStorage.getItem('userAccount')
+        "roleId": this.roleId,
+        "menuUpdateId": this.userUpdaSelectionRole
       }
-      postAction("/sys/user/hadlesave",params).then((data) => {
+      postAction("/sysMenu/roleForMenu",params).then((data) => {
         if (data && data.code === 200) {
           this.$message({
             showClose: true,

@@ -94,7 +94,7 @@ export default {
         password: this.loginForm.password
       }
       postAction("/sys/login",params).then((data) => {
-        console.log('Login',data)
+        //console.log('Login',data)
         if (data && data.code === 200) {
           localStorage.setItem('userAccount',data.result.userAccount);
           localStorage.setItem('userFullname',data.result.userFullname);

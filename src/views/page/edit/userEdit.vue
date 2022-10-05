@@ -100,7 +100,7 @@ export default {
 
   methods: {
     openDialog: function (platform, callback) {
-      console.log(platform);
+      //console.log(platform);
       //组织列表
       this.getDepart();
       //判断是新增还是修改

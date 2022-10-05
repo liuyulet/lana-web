@@ -219,6 +219,8 @@
                 roleizaDataList: [],
                 userSelection: [],
                 userUpdateSelection: [],
+                userSelectionRole: [],
+              userUpdaSelectionRole: [],
                 organizaColumns: [
                     {label: "组织名称", props: "departName", width: ""},
                     {label: "创建时间", props: "createTime", width: ""},
@@ -304,10 +306,11 @@
 
             //组织绑定人员信息
             userForDepart(departId) {
-                if (this.userSelection.length <= 0 && this.userUpdateSelection.length <= 0) {
+
+                if (this.userSelection.length < 1 && this.userUpdateSelection.length < 1) {
                     this.$message({
                         showClose: true,
-                        message: "请先选择要绑定或修改绑定的用户",
+                        message: "请在下方勾选要绑定或修改绑定的用户",
                         type: 'error'
                     });
                 } else {
@@ -369,10 +372,10 @@
 
             //角色绑定人员信息
             userForRole(roleId) {
-                if (this.userSelectionRole.length <= 0 && this.userUpdaSelectionRole.length <= 0) {
+                if (this.userSelectionRole.length < 1 && this.userUpdaSelectionRole.length < 1) {
                     this.$message({
                         showClose: true,
-                        message: "请先选择要绑定或修改绑定的用户",
+                        message: "请在下方勾选要绑定或修改绑定的用户",
                         type: 'error'
                     });
                 } else {

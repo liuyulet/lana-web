@@ -275,7 +275,7 @@ export default {
         templateJson:'test'
       }
 
-      console.log(params);
+      //console.log(params);
       postAction("/app/template/addTemplate",params).then((res) => {
 
 
