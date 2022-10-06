@@ -54,7 +54,7 @@
       </el-table-column>
 
 
-      <el-table-column align="center" prop="demanChange" label="变更次数" min-width="100" >
+      <el-table-column align="center" prop="demanChange" label="变更次数（点击弹框展开每次变更的记录）" min-width="100" >
       </el-table-column>
 
       <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
