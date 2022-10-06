@@ -3,69 +3,45 @@
         <div class="page-header">
             <div class="page-title">项目管理列表</div>
             <div class="page-header-btn">
-                <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
+                <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary"
+                           @click="addParentPlatform">新增项目
+                </el-button>
+                <!--        <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>-->
             </div>
         </div>
         <!--设备列表-->
-        <el-table :data="deviceList" style="width: 100%;font-size: 13px;" header-row-class-name="table-header">
-            <el-table-column align="center" prop="name" label="名称" min-width="200">
+        <el-table :data="projectList" style="width: 100%;font-size: 13px;"
+                  header-row-class-name="table-header">
+            <el-table-column align="center" prop="projectName" label="名称" min-width="200">
             </el-table-column>
 
-            <el-table-column align="center" prop="deviceId" label="任务编号" min-width="200">
+            <el-table-column align="center" prop="projectNum" label="项目编号" min-width="200">
             </el-table-column>
 
-            <el-table-column align="center" label="交底文件" min-width="200">
+            <el-table-column align="center" prop="projectDutyUser" label="项目负责人" min-width="200">
+            </el-table-column>
+
+            <el-table-column align="center" prop="projectConstitution" label="项目章程" min-width="200">
+            </el-table-column>
+
+            <el-table-column align="center" label="项目状态" min-width="200">
                 <template slot-scope="scope">
                     <div slot="reference" class="name-wrapper">
-                        <el-tag size="medium">{{ scope.row.hostAddress }}</el-tag>
+                        <el-tag size="medium" v-if="scope.row.projectStatus == 1">进行中</el-tag>
+                        <el-tag size="medium" type="info" v-if="scope.row.projectStatus == 0">未开始</el-tag>
+                        <el-tag size="medium" v-if="scope.row.projectStatus == 2">已完成</el-tag>
                     </div>
                 </template>
             </el-table-column>
-
-            <el-table-column align="center" prop="manufacturer" label="任务负责人" min-width="140">
-
+            <el-table-column align="center" prop="projectMakr" label="项目备注" min-width="200">
             </el-table-column>
 
-            <el-table-column align="center" prop="channelCount" label="截止日期" min-width="120">
-            </el-table-column>
-
-            <el-table-column align="center" label="任务状态" min-width="120">
+            <el-table-column align="center" label="操作" min-width="350" fixed="right">
                 <template slot-scope="scope">
-                    <div slot="reference" class="name-wrapper">
-                        <el-tag size="medium" v-if="scope.row.online == 1">在线</el-tag>
-                        <el-tag size="medium" type="info" v-if="scope.row.online == 0">离线</el-tag>
-                    </div>
-                </template>
-            </el-table-column>
-
-
-            <el-table-column align="center" prop="keepaliveTime" label="变更次数" min-width="160">
-            </el-table-column>
-            <el-table-column align="center" prop="registerTime" label="所属项目" min-width="160">
-            </el-table-column>
-            <!--      <el-table-column prop="updateTime" label="更新时间"  width="140">-->
-            <!--      </el-table-column>-->
-            <!--      <el-table-column prop="createTime" label="创建时间"  width="140">-->
-            <!--      </el-table-column>-->
-
-            <el-table-column align="center" label="操作" min-width="450" fixed="right">
-                <template slot-scope="scope">
-                    <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-refresh"
-                               @click="refDevice(scope.row)"
-                               @mouseover="getTooltipContent(scope.row.deviceId)">刷新
+                    <el-button size="medium" icon="el-icon-edit" type="text" @click="editProjecPlatform(scope.row)">修改
                     </el-button>
                     <el-divider direction="vertical"></el-divider>
-                    <el-button type="text" size="medium" icon="el-icon-video-camera"
-                               @click="showChannelList(scope.row)">通道
-                    </el-button>
-                    <el-divider direction="vertical"></el-divider>
-                    <el-button size="medium" icon="el-icon-location" type="text"
-                               @click="showDevicePosition(scope.row)">定位
-                    </el-button>
-                    <el-divider direction="vertical"></el-divider>
-                    <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">编辑</el-button>
-                    <el-divider direction="vertical"></el-divider>
-                    <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteDevice(scope.row)"
+                    <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteProject(scope.row)"
                                style="color: #f56c6c">删除
                     </el-button>
                 </template>
@@ -73,53 +49,79 @@
         </el-table>
         <el-pagination
                 style="float: right"
-                @size-change="handleSizeChange"
-                @current-change="currentChange"
-                :current-page="currentPage"
-                :page-size="count"
-                :page-sizes="[15, 25, 35, 50]"
-                layout="total, sizes, prev, pager, next"
-                :total="total">
+                @size-change="sizeChangeHandle"
+                @current-change="currentChangeHandle"
+                :current-page="pageIndex"
+                :page-sizes="[10, 20, 50, 100]"
+                :page-size="pageSize"
+                :total="totalPage"
+                layout="total, sizes, prev, pager, next, jumper">
         </el-pagination>
+        <projectEdit ref="projectEdit"></projectEdit>
     </div>
 </template>
 
 <script>
-
     import {getAction} from "../../api/manage";
+    import projectEdit from './edit/projectEdit.vue'
 
     export default {
-        name: 'projectList',
+        name: "projectList",
+        components: {
+            projectEdit
+        },
         data() {
             return {
-                deviceList: [],
-                currentPage: 0,
-                count: 1,
-                total: 10
+                pageIndex: 1,
+                pageSize: 10,
+                totalPage: 0,
+                projectList: null
             }
         },
+        computed: {},
+        created() {
+            this.getUser();
+        },
         methods: {
-            getProject() {
-                getAction('/sysProject/getProject').then((resp) => {
-                    console.log(resp);
-                    if (resp && resp.code) {
-                        this.deviceList = resp.result.list
+            //获取需求管理列表
+            //用户列表
+            getUser() {
+                let params = {
+                    'page': this.pageIndex,
+                    'limit': this.pageSize
+                };
+                getAction("/sysProject/getProject", params).then((data) => {
+                    if (data && data.code === 200) {
+                        this.projectList = data.result.list;
+                        //处理数据
+                        this.changeRoleData();
+                        this.totalPage = data.result.totalCount
                     }
                 })
             },
-            currentChange() {
+            changeRoleData() {
 
             },
-            handleSizeChange() {
-
-            }
+            //新增项目
+            addParentPlatform() {
+                this.$refs.projectEdit.openDialog(null, this.initData)
+            },
+            editProjecPlatform(projectData) {
+                this.$refs.projectEdit.openDialog(projectData, this.initData)
+            },
+            // 每页数
+            sizeChangeHandle(val) {
+                this.pageSize = val;
+                this.pageIndex = 1;
+                this.getDataList()
+            },
+            // 当前页
+            currentChangeHandle(val) {
+                this.pageIndex = val;
+                this.getDataList()
+            },
         },
-        mounted() {
-            this.getProject()
-        }
-
     }
-
 </script>
 
 <style scoped lang="scss">
@@ -146,5 +148,7 @@
         .el-table-column {
             text-align: center;
         }
+
     }
+
 </style>
