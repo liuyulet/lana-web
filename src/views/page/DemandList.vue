@@ -33,28 +33,20 @@
       <el-table-column align="center" prop="demanStatus" label="需求状态"  min-width="120">
         <template slot-scope="scope">
           <div slot="reference" class="name-wrapper">
-<!--            1:新建待分配，2：已分配，3:变更中，4：变更完成；
-            11:开发中，12:开发完成；
-            21:待测试，22:测试中，23:测试完成；
-            31:产品代验收，32：验收检查，33:验收完成；
-            41：待实施，42：实施中，43:实施完成-->
-
             <el-tag size="medium" v-if="scope.row.demanStatus == 1">新建</el-tag>
             <el-tag size="medium" v-if="scope.row.demanStatus == 2">已分配</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 3">变更中</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 4">变更完成</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 11">开发中</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 12">开发完成</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 13">待测试</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 22">测试中</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 23">测试完成</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 31">产品代验收</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 31">验收检查</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 33">验收完成</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 41">待实施</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 42">实施中</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 43">实施完成</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 44">舍弃/删除</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 3">开发中</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 4">开发完成</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 5">待测试</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 6">测试中</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 7">测试完成</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 8">产品代验收</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 9">验收检查</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 10">验收完成</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 11">待实施</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 12">实施中</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 13">实施完成</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 14">舍弃/删除</el-tag>
           </div>
         </template>
       </el-table-column>
@@ -80,8 +72,8 @@
 
       <el-table-column align="center" label="操作" min-width="350" fixed="right">
         <template slot-scope="scope">
-          <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-refresh" @click="refDevice(scope.row)"
-                     @mouseover="getTooltipContent(scope.row.deviceId)">分配流转
+          <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-refresh"
+                     v-if="scope.row.demanStatus<2" @click="getTooltipContent(scope.row.id)">需求分配
           </el-button>
           <el-divider direction="vertical"></el-divider>
           <el-button size="medium" icon="el-icon-edit" type="text" @click="editDemandPlatform(scope.row)">变更</el-button>
@@ -103,6 +95,8 @@
     <demandEdit ref="demandEdit"></demandEdit>
 
     <changeDemEdit ref="changeDemEdit"></changeDemEdit>
+
+    <assignDemdEdit ref="assignDemdEdit"></assignDemdEdit>
   </div>
 </template>
 
@@ -110,11 +104,13 @@
 import {getAction} from "../../api/manage";
 import demandEdit from './edit/demandEdit.vue'
 import changeDemEdit from './edit/changeDemEdit.vue'
+import assignDemdEdit from './edit/assignDemdEdit.vue'
 export default {
   name: "",
   components:{
     demandEdit,
-    changeDemEdit
+    changeDemEdit,
+    assignDemdEdit
   },
   data() {
     return {
@@ -160,7 +156,16 @@ export default {
     changeDemEdit(demandData) {
       this.$refs.changeDemEdit.openDialog(demandData, this.initData)
     },
-
+    //变更需求
+    getTooltipContent(demandData) {
+      this.$confirm(`需求一旦分配，将无法进行回退，是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$refs.assignDemdEdit.openDialog(demandData, this.initData)
+      })
+    },
 
     getFiles (fileUrl){
       window.open(fileUrl);
