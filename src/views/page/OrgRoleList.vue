@@ -12,6 +12,7 @@
                 <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary"
                            @click="addUserPlatform">添加人员
                 </el-button>
+
             </div>
         </div>
         <div style="width: 100%;">
