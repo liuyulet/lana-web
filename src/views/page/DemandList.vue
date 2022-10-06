@@ -3,7 +3,7 @@
     <div class="page-header">
       <div class="page-title">需求池管理列表</div>
       <div class="page-header-btn">
-        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addParentPlatform">添加新需求</el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addDemandPlatform">添加新需求</el-button>
         <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
       </div>
     </div>
@@ -12,16 +12,21 @@
       <el-table-column align="center" prop="demanName" label="名称" min-width="160">
       </el-table-column>
 
-      <el-table-column align="center" prop="demanNum" label="任务编号" min-width="200" >
+      <el-table-column align="center" prop="demanNum" label="需求编号" min-width="200" >
       </el-table-column>
 
-      <el-table-column align="center" prop="demanDisclose" label="需求交底文件" min-width="200" >
+      <el-table-column align="center" prop="demanDisoName" label="需求交底文件" min-width="200" >
+
+        <template slot-scope="scope">
+          <el-button size="medium" type="text" @click="getFiles(scope.row.demanDisclose)">{{ scope.row.demanDisoName }}</el-button>
+        </template>
+
       </el-table-column>
 
-      <el-table-column align="center" prop="demanProject" label="关联项目" min-width="200" >
+      <el-table-column align="center" prop="demanProjectNam" label="关联项目" min-width="200" >
       </el-table-column>
 
-      <el-table-column align="center" prop="demanConsci" label="需求负责人" min-width="140" >
+      <el-table-column align="center" prop="demanConsciAcoun" label="需求负责人" min-width="140" >
 
       </el-table-column>
 
@@ -49,12 +54,17 @@
             <el-tag size="medium" v-if="scope.row.demanStatus == 41">待实施</el-tag>
             <el-tag size="medium" v-if="scope.row.demanStatus == 42">实施中</el-tag>
             <el-tag size="medium" v-if="scope.row.demanStatus == 43">实施完成</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 44">舍弃/删除</el-tag>
           </div>
         </template>
       </el-table-column>
 
 
-      <el-table-column align="center" prop="demanChange" label="变更历史记录" min-width="100" >
+      <el-table-column align="center" prop="demanChange" label="变更历史记录"  min-width="100" >
+        <template slot-scope="scope">
+          <el-button size="medium" type="text" @click="changeDemEdit(scope.row.id)">{{ scope.row.demanChange }}</el-button>
+        </template>
+
       </el-table-column>
 
       <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
@@ -74,9 +84,9 @@
                      @mouseover="getTooltipContent(scope.row.deviceId)">分配流转
           </el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">变更</el-button>
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="editDemandPlatform(scope.row)">变更</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-delete" v-if="scope.row.demanStatus<2" type="text" @click="deleteDevice(scope.row)" style="color: #f56c6c">删除</el-button>
+          <el-button size="medium" icon="el-icon-delete" v-if="scope.row.demanStatus<2" type="text" @click="deleteDemand(scope.row.id)" style="color: #f56c6c">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -90,16 +100,22 @@
         :total="totalPage"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <deviceEdit ref="deviceEdit"></deviceEdit>
-    <syncChannelProgress ref="syncChannelProgress"></syncChannelProgress>
+    <demandEdit ref="demandEdit"></demandEdit>
+
+    <changeDemEdit ref="changeDemEdit"></changeDemEdit>
   </div>
 </template>
 
 <script>
 import {getAction} from "../../api/manage";
-
+import demandEdit from './edit/demandEdit.vue'
+import changeDemEdit from './edit/changeDemEdit.vue'
 export default {
   name: "",
+  components:{
+    demandEdit,
+    changeDemEdit
+  },
   data() {
     return {
       pageIndex: 1,
@@ -112,12 +128,11 @@ export default {
 
   },
   created() {
-    this.getUser();
+    this.getDeman();
   },
   methods: {
     //获取需求管理列表
-    //用户列表
-    getUser() {
+    getDeman() {
       let params = {
         'page': this.pageIndex,
         'limit': this.pageSize
@@ -132,6 +147,51 @@ export default {
       })
     },
 
+    //新增需求
+    addDemandPlatform() {
+      this.$refs.demandEdit.openDialog(null, this.initData)
+    },
+    //变更需求
+    editDemandPlatform(demandData) {
+      this.$refs.demandEdit.openDialog(demandData, this.initData)
+    },
+
+    //需求变更历史
+    changeDemEdit(demandData) {
+      this.$refs.changeDemEdit.openDialog(demandData, this.initData)
+    },
+
+
+    getFiles (fileUrl){
+      window.open(fileUrl);
+    },
+
+    deleteDemand (id) {
+      let params = {
+        'id': id
+      }
+      this.$confirm(`该需求没有被分配，可以删除，是否要删掉?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        getAction("/sysDeman/delDeman", params).then((data) => {
+          if (data && data.code === 200) {
+            this.$message({
+              message: '操作成功',
+              type: 'success',
+              duration: 1500,
+              onClose: () => {
+                //更新删除后的用户信息
+                this.getDeman()
+              }
+            })
+          } else {
+            this.$message.error(data.msg)
+          }
+        })
+      })
+    },
 
     // 每页数
     sizeChangeHandle(val) {
