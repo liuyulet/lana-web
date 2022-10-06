@@ -49,6 +49,7 @@
             <el-tag size="medium" v-if="scope.row.demanStatus == 41">待实施</el-tag>
             <el-tag size="medium" v-if="scope.row.demanStatus == 42">实施中</el-tag>
             <el-tag size="medium" v-if="scope.row.demanStatus == 43">实施完成</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 44">舍弃</el-tag>
           </div>
         </template>
       </el-table-column>
@@ -75,7 +76,6 @@
           <el-divider direction="vertical"></el-divider>
           <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">变更</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteDevice(scope.row)" style="color: #f56c6c">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
