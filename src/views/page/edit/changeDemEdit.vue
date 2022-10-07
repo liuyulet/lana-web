@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="维护角色菜单"
+      title="变更历史记录"
       width="60%"
       top="2rem"
       :close-on-click-modal="false"
@@ -34,7 +34,7 @@
           </el-table-column>
           <el-table-column align="center" prop="createTime" label="创建时间"  min-width="160">
           </el-table-column>
-          <el-table-column align="center" prop="demanDeadline" label="截止日期" min-width="160" >
+          <el-table-column align="center" prop="demanDeadline" label="发版日期" min-width="160" >
           </el-table-column>
         </el-table>
         <el-pagination

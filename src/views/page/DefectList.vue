@@ -26,7 +26,7 @@
 
       </el-table-column>
 
-      <el-table-column align="center" prop="channelCount" label="截止日期" min-width="120" >
+      <el-table-column align="center" prop="channelCount" label="发版日期" min-width="120" >
       </el-table-column>
 
       <el-table-column align="center" label="任务状态" min-width="120">

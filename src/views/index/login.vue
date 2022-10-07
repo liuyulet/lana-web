@@ -19,7 +19,7 @@
         <h2 class="title">用户登录</h2>
 
         <span class="text">or use Phone for registration</span>
-        <input class="form__input" v-model="loginForm.phone" type="text" placeholder="手机号" />
+        <input class="form__input" v-model="loginForm.phone" type="text" placeholder="账号" />
         <input class="form__input" v-model="loginForm.password" type="password" placeholder="密码" />
         <el-row :gutter="20">
         </el-row>
@@ -101,6 +101,8 @@ export default {
           localStorage.setItem('userId',data.result.userId);
           localStorage.setItem('X-Access-Token',data.result.token);
           this.$router.replace('/deviceList')
+        }else {
+          this.$message.error('账号或密码不正确');
         }
       })
     },

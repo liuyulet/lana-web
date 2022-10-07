@@ -128,8 +128,10 @@ export default {
       } else {
         let parms = {
           "demendId": this.demendId,
-          "userId": this.userSelection
+          "userId": this.userSelection,
+          "userName": localStorage.getItem('userAccount')+'['+localStorage.getItem('userFullname')+']'
         }
+
         postAction("/sysDeman/userForDeman", parms).then((data) => {
           if (data && data.code === 200) {
             this.$message({

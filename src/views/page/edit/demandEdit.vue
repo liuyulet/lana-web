@@ -20,7 +20,7 @@
                 <el-input v-model="demandEdit.demanNum" placeholder="项目编号，不填写则默认生成"></el-input>
               </el-form-item>
 
-              <el-form-item label="截止日期" prop="demanDeadline">
+              <el-form-item label="发版日期" prop="demanDeadline">
                 <div class="block">
                   <el-date-picker
                       style="width: 100%"

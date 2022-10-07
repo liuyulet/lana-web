@@ -46,7 +46,7 @@
             <el-tag size="medium" v-if="scope.row.demanStatus == 11">待实施</el-tag>
             <el-tag size="medium" v-if="scope.row.demanStatus == 12">实施中</el-tag>
             <el-tag size="medium" v-if="scope.row.demanStatus == 13">实施完成</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 14">舍弃/删除</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 0">舍弃/删除</el-tag>
           </div>
         </template>
       </el-table-column>
@@ -67,7 +67,7 @@
       <!--      </el-table-column>-->
       <!--      <el-table-column prop="createTime" label="创建时间"  width="140">-->
       <!--      </el-table-column>-->
-      <el-table-column align="center" prop="demanDeadline" label="截止日期" min-width="160" >
+      <el-table-column align="center" prop="demanDeadline" label="发版日期" min-width="160" >
       </el-table-column>
 
       <el-table-column align="center" label="操作" min-width="350" fixed="right">

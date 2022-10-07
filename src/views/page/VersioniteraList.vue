@@ -65,7 +65,7 @@
       <!--      </el-table-column>-->
       <!--      <el-table-column prop="createTime" label="创建时间"  width="140">-->
       <!--      </el-table-column>-->
-      <el-table-column align="center" prop="demanDeadline" label="截止日期" min-width="160" >
+      <el-table-column align="center" prop="demanDeadline" label="发版日期" min-width="160" >
       </el-table-column>
 
       <el-table-column align="center" label="操作" min-width="350" fixed="right">
