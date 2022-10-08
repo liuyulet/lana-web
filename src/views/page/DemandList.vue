@@ -79,6 +79,8 @@
           <el-button size="medium" icon="el-icon-edit" type="text" @click="editDemandPlatform(scope.row)">变更</el-button>
           <el-divider direction="vertical"></el-divider>
           <el-button size="medium" icon="el-icon-delete" v-if="scope.row.demanStatus<2" type="text" @click="deleteDemand(scope.row.id)" style="color: #f56c6c">删除</el-button>
+          <el-divider direction="vertical"></el-divider>
+          <el-button size="medium" icon="el-icon-view" type="text" @click="demandStatus(scope.row.id)">需求进度</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -97,6 +99,8 @@
     <changeDemEdit ref="changeDemEdit"></changeDemEdit>
 
     <assignDemdEdit ref="assignDemdEdit"></assignDemdEdit>
+
+    <collaboratorsEdit ref="collaboratorsEdit"></collaboratorsEdit>
   </div>
 </template>
 
@@ -105,12 +109,14 @@ import {getAction} from "../../api/manage";
 import demandEdit from './edit/demandEdit.vue'
 import changeDemEdit from './edit/changeDemEdit.vue'
 import assignDemdEdit from './edit/assignDemdEdit.vue'
+import collaboratorsEdit from './edit/collaboratorsEdit.vue'
 export default {
   name: "",
   components:{
     demandEdit,
     changeDemEdit,
-    assignDemdEdit
+    assignDemdEdit,
+    collaboratorsEdit
   },
   data() {
     return {
@@ -142,7 +148,10 @@ export default {
         }
       })
     },
-
+    //需求状态
+    demandStatus(demanId){
+      this.$refs.collaboratorsEdit.openDialog(demanId, this.initData)
+    },
     //新增需求
     addDemandPlatform() {
       this.$refs.demandEdit.openDialog(null, this.initData)

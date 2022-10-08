@@ -35,12 +35,13 @@
 
       </el-table-column>
 
-      <el-table-column align="center" prop="taskStatus" label="任务状态"  min-width="120">
+      <el-table-column align="center" prop="taskStatus" label="任务状态"  min-width="160">
         <template slot-scope="scope">
           <div slot="reference" class="name-wrapper">
             <el-tag size="medium" v-if="scope.row.taskStatus == 0">未开始</el-tag>
             <el-tag size="medium" v-if="scope.row.taskStatus == 1">进行中</el-tag>
             <el-tag size="medium" v-if="scope.row.taskStatus == 2">已完成</el-tag>
+            <el-tag size="medium" v-if="scope.row.taskStatus == 3">已到下一阶段</el-tag>
           </div>
         </template>
       </el-table-column>
@@ -66,11 +67,11 @@
           <!-- 点击我已完成，如果是开发人员就需要填写代码提交记录；如果是测试人员，需要填写测试结果；如果是实施人员，需要填写实施信息；如果是产品验收人员，需要填写验收信息； -->
           <el-button size="medium" icon="el-icon-finished" v-if="scope.row.taskStatus == 1" type="text" @click="overTask(scope.row.id)">我已完成</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-s-custom"
-                     v-if="scope.row.demanStatus<13" @click="getTooltipContent(scope.row.id)">任务协作者
+          <el-button type="text" size="medium"  icon="el-icon-s-custom"
+                     v-if="scope.row.demanStatus<13" @click="getLookColla(scope.row.demanId)">协作者
           </el-button>
-          <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-right"
-                      @click="getTooltipContent(scope.row.id)">下一步
+          <el-button type="text" size="medium" v-if="scope.row.taskStatus==2" icon="el-icon-right"
+                      @click="getNext(scope.row)">下一步
           </el-button>
           <el-divider direction="vertical"></el-divider>
         </template>
@@ -86,21 +87,24 @@
         :total="totalPage"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <demandEdit ref="demandEdit"></demandEdit>
+    <nextDemdEdit ref="nextDemdEdit"></nextDemdEdit>
+    <collaboratorsEdit ref="collaboratorsEdit"></collaboratorsEdit>
+    <overTeskEdit ref="overTeskEdit"></overTeskEdit>
 
-    <assignDemdEdit ref="assignDemdEdit"></assignDemdEdit>
   </div>
 </template>
 
 <script>
 import {getAction} from "../../api/manage";
-import demandEdit from './edit/demandEdit.vue'
-import assignDemdEdit from './edit/assignDemdEdit.vue'
+import nextDemdEdit from './edit/nextDemdEdit.vue'
+import collaboratorsEdit from './edit/collaboratorsEdit.vue'
+import overTeskEdit from './edit/overTeskEdit.vue'
 export default {
   name: "",
   components:{
-    demandEdit,
-    assignDemdEdit
+    nextDemdEdit,
+    collaboratorsEdit,
+    overTeskEdit
   },
   data() {
     return {
@@ -150,28 +154,50 @@ export default {
               this.getTaskDeman()
             }
           })
+        }
+      })
+    },
+    getNext(demanId) {
+      this.getAllOver(demanId);
+    },
+    getAllOver(demanId){
+      let params = {
+        'demanId': demanId.demanId,
+      }
+      getAction("/sysDemanUser/getAllOver", params).then((data) => {
+        if (data && data.code === 200) {
+          //处理数据
+            //触发下一步方法
+            this.getTooltipContent(demanId)
+        }else {
+
+          this.$message({
+            showClose: true,
+            message: '还有未完成的协作者，无法进行下一步',
+            type: 'error'
+          });
 
         }
       })
     },
-
-    //新增需求
-    addDemandPlatform() {
-      this.$refs.demandEdit.openDialog(null, this.initData)
-    },
-    //变更需求
-    editDemandPlatform(demandData) {
-      this.$refs.demandEdit.openDialog(demandData, this.initData)
+    //完成任务，填写代码提交记录
+    overTask(demanId) {
+      //提交任务完成信息
+      this.$refs.overTeskEdit.openDialog(demanId, this.initData)
     },
 
-    //变更需求
+    //查看协作者信息
+    getLookColla(demanId){
+      this.$refs.collaboratorsEdit.openDialog(demanId, this.initData)
+    },
+    //下一步
     getTooltipContent(demandData) {
-      this.$confirm(`需求一旦分配，将无法进行回退，是否继续?`, '提示', {
+      this.$confirm(`下一步指定之后，将无法进行回退，是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        this.$refs.assignDemdEdit.openDialog(demandData, this.initData)
+        this.$refs.nextDemdEdit.openDialog(demandData, this.initData)
       })
     },
 

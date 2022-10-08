@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="维护需求"
+      title="完成内容"
       width="50%"
       top="2rem"
       :close-on-click-modal="false"
@@ -12,50 +12,20 @@
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <el-row >
           <el-col :span="20">
-            <el-form :rules="rules" :model="demandEdit" label-width="160px">
-              <el-form-item  label="名称" prop="demanName">
-                <el-input v-model="demandEdit.demanName" placeholder="请填需求名称"></el-input>
-              </el-form-item>
-              <el-form-item label="需求编号" prop="demanNum">
-                <el-input v-model="demandEdit.demanNum" placeholder="项目编号，不填写则默认生成"></el-input>
-              </el-form-item>
+            <el-form :rules="rules" :model="overTeskEdit" label-width="160px">
 
-              <el-form-item label="发版日期" prop="demanDeadline">
-                <div class="block">
-                  <el-date-picker
-                      style="width: 100%"
-                      v-model="demandEdit.demanDeadline"
-                      type="datetime"
-                      value-format="yyyy-MM-dd HH:mm:ss"
-                      placeholder="选择日期时间">
-                  </el-date-picker>
-                </div>
+              <el-form-item label="完成内容：" >
+                <el-input
+                    style="min-height: 200px"
+                    type="textarea"
+                    placeholder="产品填写需求简介，开发人员填写git提交记录，测试人员填写测试评价，实施人员填写实施记录"
+                    v-model="overTeskEdit.contents"
+                    maxlength="2000"
+                    show-word-limit>
+                </el-input>
               </el-form-item>
-
-              <el-form-item  label="关联项目" prop="status">
-                <el-select class="selects"  v-model="demandEdit.demanProject" placeholder="请选择项目">
-                  <el-option
-                      v-for="item in projects"
-                      :key="item.projectId"
-                      :label="item.projectName"
-                      :value="item.projectId">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-
-              <el-form-item label="需求负责人" prop="demanConsci">
-                <el-select class="selects"  v-model="demandEdit.demanConsci" placeholder="请选择需求负责人">
-                <el-option
-                    v-for="item in dutyUser"
-                    :key="item.userId"
-                    :label="item.fullname+item.mobile"
-                    :value="item.userId">
-                </el-option>
-                </el-select>
-              </el-form-item>
-
               <el-form-item>
-                <el-button type="primary" @click="onSubmit">新增</el-button>
+                <el-button type="primary"  @click="onSubmit">保存</el-button>
                 <el-button @click="close">取消</el-button>
               </el-form-item>
             </el-form>
@@ -71,8 +41,7 @@
 import {getAction,postAction} from "../../../api/manage";
 
 export default {
-  name: "demandEdit",
-
+  name: "overTeskEdit",
   computed: {},
   data() {
     return {
@@ -83,13 +52,14 @@ export default {
       dutyUser: [],
       urls:'',
       fileList: [],
-      demandEdit: {
+      overTeskEdit: {
+        contents: '',
+        demanId: ''
 
       },
       projects: [],
       rules: {
-        fullname: [{ required: true, message: "姓名不可为空", trigger: "blur" }],
-
+        contents: [{ required: true, message: "提交内容不可为空", trigger: "blur" }]
       },
     };
   },
@@ -98,32 +68,18 @@ export default {
   methods: {
 
     openDialog: function (platform, callback) {
-
-      //填写任务完成记录
-      if (platform == null) {
-        //新增
-        this.edits = false;
-      }
+      this.overTeskEdit.demanId = platform
       this.showDialog = true;
       this.listChangeCallback = callback;
     },
 
-
     onSubmit () {
       let params = {
-        createTime: this.demandEdit.createTime,
-        demanChange: this.demandEdit.demanChange,
-        demanConsci: this.demandEdit.demanConsci,
-        demanConsciAcoun: this.demandEdit.demanConsciAcoun,
-        demanDeadline: this.demandEdit.demanDeadline,
-        demanDisclose: this.demandEdit.demanDisclose,
-        demanDisoName: this.demandEdit.demanDisoName,
-        demanName: this.demandEdit.demanName,
-        demanNum: this.demandEdit.demanNum,
-        demanProject: this.demandEdit.demanProject,
+        contents: this.overTeskEdit.contents,
+        demanId: this.overTeskEdit.demanId,
         createUser: localStorage.getItem('userAccount')
       }
-      postAction("/sysDeman/addDeman",params).then((data) => {
+      postAction("/sysDemanUser/overTesk",params).then((data) => {
         if (data && data.code === 200) {
           this.$message({
             showClose: true,
@@ -169,7 +125,9 @@ input{
   align-items: center;
 }
 
-
+.el-textarea__inner {
+  min-height: 300px !important;
+}
 
 .control-top i {
   transform: rotate(45deg);
