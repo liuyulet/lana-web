@@ -5,10 +5,10 @@
       <el-form :model="registerForm" :rules="registerRule">
         <h2 class="title">注册账号</h2>
         <span class="text">下面的信息记得都填写上哦！</span>
-        <input class="form__input" v-model="registerForm.name" type="text" placeholder="姓名" />
-        <input class="form__input" v-model="registerForm.email" type="text" placeholder="邮箱地址" />
-        <input class="form__input" v-model="registerForm.phone" type="text" placeholder="手机号" />
-        <input class="form__input" v-model="registerForm.password" type="password" placeholder="登录密码" />
+        <input class="form__input" v-model="registerForm.name" type="text" placeholder="姓名" @keyup.enter="registerSubmit()"/>
+        <input class="form__input" v-model="registerForm.email" type="text" placeholder="邮箱地址"  @keyup.enter="registerSubmit()"/>
+        <input class="form__input" v-model="registerForm.phone" type="text" placeholder="手机号"  @keyup.enter="registerSubmit()"/>
+        <input class="form__input" v-model="registerForm.password" type="password" placeholder="登录密码" @keyup.enter="registerSubmit()" />
         <div class="primary-btn" @click="registerSubmit()">立即注册</div>
       </el-form>
     </div>
@@ -19,8 +19,8 @@
         <h2 class="title">用户登录</h2>
 
         <span class="text">or use Phone for registration</span>
-        <input class="form__input" v-model="loginForm.phone" type="text" placeholder="账号" />
-        <input class="form__input" v-model="loginForm.password" type="password" placeholder="密码" />
+        <input class="form__input" v-model="loginForm.phone" type="text" placeholder="账号"  @keyup.enter="loginSubmit()"/>
+        <input class="form__input" v-model="loginForm.password" type="password" placeholder="密码"  @keyup.enter="loginSubmit()"/>
         <el-row :gutter="20">
         </el-row>
         <div class="primary-btn" @click="loginSubmit()">立即登录</div>
