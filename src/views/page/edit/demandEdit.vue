@@ -1,13 +1,13 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="维护需求"
-      width="50%"
-      top="2rem"
-      :close-on-click-modal="false"
-      :visible.sync="showDialog"
-      :destroy-on-close="true"
-      @close="close()"
+        title="维护需求"
+        width="30%"
+        top="2rem"
+        :close-on-click-modal="false"
+        :visible.sync="showDialog"
+        :destroy-on-close="true"
+        @close="close()"
     >
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <el-row >
@@ -45,17 +45,36 @@
 
               <el-form-item label="需求负责人" prop="demanConsci">
                 <el-select class="selects"  v-model="demandEdit.demanConsci" placeholder="请选择需求负责人">
-                <el-option
-                    v-for="item in dutyUser"
-                    :key="item.userId"
-                    :label="item.fullname+item.mobile"
-                    :value="item.userId">
-                </el-option>
+                  <el-option
+                      v-for="item in dutyUser"
+                      :key="item.userId"
+                      :label="item.fullname+item.mobile"
+                      :value="item.userId">
+                  </el-option>
                 </el-select>
               </el-form-item>
 
+              <!--              <el-form-item label="需求交底文件" prop="demanDisclose">
+                              <el-input v-model="demandEdit.demanDisclose" placeholder="上传项目交底文档"></el-input>
+                            </el-form-item>-->
+
+              <el-form-item label="需求交底文件" prop="demanDisclose">
+                <el-upload
+                    style="text-align: left;"
+                    class="upload-demo"
+                    :action="urls"
+                    accept=".pdf, .doc, .docx"
+                    :on-success="successHandle"
+                    :limit="1"
+                    :file-list="demandEdit.demanDisoName">
+                  <el-button size="small" >点击上传</el-button>
+                  <div slot="tip" class="el-upload__tip">只能上传pdf, doc, docx格式文件，且不超过10MB</div>
+                </el-upload>
+              </el-form-item>
+
               <el-form-item>
-                <el-button type="primary" @click="onSubmit">新增</el-button>
+                <el-button type="primary" v-if="this.edits" @click="onEdits()">修改</el-button>
+                <el-button type="primary" v-if="!this.edits" @click="onSubmit">新增</el-button>
                 <el-button @click="close">取消</el-button>
               </el-form-item>
             </el-form>
@@ -84,6 +103,20 @@ export default {
       urls:'',
       fileList: [],
       demandEdit: {
+        createTime: '',
+        createUser: '',
+        demanChange: '',
+        demanConsci: '',
+        demanConsciAcoun: '',
+        demanDeadline: '',
+        demanDisclose: '',
+        demanName: '',
+        demanNum: '',
+        demanProject: '',
+        demanStatus: '',
+        demanDisoName: '',
+        demanProjectNam: '',
+        id: ''
 
       },
       projects: [],
@@ -98,16 +131,112 @@ export default {
   methods: {
 
     openDialog: function (platform, callback) {
-
-      //填写任务完成记录
+      //获取人员
+      this.getUsers()
+      this.getProjectAll()
+      this.urls = process.env.VUE_APP_API_BASE_URL+"/sysProject/upload?X-Access-Token="+localStorage.getItem('X-Access-Token')
+      console.log(this.urls);
       if (platform == null) {
         //新增
         this.edits = false;
+      }else {
+        //修改
+        this.edits = true;
+        this.demandEdit.createTime = platform.createTime
+        this.demandEdit.createUser = platform.createUser
+        this.demandEdit.demanChange = platform.demanChange
+        this.demandEdit.demanConsci = platform.demanConsci
+        this.demandEdit.demanConsciAcoun = platform.demanConsciAcoun
+        this.demandEdit.demanDeadline = platform.demanDeadline
+        this.demandEdit.demanDisclose = platform.demanDisclose
+        this.demandEdit.demanDisoName = platform.demanDisoName
+        this.demandEdit.demanProjectNam = platform.demanProjectNam
+        this.demandEdit.demanName = platform.demanName
+        this.demandEdit.demanNum = platform.demanNum
+        this.demandEdit.demanProject = platform.demanProject
+        this.demandEdit.demanStatus = platform.demanStatus
+        this.demandEdit.id = platform.id
       }
       this.showDialog = true;
       this.listChangeCallback = callback;
     },
 
+    // 上传成功
+    successHandle (response, file, fileList) {
+
+      this.fileList = fileList;
+      this.demandEdit.demanDisclose = response.result.url
+      this.demandEdit.demanDisoName = file.name
+      this.successNum++
+      if (response && response.code === 200) {
+        this.$message.success('上传成功！')
+      } else {
+        this.$message.error(response.msg)
+      }
+    },
+    getUsers () {
+      getAction("/sys/user/getUserAll").then((data) => {
+        if (data && data.code === 200) {
+          this.dutyUser = data.result.userData
+          console.log(this.dutyUser)
+        }else {
+          this.$message({
+            showClose: true,
+            message: '获取组织信息失败，请联系管理员',
+            type: 'error'
+          });
+        }
+      })
+    },
+
+    getProjectAll () {
+      getAction("/sysProject/getProjectAll").then((data) => {
+        if (data && data.code === 200) {
+          this.projects = data.result.projectData
+        }else {
+          this.$message({
+            showClose: true,
+            message: '获取组织信息失败，请联系管理员',
+            type: 'error'
+          });
+        }
+      })
+    },
+
+    //修改
+    onEdits () {
+      let params = {
+        //数据怼上去
+        demanChange: this.demandEdit.demanChange,
+        demanConsci: this.demandEdit.demanConsci,
+        demanConsciAcoun: this.demandEdit.demanConsciAcoun,
+        demanDeadline: this.demandEdit.demanDeadline,
+        demanDisclose: this.demandEdit.demanDisclose,
+        demanDisoName: this.demandEdit.demanDisoName,
+        demanName: this.demandEdit.demanName,
+        demanNum: this.demandEdit.demanNum,
+        demanProject: this.demandEdit.demanProject,
+        id:this.demandEdit.id,
+        createUser: localStorage.getItem('userAccount')
+      }
+      postAction("/sysDeman/updateProject",params).then((data) => {
+        if (data && data.code === 200) {
+          this.$message({
+            showClose: true,
+            message: '操作成功',
+            type: 'success'
+          });
+          this.close()
+
+        }else {
+          this.$message({
+            showClose: true,
+            message: data.message,
+            type: 'error'
+          });
+        }
+      })
+    },
 
     onSubmit () {
       let params = {
