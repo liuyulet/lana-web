@@ -9,6 +9,7 @@
         :destroy-on-close="true"
         @close="close()"
     >
+
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <el-row >
           <el-col :span="20">
