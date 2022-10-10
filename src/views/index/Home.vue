@@ -1,10 +1,11 @@
 <template v-slot:default>
-    <div class="content-bodysss" @click="jumpToLogin">
+    <div class="content-bodysss">
         <div id="clock">
             <p class="date">今日是：{{ date_show }} - {{ week }}</p>
             <p class="time">{{ time_show }}</p>
-            <p class="text" @click="jumpToLogin">让我们开启工作时刻吧！
-            </p>
+            <span class="text">让我们</span>
+            <span class="text2" @click="jumpToLogin">开启</span>
+            <span class="text">工作时刻吧！</span>
         </div>
     </div>
 

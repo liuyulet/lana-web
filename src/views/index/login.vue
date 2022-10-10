@@ -21,7 +21,7 @@
             <div :class="['container', 'container-login', { 'is-txl is-z200': isLogin }]">
                 <el-form :model="loginForm" :rules="loginRule">
                     <h2 class="title">用户登录</h2>
-                    <span class="text">or use Phone for registration</span>
+                    <span class="text">或去注册一个新的账号吧</span>
                     <input class="form__input" v-model="loginForm.phone" type="text" placeholder="账号"
                            @keyup.enter="loginSubmit()"/>
                     <input class="form__input" v-model="loginForm.password" type="password" placeholder="密码"
@@ -36,8 +36,8 @@
                 <div class="switch__circle switch__circle_top"></div>
                 <div class="switch__container">
                     <h2>{{ isLogin ? '嗨，朋友 !' : '欢迎回来 !' }}</h2>
-                    <p>{{isLogin ? 'Enter your personal details and start journey with us'
-                        : 'To keep connected with us please login with your personal info' }}
+                    <p>{{isLogin ? '想一个个性的账号信息，与我们一起开始旅程'
+                        : '嗨嗨！有账号的话就去登录吧，这里哪有里边好玩！o(´^｀)o' }}
                     </p>
                     <div class="primary-btn" @click="isLogin = !isLogin">
                         {{ isLogin ? '点击注册' : '点击登录' }}

@@ -10,9 +10,9 @@ $lighterBlue: #409EFF;
 }
 
 .content-currency {
-/*  height: 100vh;
-  width: 100%;
-  margin: 0;*/
+  /*  height: 100vh;
+    width: 100%;
+    margin: 0;*/
 }
 
 
@@ -42,22 +42,90 @@ $lighterBlue: #409EFF;
 }
 
 #clock .time {
+  user-select: none;
   letter-spacing: 0.05em;
   font-size: 80px;
   padding: 5px 0;
 }
 
 #clock .date {
+  user-select: none;
   letter-spacing: 0.1em;
   font-size: 24px;
 }
 
 #clock .text {
+  user-select: none;
+  letter-spacing: 0.1em;
+  font-size: 18px;
+  padding: 20px 0 0;
+}
+
+.text2 {
+  user-select: none;
   letter-spacing: 0.1em;
   font-size: 18px;
   padding: 20px 0 0;
   cursor: pointer;
+  -webkit-transition: all 1.5s ease;
+  transition: all 1.5s ease;
 }
+
+.text2:hover {
+  color: #fff;
+  -webkit-animation: Glow 1.5s ease infinite alternate;
+  animation: Glow 1.5s ease infinite alternate;
+}
+
+@-webkit-keyframes Glow {
+  from {
+    text-shadow: 0 0 10px #fff,
+    0 0 20px #fff,
+    0 0 30px #fff,
+    0 0 40px #00a67c,
+    0 0 70px #00a67c,
+    0 0 80px #00a67c,
+    0 0 100px #00a67c,
+    0 0 150px #00a67c;
+  }
+
+  to {
+    text-shadow: 0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 15px #fff,
+    0 0 20px #00a67c,
+    0 0 35px #00a67c,
+    0 0 40px #00a67c,
+    0 0 50px #00a67c,
+    0 0 75px #00a67c;
+  }
+}
+
+@keyframes Glow {
+  from {
+    text-shadow: 0 0 10px #fff,
+    0 0 20px #fff,
+    0 0 30px #fff,
+    0 0 40px #00a67c,
+    0 0 70px #00a67c,
+    0 0 80px #00a67c,
+    0 0 100px #00a67c,
+    0 0 150px #00a67c;
+  }
+
+  to {
+    text-shadow: 0 0 5px #fff,
+    0 0 10px #fff,
+    0 0 15px #fff,
+    0 0 20px #00a67c,
+    0 0 35px #00a67c,
+    0 0 40px #00a67c,
+    0 0 50px #00a67c,
+    0 0 75px #00a67c;
+  }
+
+}
+
 
 .components-list {
   padding: 8px;
