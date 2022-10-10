@@ -2,97 +2,331 @@
 <html lang="zh">
 
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width,initial-scale=0,maximum-scale=0,user-scalable=yes,shrink-to-fit=no">
-  <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-  <title>lana-boot</title>
-  <style>
-    .pre-loader {
-      position: absolute;
-      top: calc(50% - 32px);
-      left: calc(50% - 32px);
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      perspective: 800px;
-    }
-    .pre-loader .inner {
-      position: absolute;
-      box-sizing: border-box;
-      width: 100%;
-      height: 100%;
-      border-radius: 50%;
-    }
-    .pre-loader .inner.one {
-      left: 0%;
-      top: 0%;
-      -webkit-animation: rotate-one 1s linear infinite;
-      animation: rotate-one 1s linear infinite;
-      border-bottom: 3px solid #bc9048;
-    }
-    .pre-loader .inner.two {
-      right: 0%;
-      top: 0%;
-      -webkit-animation: rotate-two 1s linear infinite;
-      animation: rotate-two 1s linear infinite;
-      border-right: 3px solid #74aeff;
-    }
-    .pre-loader .inner.three {
-      right: 0%;
-      bottom: 0%;
-      -webkit-animation: rotate-three 1s linear infinite;
-      animation: rotate-three 1s linear infinite;
-      border-top: 3px solid #caef74;
-    }
-    @keyframes rotate-one {
-      0% {
-        -webkit-transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
-        transform: rotateX(35deg) rotateY(-45deg) rotateZ(0deg);
-      }
-      100% {
-        -webkit-transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
-        transform: rotateX(35deg) rotateY(-45deg) rotateZ(360deg);
-      }
-    }
-    @keyframes rotate-two {
-      0% {
-        -webkit-transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
-        transform: rotateX(50deg) rotateY(10deg) rotateZ(0deg);
-      }
-      100% {
-        -webkit-transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
-        transform: rotateX(50deg) rotateY(10deg) rotateZ(360deg);
-      }
-    }
-    @keyframes rotate-three {
-      0% {
-        -webkit-transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
-        transform: rotateX(35deg) rotateY(55deg) rotateZ(0deg);
-      }
-      100% {
-        -webkit-transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
-        transform: rotateX(35deg) rotateY(55deg) rotateZ(360deg);
-      }
-    }
-  </style>
-  <link href="https://lib.baomitu.com/element-ui/2.13.2/theme-chalk/index.css" rel="stylesheet">
-  <link href="https://lib.baomitu.com/monaco-editor/0.19.3/min/vs/editor/editor.main.css" rel="stylesheet">
-  <script src="https://lib.baomitu.com/vue/2.6.11/vue<%= process.env.NODE_ENV === 'production' ? '.min' : ''%>.js"></script>
-  <script src="https://lib.baomitu.com/vue-router/3.1.3/vue-router.min.js"></script>
-  <script src="https://lib.baomitu.com/element-ui/2.13.2/index.js"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=0,maximum-scale=0,user-scalable=yes,shrink-to-fit=no">
+    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
+    <title>lana-boot</title>
+    <style>
+        /*开始*/
+        html,
+        body,
+        #app {
+            height: 100%;
+            margin: 0px;
+            padding: 0px;
+        }
+
+        /* 滚动条优化 start */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f6f6f6;
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cdcdcd;
+            border-radius: 2px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #747474;
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: #f6f6f6;
+        }
+
+        /*loading*/
+        #loading {
+            background-color: #000000;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            z-index: 1;
+            margin-top: 0px;
+            top: 0px;
+        }
+
+        #loading-center {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        #loading-center-absolute {
+            background: hsla(0, 0%, 32%, 0.6);
+            border-radius: 150px;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            height: 150px;
+            width: 150px;
+            margin-top: -75px;
+            margin-left: -75px;
+            -ms-transform: rotate(45deg);
+            -webkit-transform: rotate(45deg);
+            transform: rotate(45deg);
+            box-shadow: 0px 0px 200px white;
+        }
+
+        .object {
+            width: 20px;
+            height: 20px;
+            /*background-color: #FF0000;*/
+            background: #FFFFFF;
+            position: absolute;
+            left: 65px;
+            top: 65px;
+        }
+
+        .object:nth-child(2n+0) {
+            margin-right: 0px;
+
+        }
+
+        #object_one {
+            /*background: #FF7F00;*/
+            -webkit-animation: object_one 2s infinite;
+            animation: object_one 2s infinite;
+            -webkit-animation-delay: 0.2s;
+            animation-delay: 0.2s;
+        }
+
+        #object_two {
+            /*background: #FFFF00;*/
+            -webkit-animation: object_two 2s infinite;
+            animation: object_two 2s infinite;
+            -webkit-animation-delay: 0.3s;
+            animation-delay: 0.3s;
+        }
+
+        #object_three {
+            /*background: #00FF00;*/
+            -webkit-animation: object_three 2s infinite;
+            animation: object_three 2s infinite;
+            -webkit-animation-delay: 0.4s;
+            animation-delay: 0.4s;
+        }
+
+        #object_four {
+            /*background: #00FFFF;*/
+            -webkit-animation: object_four 2s infinite;
+            animation: object_four 2s infinite;
+            -webkit-animation-delay: 0.5s;
+            animation-delay: 0.5s;
+        }
+
+        #object_five {
+            /*background: #0000FF;*/
+            -webkit-animation: object_five 2s infinite;
+            animation: object_five 2s infinite;
+            -webkit-animation-delay: 0.6s;
+            animation-delay: 0.6s;
+        }
+
+        #object_six {
+            /*background: #8B00FF;*/
+            -webkit-animation: object_six 2s infinite;
+            animation: object_six 2s infinite;
+            -webkit-animation-delay: 0.7s;
+            animation-delay: 0.7s;
+        }
+
+        #object_seven {
+            /*background: #FFB3FF;*/
+            -webkit-animation: object_seven 2s infinite;
+            animation: object_seven 2s infinite;
+            -webkit-animation-delay: 0.8s;
+            animation-delay: 0.8s;
+        }
+
+        #object_eight {
+            /*background: #99FFFF;*/
+            -webkit-animation: object_eight 2s infinite;
+            animation: object_eight 2s infinite;
+            -webkit-animation-delay: 0.9s;
+            animation-delay: 0.9s;
+        }
+
+        #object_big {
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            left: 50px;
+            top: 50px;
+            -webkit-animation: object_big 2s infinite;
+            animation: object_big 2s infinite;
+            -webkit-animation-delay: 0.5s;
+            animation-delay: 0.5s;
+        }
+
+        @-webkit-keyframes object_big {
+            50% {
+                -webkit-transform: scale(0.5);
+            }
+
+        }
+
+        @keyframes object_big {
+            50% {
+                transform: scale(0.5);
+                -webkit-transform: scale(0.5);
+            }
+        }
+
+        @-webkit-keyframes object_one {
+            50% {
+                -webkit-transform: translate(-65px, -65px);
+            }
+
+        }
+
+        @keyframes object_one {
+            50% {
+                transform: translate(-65px, -65px);
+                -webkit-transform: translate(-65px, -65px);
+            }
+        }
+
+        @-webkit-keyframes object_two {
+            50% {
+                -webkit-transform: translate(0, -65px);
+            }
+        }
+
+        @keyframes object_two {
+            50% {
+                transform: translate(0, -65px);
+                -webkit-transform: translate(0, -65px);
+            }
+
+        }
+
+        @-webkit-keyframes object_three {
+            50% {
+                -webkit-transform: translate(65px, -65px);
+            }
+        }
+
+        @keyframes object_three {
+            50% {
+                transform: translate(65px, -65px);
+                -webkit-transform: translate(65px, -65px);
+            }
+        }
+
+        @-webkit-keyframes object_four {
+            50% {
+                -webkit-transform: translate(65px, 0);
+            }
+        }
+
+        @keyframes object_four {
+            50% {
+                transform: translate(65px, 0);
+                -webkit-transform: translate(65px, 0);
+            }
+
+        }
+
+        @-webkit-keyframes object_five {
+            50% {
+                -webkit-transform: translate(65px, 65px);
+            }
+        }
+
+        @keyframes object_five {
+            50% {
+                transform: translate(65px, 65px);
+                -webkit-transform: translate(65px, 65px);
+            }
+
+        }
+
+        @-webkit-keyframes object_six {
+
+            50% {
+                -webkit-transform: translate(0, 65px);
+            }
+
+        }
+
+        @keyframes object_six {
+            50% {
+                transform: translate(0, 65px);
+                -webkit-transform: translate(0, 65px);
+            }
+
+        }
+
+        @-webkit-keyframes object_seven {
+
+            50% {
+                -webkit-transform: translate(-65px, 65px);
+            }
+
+        }
+
+        @keyframes object_seven {
+            50% {
+                transform: translate(-65px, 65px);
+                -webkit-transform: translate(-65px, 65px);
+            }
+
+        }
+
+        @-webkit-keyframes object_eight {
+
+            50% {
+                -webkit-transform: translate(-65px, 0);
+            }
+
+        }
+
+        @keyframes object_eight {
+            50% {
+                transform: translate(-65px, 0);
+                -webkit-transform: translate(-65px, 0);
+            }
+
+        }
+
+        /*结束*/
+    </style>
+    <link href="https://lib.baomitu.com/element-ui/2.13.2/theme-chalk/index.css" rel="stylesheet">
+    <link href="https://lib.baomitu.com/monaco-editor/0.19.3/min/vs/editor/editor.main.css" rel="stylesheet">
+    <script src="https://lib.baomitu.com/vue/2.6.11/vue<%= process.env.NODE_ENV === 'production' ? '.min' : ''%>.js"></script>
+    <script src="https://lib.baomitu.com/vue-router/3.1.3/vue-router.min.js"></script>
+    <script src="https://lib.baomitu.com/element-ui/2.13.2/index.js"></script>
 </head>
 
 <body>
-  <noscript>
+<noscript>
     <strong>抱歉，javascript被禁用，请开启后重试。</strong>
-  </noscript>
-  <div id="app"></div>
-  <div class="pre-loader" id="pre-loader">
-    <div class="inner one"></div>
-    <div class="inner two"></div>
-    <div class="inner three"></div>
-  </div>
+</noscript>
+<div id="app">
+    <div id="loading">
+        <div id="loading-center">
+            <div id="loading-center-absolute">
+                <div class="object" id="object_one"></div>
+                <div class="object" id="object_two"></div>
+                <div class="object" id="object_three"></div>
+                <div class="object" id="object_four"></div>
+                <div class="object" id="object_five"></div>
+                <div class="object" id="object_six"></div>
+                <div class="object" id="object_seven"></div>
+                <div class="object" id="object_eight"></div>
+                <div class="object" id="object_big"></div>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 
 </html>
