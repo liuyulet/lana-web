@@ -36,6 +36,7 @@
                                 </el-menu-item>-->
                         <!--          <el-menu-item >修改密码</el-menu-item>-->
                         <el-menu-item @click="loginout">注销</el-menu-item>
+                      <el-menu-item @click="updatePassword">修改密码</el-menu-item>
                     </el-submenu>
                 </el-menu>
             </div>
@@ -43,15 +44,19 @@
 
 
         <router-view></router-view>
-
+      <updatePasswordEdit ref="updatePasswordEdit"></updatePasswordEdit>
         <div class="line"></div>
     </div>
 
 </template>
 <script>
     import {postAction, getAction} from "../../api/manage";
+    import updatePasswordEdit from '../page/edit/updatePasswordEdit.vue'
 
     export default {
+        components:{
+          updatePasswordEdit
+        },
         data() {
             return {
                 activeIndex: '/deviceList',
@@ -84,6 +89,7 @@
             },
             //退出登录
             loginout() {
+              console.log("调用注销接口")
                 postAction("/sys/logout").then((data) => {
                     if (data && data.code === 200) {
                         //消息弹框
@@ -98,6 +104,12 @@
                         this.$router.replace('/login')
                     }
                 })
+            },
+          //修改密码
+            updatePassword(){
+
+                this.$refs.updatePasswordEdit.openDialog(null, this.initData)
+
             },
         }
     }

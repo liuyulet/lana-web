@@ -2,7 +2,7 @@
   <div id="app">
     <div class="page-header">
       <div class="page-title">任务管理列表</div>
-      <spen style="color: darkcyan ">发版日期为最终上线日期，请各个环节的小伙伴们努力配合，一起加油哦！</spen>
+      <spen style="color: darkcyan ">请在结束日期之前完成哦，如果有疑问请找分配人员协商！</spen>
       <div class="page-header-btn">
 
 
@@ -46,7 +46,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column align="center" prop="demanDeadline" label="发版日期" min-width="160" >
+      <el-table-column align="center" prop="demanDeadline" label="结束日期" min-width="160" >
+      </el-table-column>
+
+
+      <el-table-column align="center" prop="createTime" label="分配日期" min-width="160" >
+      </el-table-column>
+      <el-table-column align="center" prop="createUser" label="分配人员" min-width="160" >
       </el-table-column>
 
 <!--      <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">

@@ -36,6 +36,9 @@
             <el-table-column align="center" prop="projectMakr" label="项目备注" min-width="200">
             </el-table-column>
 
+          <el-table-column align="center" prop="projectMakr" label="需求数量" min-width="200">
+          </el-table-column>
+
             <el-table-column align="center" label="操作" min-width="350" fixed="right">
                 <template slot-scope="scope">
                     <el-button size="medium" icon="el-icon-edit" type="text" @click="editProjecPlatform(scope.row)">修改

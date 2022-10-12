@@ -9,6 +9,7 @@
       :destroy-on-close="true"
       @close="close()"
     >
+      <spen style="color: #a95812;display:block;width:100%;text-align: center">手动添加的用户默认密码为：000000</spen>
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <el-row >
           <el-col :span="20">
@@ -17,7 +18,7 @@
                 <el-input v-model="orgEdit.fullname" placeholder="请填写人员姓名"></el-input>
               </el-form-item>
               <el-form-item label="账号" prop="username">
-                <el-input v-model="orgEdit.username" placeholder="非注册用户密码默认为六个零"></el-input>
+                <el-input v-model="orgEdit.username" placeholder="登录账号"></el-input>
               </el-form-item>
               <el-form-item label="邮箱" prop="email">
                 <el-input v-model="orgEdit.email" placeholder="请输入用户邮箱信息"></el-input>
@@ -184,7 +185,7 @@ export default {
         if (data && data.code === 200) {
           this.$message({
             showClose: true,
-            message: '操作成功',
+            message: '操作成功,手动添加用户密码默认为：000000',
             type: 'success'
           });
           this.close()

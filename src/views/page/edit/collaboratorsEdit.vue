@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="协作者状态"
+      title="人员完成状态"
       width="80%"
       top="2rem"
       :close-on-click-modal="false"
@@ -38,7 +38,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column align="center" prop="taskRecord" label="提交内容" min-width="860">
+          <el-table-column align="center" prop="taskRecord" label="提交内容(任务完成结果)" min-width="860">
 
           </el-table-column>
           <el-table-column align="center" prop="taskStartTime" label="任务开始时间" min-width="160">

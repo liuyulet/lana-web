@@ -130,6 +130,11 @@
                             this.registerForm.email = ''
                             this.registerForm.phone = ''
                             this.registerForm.password = ''
+                        }else {
+                          this.$message({
+                            message: data.message,
+                            type: 'error'
+                          });
                         }
                     })
                 } else {

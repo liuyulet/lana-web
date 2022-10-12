@@ -1,8 +1,8 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="完成内容"
-      width="50%"
+      title="修改密码"
+      width="30%"
       top="2rem"
       :close-on-click-modal="false"
       :visible.sync="showDialog"
@@ -12,20 +12,18 @@
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <el-row >
           <el-col :span="20">
-            <el-form :rules="rules" :model="overTeskEdit" label-width="160px">
-
-              <el-form-item label="完成内容：" prop="contents">
-                <el-input
-                    style="min-height: 200px"
-                    type="textarea"
-                    placeholder="产品填写需求简介，开发人员填写git提交记录，测试人员填写测试评价，实施人员填写实施记录"
-                    v-model="overTeskEdit.contents"
-                    maxlength="2000"
-                    show-word-limit>
-                </el-input>
+            <el-form :rules="rules" :model="updatePassword" label-width="160px">
+              <el-form-item  label="原始密码" prop="password">
+                <el-input v-model="updatePassword.password" placeholder="机构名称请区分明确，不要重复哦"></el-input>
+              </el-form-item>
+              <el-form-item label="新密码" prop="newPasswordone">
+                <el-input v-model="updatePassword.newPasswordone" placeholder="新密码"></el-input>
+              </el-form-item>
+              <el-form-item label="确认新密码" prop="newPasswordtwo">
+                <el-input v-model="updatePassword.newPasswordtwo" placeholder="确认新密码"></el-input>
               </el-form-item>
               <el-form-item>
-                <el-button type="primary"  @click="onSubmit">保存</el-button>
+                <el-button type="primary" @click="onEdits()">修改</el-button>
                 <el-button @click="close">取消</el-button>
               </el-form-item>
             </el-form>
@@ -33,7 +31,6 @@
         </el-row>
       </div>
     </el-dialog>
-
   </div>
 </template>
 
@@ -41,7 +38,7 @@
 import {getAction,postAction} from "../../../api/manage";
 
 export default {
-  name: "overTeskEdit",
+  name: "updatePasswordEdit",
   computed: {},
   data() {
     return {
@@ -49,56 +46,62 @@ export default {
       listChangeCallback: null,
       showDialog: false,
       isLoging: false,
-      dutyUser: [],
-      urls:'',
-      fileList: [],
-      overTeskEdit: {
-        contents: '',
-        demanId: ''
-
+      organizaDataList: null,
+      updatePassword: {
+        password: '',
+        newPasswordone: '',
+        newPasswordtwo: ''
       },
-      projects: [],
       rules: {
-        contents: [
-            { required: true, message: "功能完成内容必填", trigger: "blur" },
-            { min: 1, max: 2000, message: '长度在 3 到 5 个字符', trigger: 'blur' }
-        ]
+        password: [{ required: true, message: "组织机构名称不可为空", trigger: "blur" }],
+        newPasswordone: [{ required: true, message: "组织机构编码不可为空", trigger: "blur" }],
+        newPasswordtwo: [{ required: true, message: "组织机构编码不可为空", trigger: "blur" }],
       },
     };
   },
 
-
   methods: {
-
     openDialog: function (platform, callback) {
-      this.overTeskEdit.demanId = platform
+
       this.showDialog = true;
       this.listChangeCallback = callback;
     },
 
-    onSubmit () {
-      let params = {
-        contents: this.overTeskEdit.contents,
-        demanId: this.overTeskEdit.demanId,
-        createUser: localStorage.getItem('userAccount')
-      }
-      postAction("/sysDemanUser/overTesk",params).then((data) => {
-        if (data && data.code === 200) {
-          this.$message({
-            showClose: true,
-            message: '操作成功',
-            type: 'success'
-          });
-          this.close()
-        }else {
-          this.$message({
-            showClose: true,
-            message: data.message,
-            type: 'error'
-          });
+
+    //修改
+    onEdits () {
+      if(this.updatePassword.newPasswordone===this.updatePassword.newPasswordtwo){
+        let params = {
+          password: this.updatePassword.password,
+          newPassword: this.updatePassword.newPasswordone
         }
-      })
+        postAction("/sys/user/password",params).then((data) => {
+          console.log(data);
+          if (data && data.code === 200) {
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            });
+            this.close()
+          }else {
+            this.$message({
+              showClose: true,
+              message: '原密码不正确',
+              type: 'error'
+            });
+          }
+        })
+      }else {
+        this.$message({
+          showClose: true,
+          message: "两次密码不一致",
+          type: 'error'
+        });
+      }
     },
+
+
     close () {
       this.showDialog = false;
     },
@@ -128,9 +131,7 @@ input{
   align-items: center;
 }
 
-.el-textarea__inner {
-  min-height: 300px !important;
-}
+
 
 .control-top i {
   transform: rotate(45deg);

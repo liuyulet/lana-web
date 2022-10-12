@@ -34,7 +34,7 @@
           </el-table-column>
           <el-table-column align="center" prop="createTime" label="创建时间"  min-width="160">
           </el-table-column>
-          <el-table-column align="center" prop="demanDeadline" label="发版日期" min-width="160" >
+          <el-table-column align="center" prop="demanDeadline" label="结束日期" min-width="160" >
           </el-table-column>
         </el-table>
         <el-pagination
