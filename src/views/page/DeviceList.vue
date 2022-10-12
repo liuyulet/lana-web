@@ -64,7 +64,7 @@
                 //项目统计
                 let projects = {
                     title: {
-                        text: 'Stacked Line'
+                        text: '项目任务占比：'
                     },
                     tooltip: {
                         trigger: 'item'
@@ -75,7 +75,7 @@
                     },
                     series: [
                         {
-                            name: 'Access From',
+                            name: '任务数量',
                             type: 'pie',
                             radius: ['40%', '70%'],
                             avoidLabelOverlap: false,
@@ -99,11 +99,11 @@
                                 show: false
                             },
                             data: [
-                                {value: 1048, name: 'Search Engine'},
-                                {value: 735, name: 'Direct'},
-                                {value: 580, name: 'Email'},
-                                {value: 484, name: 'Union Ads'},
-                                {value: 300, name: 'Video Ads'}
+                                {value: 1048, name: '青岛项目'},
+                                {value: 735, name: '曲阜项目'},
+                                {value: 580, name: '淄博项目'},
+                                {value: 484, name: '临沂项目'},
+                                {value: 300, name: '潍坊项目'}
                             ]
                         }
                     ]
@@ -111,13 +111,13 @@
                 //任务统计
                 let tasks = {
                     title: {
-                        text: 'Stacked Line'
+                        text: '角色人员任务统计：'
                     },
                     tooltip: {
                         trigger: 'axis'
                     },
                     legend: {
-                        data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+                        data: ['实施', '测试', '产品', '运维', '开发']
                     },
                     grid: {
                         left: '3%',
@@ -133,38 +133,38 @@
                     xAxis: {
                         type: 'category',
                         boundaryGap: false,
-                        data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                        data: ['一月', '二月', '三月', '四月', '五月', '六月', '七月']
                     },
                     yAxis: {
                         type: 'value'
                     },
                     series: [
                         {
-                            name: 'Email',
+                            name: '实施',
                             type: 'line',
                             stack: 'Total',
                             data: [120, 132, 101, 134, 90, 230, 210]
                         },
                         {
-                            name: 'Union Ads',
+                            name: '运维',
                             type: 'line',
                             stack: 'Total',
                             data: [220, 182, 191, 234, 290, 330, 310]
                         },
                         {
-                            name: 'Video Ads',
+                            name: '测试',
                             type: 'line',
                             stack: 'Total',
                             data: [150, 232, 201, 154, 190, 330, 410]
                         },
                         {
-                            name: 'Direct',
+                            name: '产品',
                             type: 'line',
                             stack: 'Total',
                             data: [320, 332, 301, 334, 390, 330, 320]
                         },
                         {
-                            name: 'Search Engine',
+                            name: '开发',
                             type: 'line',
                             stack: 'Total',
                             data: [820, 932, 901, 934, 1290, 1330, 1320]
@@ -174,8 +174,8 @@
                 //缺陷统计
                 let defect = {
                     title: {
-                        text: 'Referer of a Website',
-                        subtext: 'Fake Data',
+                        text: '人员协作占比：',
+                        subtext: '协作',
                         left: 'center'
                     },
                     tooltip: {
@@ -187,15 +187,15 @@
                     },
                     series: [
                         {
-                            name: 'Access From',
+                            name: '协作数量：',
                             type: 'pie',
                             radius: '50%',
                             data: [
-                                {value: 1048, name: 'Search Engine'},
-                                {value: 735, name: 'Direct'},
-                                {value: 580, name: 'Email'},
-                                {value: 484, name: 'Union Ads'},
-                                {value: 300, name: 'Video Ads'}
+                                {value: 1048, name: '产品'},
+                                {value: 735, name: '开发'},
+                                {value: 580, name: '实施'},
+                                {value: 484, name: '测试'},
+                                {value: 300, name: '运维'}
                             ],
                             emphasis: {
                                 itemStyle: {
@@ -209,15 +209,19 @@
                 };
                 //小组统计
                 let groupstatis = {
+                  title: {
+                    text: '处理任务总数:',
+                    left: 'left'
+                  },
                     legend: {},
                     tooltip: {},
                     dataset: {
                         source: [
-                            ['product', '2015', '2016', '2017'],
-                            ['Matcha Latte', 43.3, 85.8, 93.7],
-                            ['Milk Tea', 83.1, 73.4, 55.1],
-                            ['Cheese Cocoa', 86.4, 65.2, 82.5],
-                            ['Walnut Brownie', 72.4, 53.9, 39.1]
+                            ['product', '2020', '2021', '2022'],
+                            ['研发一部', 43.3, 85.8, 93.7],
+                            ['研发二部', 83.1, 73.4, 55.1],
+                            ['研发三部', 86.4, 65.2, 82.5],
+                            ['研发四部', 72.4, 53.9, 39.1]
                         ]
                     },
                     xAxis: {type: 'category'},
