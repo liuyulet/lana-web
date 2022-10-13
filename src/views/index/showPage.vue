@@ -25,6 +25,8 @@
                 <i class="el-icon-circle-close" />
                 关闭
               </span>
+              <span style="width: 50px"></span>
+              <span style="">该页面为后端写死数据，具体详细数据还没有做到这一步，请耐心等待！</span>
             </div>
             <el-row :gutter="24">
               <el-col style="border: 1px solid;"  :span="this.topmaster" :offset="this.topoher">
@@ -98,23 +100,12 @@ export default {
 
   //后端未搭建，模拟取出数据格式
   mounted() {
+
+
       var csss = ".el-upload__tip {\n" +
           "  line-height: 1.2;\n" +
           "}"
-      /* getAction(, formData).then((res) => {
-         this.uploading = false
-         if(res.success){
-           if(res.code == 201){
-             this.errorTip(res.message, res.result)
-           }else{
-             this.$message.success(res.message)
-           }
-           this.visible=false
-           this.$emit('ok')
-         }else{
-           this.$message.warning(res.message)
-         }
-       })*/
+
       var htmls ="<el-form ref=\"elForm\" :model=\"formData\" :rules=\"rules\" size=\"medium\" label-width=\"100px\"\n" +
           "  label-position=\"left\">\n" +
           "  <el-form-item label=\"级联选择\" prop=\"field101\">\n" +

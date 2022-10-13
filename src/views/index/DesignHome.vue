@@ -4,7 +4,7 @@
       <div class="logo-wrapper">
         <div class="logo">
           <btton>
-            <a class="github" href="#" onclick="reback" target="_blank"><--返回登录页面
+            <a class="github"  @click="reback" target="_blank">未决定怎么开发,请耐心等待
               <!--            <img src="https://github.githubassets.com/pinned-octocat.svg" alt>-->
             </a>
           </btton>
@@ -47,7 +47,7 @@
       <div class="action-bar">
 
         <el-button class="to-phone" icon="el-icon-platform-eleme" type="text" @click="checkStyle">
-          页面展示
+          预览已经保存的页面展示
         </el-button>
 
         <el-button class="to-phone" icon="el-icon-sort" type="text" @click="switchTo">
@@ -296,7 +296,7 @@ export default {
   methods: {
     reback () {
       //返回基础页面
-      this.$router.replace('/login')
+      this.$router.push('/deviceList')
     },
     setObjectValueReduce(obj, strKeys, data) {
       const arr = strKeys.split('.')

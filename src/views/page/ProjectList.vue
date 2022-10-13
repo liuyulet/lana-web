@@ -3,9 +3,11 @@
         <div class="page-header">
             <div class="page-title">项目管理列表</div>
             <div class="page-header-btn">
+
                 <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary"
                            @click="addParentPlatform">新增项目
                 </el-button>
+
                 <!--        <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>-->
             </div>
         </div>

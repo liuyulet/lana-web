@@ -37,6 +37,7 @@
                         <!--          <el-menu-item >修改密码</el-menu-item>-->
                         <el-menu-item @click="loginout">注销</el-menu-item>
                       <el-menu-item @click="updatePassword">修改密码</el-menu-item>
+                      <el-menu-item @click="desge">设计表单</el-menu-item>
                     </el-submenu>
                 </el-menu>
             </div>
@@ -110,6 +111,9 @@
 
                 this.$refs.updatePasswordEdit.openDialog(null, this.initData)
 
+            },
+            desge(){
+              this.$router.replace('/desge')
             },
         }
     }
