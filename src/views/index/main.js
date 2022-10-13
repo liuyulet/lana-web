@@ -14,6 +14,16 @@ Vue.component('tinymce', Tinymce)
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 
+/*
+引入VueQuillEditor
+ */
+import Vue from 'vue'
+import VueQuillEditor from 'vue-quill-editor'
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+Vue.use(VueQuillEditor)
+
 // 导航守卫
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆
 router.beforeEach((to, from, next) => {
@@ -29,6 +39,8 @@ router.beforeEach((to, from, next) => {
         }
     }
 });
+
+
 
 new Vue({
     router,
