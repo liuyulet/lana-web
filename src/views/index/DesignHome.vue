@@ -4,7 +4,7 @@
       <div class="logo-wrapper">
         <div class="logo">
           <btton>
-            <a class="github"  @click="reback" target="_blank">未决定怎么开发,请耐心等待
+            <a class="github"  @click="reback" target="_blank">数据整合中,请耐心等待
               <!--            <img src="https://github.githubassets.com/pinned-octocat.svg" alt>-->
             </a>
           </btton>
