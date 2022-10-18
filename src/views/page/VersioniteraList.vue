@@ -1,51 +1,34 @@
 <template>
   <div id="app">
     <div class="page-header">
-      <div class="page-title">需求临期发版计划列表</div>
+      <div class="page-title">协作过程列表</div>
       <div class="page-header-btn">
-        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addParentPlatform">创建版本更新计划</el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addPlatform">创建协作过程</el-button>
         <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
       </div>
     </div>
     <!--设备列表-->
     <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
-      <el-table-column align="center" prop="demanName" label="名称" min-width="160">
+      <el-table-column align="center" prop="demanName" label="协作过程名称" min-width="250">
       </el-table-column>
 
-      <el-table-column align="center" prop="demanNum" label="版本计划名称" min-width="200" >
+      <el-table-column align="center" prop="demanNum" label="协作过程概述" min-width="350" >
       </el-table-column>
 
-      <el-table-column align="center" prop="demanDisclose" label="版本号" min-width="200" >
-      </el-table-column>
-
-      <el-table-column align="center" prop="demanProject" label="版本内容" min-width="200" >
-      </el-table-column>
-
-      <el-table-column align="center" prop="demanConsci" label="发版负责人" min-width="140" >
-
-      </el-table-column>
-
-      <el-table-column align="center" prop="demanChange" label="变更次数" min-width="100" >
+      <el-table-column align="center" prop="demanDisclose" label="过程节点数" min-width="200" >
       </el-table-column>
 
       <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
       </el-table-column>
+
       <el-table-column align="center" prop="createTime" label="创建时间"  min-width="160">
       </el-table-column>
-      <!--      <el-table-column prop="updateTime" label="更新时间"  width="140">-->
-      <!--      </el-table-column>-->
-      <!--      <el-table-column prop="createTime" label="创建时间"  width="140">-->
-      <!--      </el-table-column>-->
-      <el-table-column align="center" prop="demanDeadline" label="结束日期" min-width="160" >
-      </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="350" fixed="right">
+
+      <el-table-column align="center" label="操作" min-width="200" fixed="right">
         <template slot-scope="scope">
-          <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-refresh" @click="refDevice(scope.row)"
-                     @mouseover="getTooltipContent(scope.row.deviceId)">分配流转
-          </el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">变更</el-button>
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">修改</el-button>
           <el-divider direction="vertical"></el-divider>
           <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteDevice(scope.row)" style="color: #f56c6c">删除</el-button>
         </template>
@@ -61,16 +44,19 @@
         :total="totalPage"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <deviceEdit ref="deviceEdit"></deviceEdit>
-    <syncChannelProgress ref="syncChannelProgress"></syncChannelProgress>
+    <versioniteraEdit ref="versioniteraEdit"></versioniteraEdit>
   </div>
 </template>
 
 <script>
 import {getAction} from "../../api/manage";
+import versioniteraEdit from "./edit/versioniteraEdit";
 
 export default {
   name: "",
+  components: {
+    versioniteraEdit
+  },
   data() {
     return {
       pageIndex: 1,
@@ -102,7 +88,10 @@ export default {
         }
       })
     },
-
+    //新增项目
+    addPlatform() {
+      this.$refs.versioniteraEdit.openDialog(null, this.initData)
+    },
 
     // 每页数
     sizeChangeHandle(val) {

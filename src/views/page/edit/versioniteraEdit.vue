@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-        title="维护需求"
+        title="开发过程管理"
         width="80%"
         top="2rem"
         :close-on-click-modal="false"
@@ -10,90 +10,32 @@
         @close="close()"
     >
 
+
+      <div  style="text-align: center; margin-top: 1rem;">
+        <el-button type="primary"  @click="onSubmit">增加步骤节点</el-button>
+      </div>
+
       <div id="shared" style="text-align: right; margin-top: 1rem;">
-       <el-form :rules="rules" :model="demandEdit"  label-width="120px" >
-         <el-row :gutter="24">
-           <el-col :span="12">
-              <el-form-item  label="名称：" prop="demanName">
-                <el-input v-model="demandEdit.demanName" placeholder="请填需求名称"></el-input>
-              </el-form-item>
-              <el-form-item label="需求编号：" prop="demanNum">
-                <el-input v-model="demandEdit.demanNum" placeholder="项目编号，不填写则默认生成"></el-input>
-              </el-form-item>
-          </el-col>
-          <el-col :span="12">
-              <el-form-item label="结束日期：" prop="demanDeadline">
-                <div class="block">
-                  <el-date-picker
-                      style="width: 100%"
-                      v-model="demandEdit.demanDeadline"
-                      type="datetime"
-                      value-format="yyyy-MM-dd HH:mm:ss"
-                      placeholder="选择日期时间">
-                  </el-date-picker>
-                </div>
-              </el-form-item>
-          </el-col>
-          <el-col :span="12">
-              <el-form-item  label="关联项目：" prop="status">
-                <el-select class="selects"  v-model="demandEdit.demanProject" placeholder="请选择项目">
-                  <el-option
-                      v-for="item in projects"
-                      :key="item.projectId"
-                      :label="item.projectName"
-                      :value="item.projectId">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-          </el-col>
-           <el-col :span="12">
-             <el-form-item label="需求交底文件：" prop="demanDisclose">
-               <el-upload
-                   style="text-align: left;"
-                   class="upload-demo"
-                   :action="urls"
-                   accept=".pdf, .doc, .docx"
-                   :on-success="successHandle"
-                   :limit="1"
-                   :file-list="demandEdit.demanDisoName">
-                 <el-button size="small" >点击上传</el-button>
-                 <div slot="tip" class="el-upload__tip">只能上传pdf, doc, docx格式文件，且不超过10MB</div>
-               </el-upload>
-             </el-form-item>
-           </el-col>
-          <el-col :span="12">
-              <el-form-item label="需求负责人：" prop="demanConsci">
-                <el-select class="selects"  v-model="demandEdit.demanConsci" placeholder="请选择需求负责人">
-                  <el-option
-                      v-for="item in dutyUser"
-                      :key="item.userId"
-                      :label="item.fullname+item.mobile"
-                      :value="item.userId">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-          </el-col>
+
+        <el-steps :active=active align-center>
+<!--          <el-step title="步骤步骤" description="这是人员信息人员信息人员信息人员信息"></el-step>-->
+
+        </el-steps>
 
 
-           <el-col :span="24">
-             <el-form-item  label="：需求内容" prop="demanName">
-
-             </el-form-item>
-           </el-col>
+       <el-form :rules="rules" :model="demandEdit"  style="margin-top: 20px" label-width="120px" >
 
 
 
-          <el-col :span="12">
               <el-form-item>
                 <el-button type="primary" v-if="this.edits" @click="onEdits()">修改</el-button>
                 <el-button type="primary" v-if="!this.edits" @click="onSubmit">新增</el-button>
                 <el-button @click="close">取消</el-button>
               </el-form-item>
-          </el-col>
 
-         </el-row>
         </el-form>
       </div>
+
     </el-dialog>
 
   </div>
@@ -102,13 +44,12 @@
 <script>
 import {getAction,postAction} from "../../../api/manage";
 export default {
-  name: "demandEdit",
+  name: "versioniteraEdit",
 
   computed: {},
   data() {
     return {
-      editor: null,
-      editorContent: '',
+      active: 0,
       edits: false,
       listChangeCallback: null,
       showDialog: false,
@@ -190,6 +131,7 @@ export default {
         this.$message.error(response.msg)
       }
     },
+
     getUsers () {
       getAction("/sys/user/getUserAll").then((data) => {
         if (data && data.code === 200) {
