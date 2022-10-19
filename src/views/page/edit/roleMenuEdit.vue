@@ -75,7 +75,6 @@ export default {
           if (data && data.code === 200) {
             this.roleMenuDataList = data.result.AllMenu
             //已选的数据处理   HavaMenu
-
             this.$nextTick(() => {
               if (data.result.HavaMenu.length > 0) {
                 //每次进入之后置为空

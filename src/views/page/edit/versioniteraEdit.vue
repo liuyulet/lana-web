@@ -10,28 +10,63 @@
         @close="close()"
     >
 
-
-      <div  style="text-align: center; margin-top: 1rem;">
-        <el-button type="primary"  @click="onSubmit">增加步骤节点</el-button>
+      <div style="text-align: center">
+        <el-button type="text" @click="opens">增加步骤节点</el-button>
       </div>
-
       <div id="shared" style="text-align: right; margin-top: 1rem;">
+        <div>
+          <el-steps :active="active" align-center finish-status="success">
+            <el-step
+                v-for="astep in stepList"
+                :title=astep.label
+                @click.native="deletPlay(astep.value)"
+                description="点击删除该节点"
+            ></el-step>
+          </el-steps>
+        </div>
 
-        <el-steps :active=active align-center>
-<!--          <el-step title="步骤步骤" description="这是人员信息人员信息人员信息人员信息"></el-step>-->
+        <el-table
+            ref="multipleTable"
+            :data="uerDataList"
+            style="width: 100%;font-size: 13px;margin-top: 2rem;"
+            header-row-class-name="table-header"
+            @selection-change="handleSelectionChange">
+          <el-table-column
+              type="selection"
+              style="color: #1e1e1e"
+              width="55">
+          </el-table-column>
+          <el-table-column align="center" prop="fullname" label="姓名" min-width="80">
+          </el-table-column>
+          <el-table-column align="center" prop="username" label="用户账号名" min-width="100">
+          </el-table-column>
+          <el-table-column align="center" prop="dutyName" label="负责部门" min-width="100">
+          </el-table-column>
+          <el-table-column align="center" prop="departName" label="所属部门" min-width="100">
+          </el-table-column>
+          <el-table-column align="center" prop="roleName" label="所属角色" min-width="100">
+          </el-table-column>
+        </el-table>
 
-        </el-steps>
+        <el-pagination
+            style="float: right"
+            @size-change="sizeChangeHandle"
+            @current-change="currentChangeHandle"
+            :current-page="pageIndex"
+            :page-sizes="[10, 20, 50, 100]"
+            :page-size="pageSize"
+            :total="totalPage"
+            layout="total, sizes, prev, pager, next, jumper">
+        </el-pagination>
+        <el-form :rules="rules" style="margin-top: 40px" label-width="120px">
 
-
-       <el-form :rules="rules" :model="demandEdit"  style="margin-top: 20px" label-width="120px" >
-
-
-
-              <el-form-item>
-                <el-button type="primary" v-if="this.edits" @click="onEdits()">修改</el-button>
-                <el-button type="primary" v-if="!this.edits" @click="onSubmit">新增</el-button>
-                <el-button @click="close">取消</el-button>
-              </el-form-item>
+          <el-form-item>
+            <el-button @click="pres">上一步</el-button>
+            <el-button @click="nextto">下一步</el-button>
+            <el-button type="primary" v-if="this.edits">修改</el-button>
+            <el-button type="primary" v-if="!this.edits">新增</el-button>
+            <el-button @click="close">取消</el-button>
+          </el-form-item>
 
         </el-form>
       </div>
@@ -42,7 +77,8 @@
 </template>
 
 <script>
-import {getAction,postAction} from "../../../api/manage";
+import {getAction, postAction} from "../../../api/manage";
+
 export default {
   name: "versioniteraEdit",
 
@@ -54,30 +90,17 @@ export default {
       listChangeCallback: null,
       showDialog: false,
       isLoging: false,
-      dutyUser: [],
-      urls:'',
-      fileList: [],
+      userSelection: {},
       props: ['catchData'], // 接收父组件的方法
-      demandEdit: {
-        createTime: '',
-        createUser: '',
-        demanChange: '',
-        demanConsci: '',
-        demanConsciAcoun: '',
-        demanDeadline: '',
-        demanDisclose: '',
-        demanName: '',
-        demanNum: '',
-        demanProject: '',
-        demanStatus: '',
-        demanDisoName: '',
-        demanProjectNam: '',
-        id: ''
-
-      },
-      projects: [],
+      pageIndex: 1,
+      pageSize: 10,
+      totalPage: 0,
+      uerDataList: {},
+      //步骤信息
+      stepList: [],
+      nowStepList: [],
       rules: {
-        fullname: [{ required: true, message: "姓名不可为空", trigger: "blur" }],
+        fullname: [{required: true, message: "姓名不可为空", trigger: "blur"}],
 
       },
     };
@@ -87,147 +110,148 @@ export default {
   methods: {
 
     openDialog: function (platform, callback) {
-
       //获取人员
       this.getUsers()
-      this.getProjectAll()
-      this.urls = process.env.VUE_APP_API_BASE_URL+"/sysProject/upload?X-Access-Token="+localStorage.getItem('X-Access-Token')
-      console.log(this.urls);
+      this.getSteps()
       if (platform == null) {
         //新增
         this.edits = false;
-      }else {
-        //修改
+      } else {
+
         this.edits = true;
-        this.demandEdit.createTime = platform.createTime
-        this.demandEdit.createUser = platform.createUser
-        this.demandEdit.demanChange = platform.demanChange
-        this.demandEdit.demanConsci = platform.demanConsci
-        this.demandEdit.demanConsciAcoun = platform.demanConsciAcoun
-        this.demandEdit.demanDeadline = platform.demanDeadline
-        this.demandEdit.demanDisclose = platform.demanDisclose
-        this.demandEdit.demanDisoName = platform.demanDisoName
-        this.demandEdit.demanProjectNam = platform.demanProjectNam
-        this.demandEdit.demanName = platform.demanName
-        this.demandEdit.demanNum = platform.demanNum
-        this.demandEdit.demanProject = platform.demanProject
-        this.demandEdit.demanStatus = platform.demanStatus
-        this.demandEdit.id = platform.id
       }
       this.showDialog = true;
       this.listChangeCallback = callback;
     },
+    //删除节点
+    deletPlay(ids) {
+      this.$confirm(`节点一旦删除，将无法进行回退，是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        //简单快捷
+        this.nowStepList = [];
+        this.stepList.forEach(item => {
+          if (item.value != ids) {
+            this.nowStepList.push(item);
+          }
+        });
+        this.stepList = this.nowStepList;
+      })
+    },
 
-    // 上传成功
-    successHandle (response, file, fileList) {
+    nextto() {
+      this.active++;
+      //重新获取用户列表
+      this.getUsers()
+    },
+    pres() {
+      this.active--;
+      /*重新获取用户列表，并且将已经选择的用户添加上，切支持修改*/
 
-      this.fileList = fileList;
-      this.demandEdit.demanDisclose = response.result.url
-      this.demandEdit.demanDisoName = file.name
-      this.successNum++
-      if (response && response.code === 200) {
-        this.$message.success('上传成功！')
+      //this.getUsers();
+
+
+      let modleuser =this.userSelection[this.active]
+      //获取当前阶段的id，并且取出当前ID的绑定人员的数组
+      let modeUserList = [];
+      for (let i = 0; i < this.uerDataList.length; i++) {
+        //对比选择的用户，并重新勾选上
+        for (let j = 0; j < modleuser.length; j++) {
+          if(this.uerDataList[i].userId===modleuser[j]){
+            modeUserList.push(this.uerDataList[i])
+          }
+        }
+      }
+      this.toggleSelection(modeUserList)
+    },
+    //选中操作
+    toggleSelection(rows) {
+      if (rows) {
+        this.$refs.multipleTable.clearSelection();
+        for (let i = 0; i < rows.length; i++) {
+          this.$refs.multipleTable.toggleRowSelection(rows[i]);
+        }
       } else {
-        this.$message.error(response.msg)
+        this.$refs.multipleTable.clearSelection();
       }
     },
-
-    getUsers () {
-      getAction("/sys/user/getUserAll").then((data) => {
-        if (data && data.code === 200) {
-          this.dutyUser = data.result.userData
-          console.log(this.dutyUser)
-        }else {
-          this.$message({
-            showClose: true,
-            message: '获取组织信息失败，请联系管理员',
-            type: 'error'
-          });
+    //新增节点
+    opens() {
+      this.$prompt('请输入过程名称', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({value}) => {
+        var max;
+        //拼接到过程节点后面
+        this.stepList.forEach(item => {
+          max = max === undefined ? item.value : (max > item.value ? max : item.value)
+        });
+        //添加过程
+        let aaaa= {
+          "value": max+1,
+          "label": value,
         }
-      })
+
+        this.stepList.push(aaaa);
+
+        this.$message({
+          type: 'success',
+          message: '你新增的过程是: ' + value
+        });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
     },
 
-    getProjectAll () {
-      getAction("/sysProject/getProjectAll").then((data) => {
-        if (data && data.code === 200) {
-          this.projects = data.result.projectData
-        }else {
-          this.$message({
-            showClose: true,
-            message: '获取组织信息失败，请联系管理员',
-            type: 'error'
-          });
-        }
-      })
-    },
-
-    //修改
-    onEdits () {
+    getUsers() {
       let params = {
-        //数据怼上去
-        demanChange: this.demandEdit.demanChange,
-        demanConsci: this.demandEdit.demanConsci,
-        demanConsciAcoun: this.demandEdit.demanConsciAcoun,
-        demanDeadline: this.demandEdit.demanDeadline,
-        demanDisclose: this.demandEdit.demanDisclose,
-        demanDisoName: this.demandEdit.demanDisoName,
-        demanName: this.demandEdit.demanName,
-        demanNum: this.demandEdit.demanNum,
-        demanProject: this.demandEdit.demanProject,
-        id:this.demandEdit.id,
-        createUser: localStorage.getItem('userAccount')
+        'page': this.pageIndex,
+        'limit': this.pageSize
       }
-      postAction("/sysDeman/updateProject",params).then((data) => {
+      getAction("/sys/UserDepartRole/getUserMessage", params).then((data) => {
         if (data && data.code === 200) {
-          this.$message({
-            showClose: true,
-            message: '操作成功',
-            type: 'success'
-          });
-          this.close()
-
-        }else {
-          this.$message({
-            showClose: true,
-            message: data.message,
-            type: 'error'
-          });
+          this.uerDataList = data.result.list
+          //处理数据
+          this.totalPage = data.result.totalCount
         }
       })
     },
 
-    onSubmit () {
-      let params = {
-        createTime: this.demandEdit.createTime,
-        demanChange: this.demandEdit.demanChange,
-        demanConsci: this.demandEdit.demanConsci,
-        demanConsciAcoun: this.demandEdit.demanConsciAcoun,
-        demanDeadline: this.demandEdit.demanDeadline,
-        demanDisclose: this.demandEdit.demanDisclose,
-        demanDisoName: this.demandEdit.demanDisoName,
-        demanName: this.demandEdit.demanName,
-        demanNum: this.demandEdit.demanNum,
-        demanProject: this.demandEdit.demanProject,
-        createUser: localStorage.getItem('userAccount')
-      }
-      postAction("/sysDeman/addDeman",params).then((data) => {
+    getSteps() {
+      getAction("/sysTask/getstep").then((data) => {
         if (data && data.code === 200) {
-          this.$message({
-            showClose: true,
-            message: '操作成功',
-            type: 'success'
-          });
-          this.close()
-        }else {
-          this.$message({
-            showClose: true,
-            message: data.message,
-            type: 'error'
-          });
+          this.stepList = data.result
         }
       })
     },
-    close () {
+
+    //选择用户
+    handleSelectionChange(val) {
+      //绑定角色维护两个，一个是未授权用户的，一个是修改已授权用户的
+      //this.userSelection = {};
+      let datas = [];
+      val.forEach(item => {
+        datas.push(item.userId);
+      });
+      this.userSelection[this.active]=datas;
+    },
+    // 每页数
+    sizeChangeHandle(val) {
+      this.pageSize = val
+      this.pageIndex = 1
+      this.getDataList()
+    },
+    // 当前页
+    currentChangeHandle(val) {
+      this.pageIndex = val
+      this.getDataList()
+    },
+    close() {
       this.showDialog = false;
     },
 
@@ -243,9 +267,10 @@ input::-webkit-inner-spin-button {
   appearance: none;
   margin: 0;
 }
+
 /* 火狐 */
-input{
-  -moz-appearance:textfield;
+input {
+  -moz-appearance: textfield;
 }
 
 .control-btn i {
@@ -255,7 +280,6 @@ input{
   justify-content: center;
   align-items: center;
 }
-
 
 
 .control-top i {
@@ -290,6 +314,7 @@ input{
 .control-left .fa {
   transform: rotate(-45deg) translateX(-7px);
 }
+
 .selects {
   width: 100%;
 }
