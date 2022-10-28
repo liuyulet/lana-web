@@ -11,7 +11,7 @@
     >
 
       <div style="text-align: center">
-        <el-button type="text" @click="opens">增加步骤节点</el-button>
+        <el-button type="text" @click="opens">追加新的步骤节点</el-button>
       </div>
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <div>
@@ -20,7 +20,7 @@
                 v-for="astep in stepList"
                 :title=astep.label
                 @click.native="deletPlay(astep.value)"
-                description="点击删除该节点"
+                description="点击即可删除该节点"
             ></el-step>
           </el-steps>
         </div>
@@ -58,13 +58,15 @@
             :total="totalPage"
             layout="total, sizes, prev, pager, next, jumper">
         </el-pagination>
-        <el-form :rules="rules" style="margin-top: 40px" label-width="120px">
+        <el-form :rules="rules" style="margin-top: 40px">
 
           <el-form-item>
-            <el-button @click="pres">上一步</el-button>
-            <el-button @click="nextto">下一步</el-button>
-            <el-button type="primary" v-if="this.edits">修改</el-button>
-            <el-button type="primary" v-if="!this.edits">新增</el-button>
+
+            <el-button @click="pres" type="success" plain v-if="this.active>0">返回上一节点</el-button>
+            <el-button @click="nextto" v-if="this.stepList.length-1>this.active" type="primary" plain style="margin-right: 30px">进入下一节点</el-button>
+            <el-button @click="overto" v-if="this.stepList.length-1<=this.active && this.stepList.length>this.active" type="primary" plain style="margin-right: 30px">完成步骤选择</el-button>
+            <el-button type="primary" v-if="this.edits" @click="updates">修改</el-button>
+            <el-button type="primary" v-if="!this.edits" @click="submite">新增</el-button>
             <el-button @click="close">取消</el-button>
           </el-form-item>
 
@@ -105,19 +107,18 @@ export default {
       },
     };
   },
-
-
   methods: {
 
     openDialog: function (platform, callback) {
       //获取人员
       this.getUsers()
-      this.getSteps()
+      //this.getSteps()
       if (platform == null) {
         //新增
         this.edits = false;
       } else {
-
+        //如果是修改，就获取修改过程节点信息
+        this.getSteps(platform);
         this.edits = true;
       }
       this.showDialog = true;
@@ -140,33 +141,104 @@ export default {
         this.stepList = this.nowStepList;
       })
     },
-
+    //下一步
     nextto() {
       this.active++;
+      //如果最后一步已经操作完，则不再请求数据
+      console.log(this.active)
       //重新获取用户列表
       this.getUsers()
     },
+    overto(){
+      this.active++;
+    },
+    //上一步
     pres() {
       this.active--;
-      /*重新获取用户列表，并且将已经选择的用户添加上，切支持修改*/
-
-      //this.getUsers();
-
-
-      let modleuser =this.userSelection[this.active]
+      let modleuser = this.userSelection[this.active]
       //获取当前阶段的id，并且取出当前ID的绑定人员的数组
       let modeUserList = [];
       for (let i = 0; i < this.uerDataList.length; i++) {
         //对比选择的用户，并重新勾选上
         for (let j = 0; j < modleuser.length; j++) {
-          if(this.uerDataList[i].userId===modleuser[j]){
+          if (this.uerDataList[i].userId === modleuser[j]) {
             modeUserList.push(this.uerDataList[i])
           }
         }
       }
       this.toggleSelection(modeUserList)
     },
-    //选中操作
+
+    //编辑过程人员回显
+    editShow() {
+      let modleuser = this.userSelection[this.active]
+      //获取当前阶段的id，并且取出当前ID的绑定人员的数组
+      let modeUserList = [];
+      for (let i = 0; i < this.uerDataList.length; i++) {
+        //对比选择的用户，并重新勾选上
+        for (let j = 0; j < modleuser.length; j++) {
+          if (this.uerDataList[i].userId === modleuser[j]) {
+            modeUserList.push(this.uerDataList[i])
+          }
+        }
+      }
+      this.toggleSelection(modeUserList)
+    },
+
+
+
+    //保存过程节点
+    submite() {
+      //输入过程名称
+      this.$prompt('请输入该过程的名称', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({value}) => {
+        this.pushStepData(value);
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+    },
+    //保存数据
+    pushStepData(stepName){
+      if (stepName !=null && stepName !='') {
+        //步骤节点
+        //用户--节点信息
+        let params = {
+          "userSelection": this.userSelection,
+          "stepList": this.stepList,
+          "stepName": stepName
+        }
+        //保存数据
+        postAction("/sysStep/saveStep", params).then((data) => {
+          if (data && data.code === 200) {
+            this.$message({
+              showClose: true,
+              message: '操作成功',
+              type: 'success'
+            });
+            this.close()
+            this.$emit('get-step')
+          } else {
+            this.$message({
+              showClose: true,
+              message: data.message,
+              type: 'error'
+            });
+          }
+        })
+      }else {
+        this.$message({
+          showClose: true,
+          message: '请填写过程名称，因为这将用于后面的需求关联',
+          type: 'error'
+        });
+      }
+    },
+    //人员选中操作
     toggleSelection(rows) {
       if (rows) {
         this.$refs.multipleTable.clearSelection();
@@ -179,23 +251,27 @@ export default {
     },
     //新增节点
     opens() {
-      this.$prompt('请输入过程名称', '提示', {
+      this.$prompt('请输入要追加的过程节点名称', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(({value}) => {
+
         var max;
         //拼接到过程节点后面
         this.stepList.forEach(item => {
           max = max === undefined ? item.value : (max > item.value ? max : item.value)
         });
+        //初次新增要判断当前节点信息
+        if(max == undefined || max ==null || max ==''){
+          max = 0
+        }
         //添加过程
-        let aaaa= {
-          "value": max+1,
+        let aaaa = {
+          "value": max + 1,
           "label": value,
         }
-
+        //新增到过程集中
         this.stepList.push(aaaa);
-
         this.$message({
           type: 'success',
           message: '你新增的过程是: ' + value
@@ -208,6 +284,7 @@ export default {
       });
     },
 
+    //获取用户信息
     getUsers() {
       let params = {
         'page': this.pageIndex,
@@ -221,24 +298,37 @@ export default {
         }
       })
     },
-
-    getSteps() {
-      getAction("/sysTask/getstep").then((data) => {
+    //编辑获取过程集信息
+    getSteps(stepId) {
+      let params = {
+        'stepId': stepId
+      }
+      getAction("/sysStep/getstepNode",params).then((data) => {
         if (data && data.code === 200) {
-          this.stepList = data.result
+          this.stepList = data.result.stepNode
+          this.userSelection = data.result.stepPeople
+          var max;
+          this.stepList.forEach(item => {
+            max = max === undefined ? item.value : (max > item.value ? max : item.value)
+          });
+          this.active = max;
+          //执行人员回显操作
+          this.editShow();
         }
       })
     },
+    //编辑获取用户信息
+
 
     //选择用户
     handleSelectionChange(val) {
-      //绑定角色维护两个，一个是未授权用户的，一个是修改已授权用户的
       //this.userSelection = {};
       let datas = [];
       val.forEach(item => {
         datas.push(item.userId);
       });
-      this.userSelection[this.active]=datas;
+      this.userSelection[this.active+1] = datas;
+      console.log( this.userSelection);
     },
     // 每页数
     sizeChangeHandle(val) {

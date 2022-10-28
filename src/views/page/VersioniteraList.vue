@@ -8,14 +8,11 @@
       </div>
     </div>
     <!--设备列表-->
-    <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
-      <el-table-column align="center" prop="demanName" label="协作过程名称" min-width="250">
+    <el-table :data="stepList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
+      <el-table-column align="center" prop="stepName" label="协作过程名称" min-width="250">
       </el-table-column>
 
-      <el-table-column align="center" prop="demanNum" label="协作过程概述" min-width="350" >
-      </el-table-column>
-
-      <el-table-column align="center" prop="demanDisclose" label="过程节点数" min-width="200" >
+      <el-table-column align="center" prop="stepNum" label="过程节点数" min-width="50" >
       </el-table-column>
 
       <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
@@ -27,10 +24,9 @@
 
       <el-table-column align="center" label="操作" min-width="200" fixed="right">
         <template slot-scope="scope">
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="editStep(scope.row.stepId)">修改</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-edit" type="text" @click="edit(scope.row)">修改</el-button>
-          <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteDevice(scope.row)" style="color: #f56c6c">删除</el-button>
+          <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteStep(scope.row.stepId)" style="color: #f56c6c">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -44,7 +40,7 @@
         :total="totalPage"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <versioniteraEdit ref="versioniteraEdit"></versioniteraEdit>
+    <versioniteraEdit ref="versioniteraEdit" @get-step="getStep"></versioniteraEdit>
   </div>
 </template>
 
@@ -62,26 +58,26 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
-      demandList: null
+      stepList: null
     }
   },
   computed: {
 
   },
   created() {
-    //this.getUser();
+    this.getStep();
   },
   methods: {
     //获取需求管理列表
     //用户列表
-    getUser() {
+    getStep() {
       let params = {
         'page': this.pageIndex,
         'limit': this.pageSize
       }
-      getAction("/sysDeman/getDeman", params).then((data) => {
+      getAction("/sysStep/getStep", params).then((data) => {
         if (data && data.code === 200) {
-          this.demandList = data.result.list
+          this.stepList = data.result.list
           //处理数据
           this.changeRoleData()
           this.totalPage = data.result.totalCount
@@ -91,6 +87,10 @@ export default {
     //新增项目
     addPlatform() {
       this.$refs.versioniteraEdit.openDialog(null, this.initData)
+    },
+    //修改项目
+    editStep(stepId) {
+      this.$refs.versioniteraEdit.openDialog(stepId, this.initData)
     },
 
     // 每页数
