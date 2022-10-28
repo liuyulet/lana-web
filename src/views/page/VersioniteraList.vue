@@ -92,6 +92,21 @@ export default {
     editStep(stepId) {
       this.$refs.versioniteraEdit.openDialog(stepId, this.initData)
     },
+    deleteStep(stepId){
+      let params = {
+        'stepId': stepId
+      }
+      getAction("/sysStep/delstep",params).then((data) => {
+        if (data && data.code === 200) {
+          this.$message({
+            type: 'success',
+            message: '操作成功'
+          });
+          //更新数据
+          this.getStep();
+        }
+      })
+    },
 
     // 每页数
     sizeChangeHandle(val) {
