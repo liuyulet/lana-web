@@ -93,18 +93,25 @@ export default {
       this.$refs.versioniteraEdit.openDialog(stepId, this.initData)
     },
     deleteStep(stepId){
-      let params = {
-        'stepId': stepId
-      }
-      getAction("/sysStep/delstep",params).then((data) => {
-        if (data && data.code === 200) {
-          this.$message({
-            type: 'success',
-            message: '操作成功'
-          });
-          //更新数据
-          this.getStep();
+
+      this.$confirm(`删除无法恢复，是否继续?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        let params = {
+          'stepId': stepId
         }
+        getAction("/sysStep/delstep",params).then((data) => {
+          if (data && data.code === 200) {
+            this.$message({
+              type: 'success',
+              message: '操作成功'
+            });
+            //更新数据
+            this.getStep();
+          }
+        })
       })
     },
 
