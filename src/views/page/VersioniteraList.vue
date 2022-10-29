@@ -24,7 +24,7 @@
 
       <el-table-column align="center" label="操作" min-width="200" fixed="right">
         <template slot-scope="scope">
-          <el-button size="medium" icon="el-icon-edit" type="text" @click="editStep(scope.row.stepId)">修改</el-button>
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="editStep(scope.row)">修改</el-button>
           <el-divider direction="vertical"></el-divider>
           <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteStep(scope.row.stepId)" style="color: #f56c6c">删除</el-button>
         </template>
@@ -89,11 +89,10 @@ export default {
       this.$refs.versioniteraEdit.openDialog(null, this.initData)
     },
     //修改项目
-    editStep(stepId) {
-      this.$refs.versioniteraEdit.openDialog(stepId, this.initData)
+    editStep(step) {
+      this.$refs.versioniteraEdit.openDialog(step, this.initData)
     },
     deleteStep(stepId){
-
       this.$confirm(`删除无法恢复，是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',

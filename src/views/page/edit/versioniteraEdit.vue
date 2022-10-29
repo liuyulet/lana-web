@@ -65,7 +65,7 @@
             <el-button @click="pres" type="success" plain v-if="this.active>0">返回上一节点</el-button>
             <el-button @click="nextto" v-if="this.stepList.length-1>this.active" type="primary" plain style="margin-right: 30px">进入下一节点</el-button>
             <el-button @click="overto" v-if="this.stepList.length-1<=this.active && this.stepList.length>this.active" type="primary" plain style="margin-right: 30px">完成步骤选择</el-button>
-            <el-button type="primary" v-if="this.edits" @click="updates">修改</el-button>
+            <el-button type="primary" v-if="this.edits" @click="updateStep">修改</el-button>
             <el-button type="primary" v-if="!this.edits" @click="submite">新增</el-button>
             <el-button @click="close">取消</el-button>
           </el-form-item>
@@ -101,6 +101,8 @@ export default {
       //步骤信息
       stepList: [],
       nowStepList: [],
+      editStepName: '',
+      editStepId: '',
       rules: {
         fullname: [{required: true, message: "姓名不可为空", trigger: "blur"}],
 
@@ -118,7 +120,9 @@ export default {
         this.edits = false;
       } else {
         //如果是修改，就获取修改过程节点信息
-        this.getSteps(platform);
+        this.getSteps(platform.stepId);
+        this.editStepName = platform.stepName;
+        this.editStepId = platform.stepId;
         this.edits = true;
       }
       this.showDialog = true;
@@ -144,8 +148,6 @@ export default {
     //下一步
     nextto() {
       this.active++;
-      //如果最后一步已经操作完，则不再请求数据
-      console.log(this.active)
       //重新获取用户列表
       this.getUsers()
     },
@@ -171,7 +173,7 @@ export default {
 
     //编辑过程人员回显
     editShow() {
-      let modleuser = this.userSelection[this.active]
+      let modleuser = this.userSelection[this.active+1]
       //获取当前阶段的id，并且取出当前ID的绑定人员的数组
       let modeUserList = [];
       for (let i = 0; i < this.uerDataList.length; i++) {
@@ -185,8 +187,6 @@ export default {
       this.toggleSelection(modeUserList)
     },
 
-
-
     //保存过程节点
     submite() {
       //输入过程名称
@@ -194,7 +194,7 @@ export default {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(({value}) => {
-        this.pushStepData(value);
+        this.pushStepData(null,value,1);
       }).catch(() => {
         this.$message({
           type: 'info',
@@ -202,15 +202,36 @@ export default {
         });
       });
     },
-    //保存数据
-    pushStepData(stepName){
+    //保存过程节点
+    updateStep() {
+      //输入过程名称
+      this.$prompt('如果要修改过程名称，重新输入即可，如果不输入则默认不修改', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+      }).then(({value}) => {
+        if(value!=null && value !=''){
+          this.pushStepData(value,0);
+        }else {
+          this.pushStepData(this.editStepId,this.editStepName,0);
+        }
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消输入'
+        });
+      });
+    },
+    //保存/修改数据
+    pushStepData(stepId,stepName,type){
       if (stepName !=null && stepName !='') {
         //步骤节点
         //用户--节点信息
         let params = {
           "userSelection": this.userSelection,
           "stepList": this.stepList,
-          "stepName": stepName
+          "stepName": stepName,
+          "type": type,
+          "stepId": stepId
         }
         //保存数据
         postAction("/sysStep/saveStep", params).then((data) => {
@@ -311,7 +332,7 @@ export default {
           this.stepList.forEach(item => {
             max = max === undefined ? item.value : (max > item.value ? max : item.value)
           });
-          this.active = max;
+          this.active = max-1;
           //执行人员回显操作
           this.editShow();
         }
