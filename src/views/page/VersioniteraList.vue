@@ -13,6 +13,10 @@
       </el-table-column>
 
       <el-table-column align="center" prop="stepNum" label="过程节点数" min-width="50" >
+        <template slot-scope="scope">
+          <el-button size="medium" type="text" @click="findStep(scope.row)">{{ scope.row.stepNum }}</el-button>
+        </template>
+
       </el-table-column>
 
       <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
@@ -41,17 +45,20 @@
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <versioniteraEdit ref="versioniteraEdit" @get-step="getStep"></versioniteraEdit>
+    <versionDtiolEdit ref="versionDtiolEdit" @get-step="getStep"></versionDtiolEdit>
   </div>
 </template>
 
 <script>
 import {getAction} from "../../api/manage";
 import versioniteraEdit from "./edit/versioniteraEdit";
+import versionDtiolEdit from "./edit/versionDtiolEdit";
 
 export default {
   name: "",
   components: {
-    versioniteraEdit
+    versioniteraEdit,
+    versionDtiolEdit
   },
   data() {
     return {
@@ -87,6 +94,10 @@ export default {
     //新增项目
     addPlatform() {
       this.$refs.versioniteraEdit.openDialog(null, this.initData)
+    },
+    //查看节点信息
+    findStep(step){
+      this.$refs.versionDtiolEdit.openDialog(step, this.initData)
     },
     //修改项目
     editStep(step) {
