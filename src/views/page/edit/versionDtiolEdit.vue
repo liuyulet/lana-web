@@ -10,9 +10,6 @@
         @close="close()"
     >
 
-      <div style="text-align: center">
-        <el-button type="text" @click="opens">追加新的步骤节点</el-button>
-      </div>
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <div>
           <el-steps :active="active" align-center finish-status="success">
@@ -45,16 +42,7 @@
           <el-table-column align="center" prop="roleName" label="所属角色" min-width="100">
           </el-table-column>
         </el-table>
-        <el-pagination
-            style="float: right"
-            @size-change="sizeChangeHandle"
-            @current-change="currentChangeHandle"
-            :current-page="pageIndex"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pageSize"
-            :total="totalPage"
-            layout="total, sizes, prev, pager, next, jumper">
-        </el-pagination>
+
         <el-form :rules="rules" style="margin-top: 40px">
           <el-form-item>
             <el-button @click="pres" type="success" plain v-if="this.active>0">返回上一节点</el-button>
@@ -86,9 +74,6 @@ export default {
       isLoging: false,
       userSelection: {},
       props: ['catchData'], // 接收父组件的方法
-      pageIndex: 1,
-      pageSize: 10,
-      totalPage: 0,
       uerDataList: {},
       //步骤信息
       stepId: '',
@@ -127,7 +112,7 @@ export default {
     //上一步
     pres() {
       this.active--;
-      let modleuser = this.userSelection[this.active]
+      this.getUsers(this.active)
       //获取当前阶段的id，并且取出当前ID的绑定人员的数组
     },
     //获取用户信息
@@ -136,13 +121,12 @@ export default {
         'page': this.pageIndex,
         'limit': this.pageSize,
         'stepId':  this.stepId,
-        'stepNode': this.stepNode
+        'stepNode': stepNode,
+
       }
       getAction("/sys/UserDepartRole/getstepNodeUser", params).then((data) => {
         if (data && data.code === 200) {
-          this.uerDataList = data.result.list
-          //处理数据
-          this.totalPage = data.result.totalCount
+          this.uerDataList = data.result
         }
       })
     },
@@ -160,20 +144,10 @@ export default {
             max = max === undefined ? item.value : (max > item.value ? max : item.value)
           });
           this.active = max;
-          this.getUser();
+          //开始执行
+          this.getUsers(max);
         }
       })
-    },
-    // 每页数
-    sizeChangeHandle(val) {
-      this.pageSize = val
-      this.pageIndex = 1
-      this.getDataList()
-    },
-    // 当前页
-    currentChangeHandle(val) {
-      this.pageIndex = val
-      this.getDataList()
     },
     close() {
       this.showDialog = false;
