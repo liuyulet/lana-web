@@ -46,21 +46,6 @@
                 </el-select>
               </el-form-item>
           </el-col>
-           <el-col :span="12">
-             <el-form-item label="计划交底文件：" prop="demanDisclose">
-               <el-upload
-                   style="text-align: left;"
-                   class="upload-demo"
-                   :action="urls"
-                   accept=".pdf, .doc, .docx"
-                   :on-success="successHandle"
-                   :limit="1"
-                   :file-list="demandEdit.demanDisoName">
-                 <el-button size="small" >点击上传</el-button>
-                 <div slot="tip" class="el-upload__tip">只能上传pdf, doc, docx格式文件，且不超过10MB</div>
-               </el-upload>
-             </el-form-item>
-           </el-col>
           <el-col :span="12">
               <el-form-item label="计划负责人：" prop="demanConsci">
                 <el-select class="selects"  v-model="demandEdit.demanConsci" placeholder="请选择计划负责人">
@@ -73,6 +58,12 @@
                 </el-select>
               </el-form-item>
           </el-col>
+           <el-col :span="24">
+             <div class='clearfix'>
+               <!-- 富文本编辑框 -->
+               <div id="wangEditorElem" style="height:210px;background: #ffffff;"></div>
+             </div>
+           </el-col>
           <el-col :span="12">
               <el-form-item>
                 <el-button type="primary" v-if="this.edits" @click="onEdits()">修改</el-button>
@@ -80,6 +71,7 @@
                 <el-button @click="close">取消</el-button>
               </el-form-item>
           </el-col>
+
 
          </el-row>
         </el-form>
@@ -90,13 +82,15 @@
 </template>
 
 <script>
+import E from 'wangeditor'
 import {getAction,postAction} from "../../../api/manage";
 export default {
-  name: "demandEdit",
-
+  name: "planTaskEdit",
   computed: {},
   data() {
     return {
+      wEditor: '',
+      name: '',
       editor: null,
       editorContent: '',
       edits: false,
@@ -104,81 +98,38 @@ export default {
       showDialog: false,
       isLoging: false,
       dutyUser: [],
-      urls:'',
       fileList: [],
       props: ['catchData'], // 接收父组件的方法
       demandEdit: {
-        createTime: '',
-        createUser: '',
-        demanChange: '',
-        demanConsci: '',
-        demanConsciAcoun: '',
-        demanDeadline: '',
-        demanDisclose: '',
-        demanName: '',
-        demanNum: '',
-        demanProject: '',
-        demanStatus: '',
-        demanDisoName: '',
-        demanProjectNam: '',
-        id: ''
+
       },
       projects: [],
       rules: {
         fullname: [{ required: true, message: "姓名不可为空", trigger: "blur" }],
-
       },
+
     };
   },
 
 
   methods: {
 
-    openDialog: function (platform, callback) {
+    openDialogs: function (platform, callback) {
 
       //获取人员
       this.getUsers()
       this.getProjectAll()
-      this.urls = process.env.VUE_APP_API_BASE_URL+"/sysProject/upload?X-Access-Token="+localStorage.getItem('X-Access-Token')
-      console.log(this.urls);
       if (platform == null) {
         //新增
         this.edits = false;
       }else {
         //修改
         this.edits = true;
-        this.demandEdit.createTime = platform.createTime
-        this.demandEdit.createUser = platform.createUser
-        this.demandEdit.demanChange = platform.demanChange
-        this.demandEdit.demanConsci = platform.demanConsci
-        this.demandEdit.demanConsciAcoun = platform.demanConsciAcoun
-        this.demandEdit.demanDeadline = platform.demanDeadline
-        this.demandEdit.demanDisclose = platform.demanDisclose
-        this.demandEdit.demanDisoName = platform.demanDisoName
-        this.demandEdit.demanProjectNam = platform.demanProjectNam
-        this.demandEdit.demanName = platform.demanName
-        this.demandEdit.demanNum = platform.demanNum
-        this.demandEdit.demanProject = platform.demanProject
-        this.demandEdit.demanStatus = platform.demanStatus
-        this.demandEdit.id = platform.id
       }
       this.showDialog = true;
       this.listChangeCallback = callback;
     },
 
-    // 上传成功
-    successHandle (response, file, fileList) {
-
-      this.fileList = fileList;
-      this.demandEdit.demanDisclose = response.result.url
-      this.demandEdit.demanDisoName = file.name
-      this.successNum++
-      if (response && response.code === 200) {
-        this.$message.success('上传成功！')
-      } else {
-        this.$message.error(response.msg)
-      }
-    },
     getUsers () {
       getAction("/sys/user/getUserAll").then((data) => {
         if (data && data.code === 200) {

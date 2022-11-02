@@ -14,10 +14,10 @@
           <el-table-column align="center" prop="demanName" label="名称" min-width="160">
           </el-table-column>
 
-          <el-table-column align="center" prop="demanNum" label="需求编号" min-width="200" >
+          <el-table-column align="center" prop="demanNum" label="计划编号" min-width="200" >
           </el-table-column>
 
-          <el-table-column align="center" prop="demanDisoName" label="需求交底文件" min-width="200" >
+          <el-table-column align="center" prop="demanDisoName" label="计划交底文件" min-width="200" >
 
             <template slot-scope="scope">
               <el-button size="medium" type="text" @click="getFiles(scope.row.demanDisclose)">{{ scope.row.demanDisoName }}</el-button>
@@ -27,7 +27,7 @@
           <el-table-column align="center" prop="demanProjectNam" label="关联项目" min-width="200" >
           </el-table-column>
 
-          <el-table-column align="center" prop="demanConsciAcoun" label="需求负责人" min-width="140" >
+          <el-table-column align="center" prop="demanConsciAcoun" label="计划负责人" min-width="140" >
           </el-table-column>
 
           <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">

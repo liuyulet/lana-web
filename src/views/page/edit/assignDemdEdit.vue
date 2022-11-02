@@ -1,14 +1,18 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="需求分配"
-      width="60%"
+      title="计划内容维护"
+      width="90%"
+      height="100%"
       top="2rem"
       :close-on-click-modal="false"
       :visible.sync="showDialog"
       :destroy-on-close="true"
       @close="close()"
     >
+      <div style="text-align: center;">
+        <el-button type="primary" v-if="!this.edits" @click="planAdd">新增</el-button>
+      </div>
       <!--    用户信息-->
         <el-table
             :data="uerDataList"
@@ -22,14 +26,9 @@
           </el-table-column>
           <el-table-column align="center" type="index" label="序号" width="80">
           </el-table-column>
-
-          <el-table-column align="center" prop="fullname" label="姓名" min-width="200">
+          <el-table-column align="center" prop="fullname" label="名称" min-width="200">
           </el-table-column>
-          <el-table-column align="center" prop="username" label="用户账号名" min-width="200">
-          </el-table-column>
-          <el-table-column align="center" prop="email" label="邮箱" min-width="140">
-          </el-table-column>
-          <el-table-column align="center" prop="mobile" label="手机号" min-width="120">
+          <el-table-column align="center" prop="username" label="计划要求内容描述" min-width="300">
           </el-table-column>
           <el-table-column align="center" label="状态" min-width="120">
             <template slot-scope="scope">
@@ -40,14 +39,7 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column align="center" prop="dutyName" label="负责部门" min-width="160">
-          </el-table-column>
-          <el-table-column align="center" prop="departName" label="所属部门" min-width="160">
-          </el-table-column>
-          <el-table-column align="center" prop="roleName" label="所属角色" min-width="160">
-          </el-table-column>
         </el-table>
-
         <el-pagination
             style="float: right"
             @size-change="sizeChangeHandle"
@@ -59,20 +51,22 @@
             layout="total, sizes, prev, pager, next, jumper">
         </el-pagination>
         <div style="margin-top: 50px;text-align: center;">
-            <el-button type="primary" v-if="!this.edits" @click="onSubmit">保存</el-button>
-            <el-button @click="close">取消</el-button>
+            <el-button @click="close">关闭</el-button>
         </div>
-
     </el-dialog>
+    <planTaskEdit ref="plantaskedit"></planTaskEdit>
+
   </div>
 </template>
 
 <script>
 import {getAction,postAction} from "../../../api/manage";
-
+import planTaskEdit from './planTaskEdit'
 export default {
   name: "orgEdit",
-  computed: {},
+  components: {
+    planTaskEdit
+  },
   data() {
     return {
       edits: false,
@@ -86,7 +80,22 @@ export default {
       demendId: '',
       uerDataList: {
         pams:''
-
+      },
+      demandEdit: {
+        createTime: '',
+        createUser: '',
+        demanChange: '',
+        demanConsci: '',
+        demanConsciAcoun: '',
+        demanDeadline: '',
+        demanDisclose: '',
+        demanName: '',
+        demanNum: '',
+        demanProject: '',
+        demanStatus: '',
+        demanDisoName: '',
+        demanProjectNam: '',
+        id: ''
       },
       rules: {
       },
@@ -94,71 +103,22 @@ export default {
   },
 
   methods: {
-    openDialog: function (platform, callback) {
+    openDialog(platform, callback) {
       //console.log(platform);
       //判断是新增还是修改
       this.demendId = platform;
       if (platform == null) {
         this.uerDataList.pams = 1
       }else {
-
-        let params = {
-          'page': this.pageIndex,
-          'limit': this.pageSize
-        }
-        getAction("/sys/UserDepartRole/getUserMessage", params).then((data) => {
-          if (data && data.code === 200) {
-            this.uerDataList = data.result.list
-            //处理数据
-            this.totalPage = data.result.totalCount
-          }
-        })
       }
       this.showDialog = true;
       this.listChangeCallback = callback;
     },
-    //提交
-    onSubmit () {
-      if (this.userSelection.length < 1 ) {
-        this.$message({
-          showClose: true,
-          message: "请在下方勾选要绑定或修改绑定的用户",
-          type: 'error'
-        });
-      } else {
-        let parms = {
-          "demendId": this.demendId,
-          "userId": this.userSelection,
-          "userName": localStorage.getItem('userAccount')+'['+localStorage.getItem('userFullname')+']'
-        }
 
-        postAction("/sysDeman/userForDeman", parms).then((data) => {
-          if (data && data.code === 200) {
-            this.$message({
-              showClose: true,
-              message: '操作成功',
-              type: 'success'
-            });
-            this.close()
-          } else {
-            this.$message({
-              showClose: true,
-              message: data.message,
-              type: 'error'
-            });
-          }
-        })
-      }
-    },
-
-    //选择用户
-    handleSelectionChange(val) {
-      //绑定角色维护两个，一个是未授权用户的，一个是修改已授权用户的
-      this.userSelection = [];
-      val.forEach(item => {
-          this.userSelection.push(item.userId);
-      });
-      console.log(this.userSelection)
+    //变更需求
+    planAdd() {
+      console.log( this.$refs.plantaskedit.openDialogs())
+      //this.$refs.planTaskEdit.openDialogs(null, this.initData)
     },
     // 每页数
     sizeChangeHandle(val) {
