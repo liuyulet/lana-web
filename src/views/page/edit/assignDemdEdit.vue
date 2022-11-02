@@ -54,7 +54,7 @@
             <el-button @click="close">关闭</el-button>
         </div>
     </el-dialog>
-    <planTaskEdit ref="plantaskedit"></planTaskEdit>
+    <planTaskEdit ref="planTaskEdit"></planTaskEdit>
 
   </div>
 </template>
@@ -115,10 +115,10 @@ export default {
       this.listChangeCallback = callback;
     },
 
-    //变更需求
+    //变更需求planAdd
     planAdd() {
-      console.log( this.$refs.plantaskedit.openDialogs())
-      //this.$refs.planTaskEdit.openDialogs(null, this.initData)
+      console.log(this.$refs.planTaskEdit)
+      this.$refs.planTaskEdit.openDialogs(null, this.initData)
     },
     // 每页数
     sizeChangeHandle(val) {

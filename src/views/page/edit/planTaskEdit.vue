@@ -86,6 +86,23 @@ export default {
 
   data() {
     return {
+      Title: '',
+      Content: '',
+      name: '',
+      editor: null,
+      editorContent: '',
+      edits: false,
+      listChangeCallback: null,
+      showDialog: false,
+      isLoging: false,
+      dutyUser: [],
+      fileList: [],
+      props: ['catchData'], // 接收父组件的方法
+      demandEdit: {},
+      projects: [],
+      rules: {
+        fullname: [{required: true, message: "姓名不可为空", trigger: "blur"}],
+      },
       context: " ", //输入的数据
       toolbars: {
         bold: true, // 粗体
@@ -109,24 +126,6 @@ export default {
         save: true, // 保存（触发events中的save事件）
         /* 1.4.2 */
         navigation: true, // 导航目录
-
-        Title: '',
-        Content: '',
-        name: '',
-        editor: null,
-        editorContent: '',
-        edits: false,
-        listChangeCallback: null,
-        showDialog: false,
-        isLoging: false,
-        dutyUser: [],
-        fileList: [],
-        props: ['catchData'], // 接收父组件的方法
-        demandEdit: {},
-        projects: [],
-        rules: {
-          fullname: [{required: true, message: "姓名不可为空", trigger: "blur"}],
-        },
       }
     }
   },
@@ -135,9 +134,8 @@ export default {
   methods: {
 
     openDialogs: function (platform, callback) {
-
+      debugger;
       //获取人员
-
       if (platform == null) {
         //新增
         this.edits = false;
