@@ -14,7 +14,9 @@ Vue.component('tinymce', Tinymce)
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 
-
+import mavonEditor from "mavon-editor";
+import "mavon-editor/dist/css/index.css";
+Vue.use(mavonEditor);
 
 // 导航守卫
 // 使用 router.beforeEach 注册一个全局前置守卫，判断用户是否登陆

@@ -20,12 +20,13 @@
     "echarts": "^5.4.0",
     "file-saver": "^2.0.2",
     "form-gen-parser": "^1.0.3",
+    "mavon-editor": "^2.10.4",
     "md5": "^2.3.0",
     "qs": "^6.11.0",
     "throttle-debounce": "^2.1.0",
     "vue": "^2.6.11",
     "vue-quill-editor": "^3.0.6",
-    "vuedraggable": "^2.23.2"
+    "vuedraggable": "^2.23.2",
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",

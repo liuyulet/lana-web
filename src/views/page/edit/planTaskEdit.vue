@@ -17,9 +17,6 @@
               <el-form-item  label="名称：" prop="demanName">
                 <el-input v-model="demandEdit.demanName" placeholder="请填需求名称"></el-input>
               </el-form-item>
-              <el-form-item label="计划编号：" prop="demanNum">
-                <el-input v-model="demandEdit.demanNum" placeholder="项目编号，默认自动生成"></el-input>
-              </el-form-item>
           </el-col>
           <el-col :span="12">
               <el-form-item label="结束日期：" prop="demanDeadline">
@@ -59,21 +56,21 @@
               </el-form-item>
           </el-col>
            <el-col :span="24">
-             <div class='clearfix'>
-               <!-- 富文本编辑框 -->
-               <div id="wangEditorElem" style="height:210px;background: #ffffff;"></div>
+             <div>
+               <mavon-editor
+                   v-model="context"
+                   @imgAdd="$imgAdd"
+                   @imgDel="$imgDel"
+                   :toolbars="toolbars"
+               />
              </div>
            </el-col>
-          <el-col :span="12">
-              <el-form-item>
-                <el-button type="primary" v-if="this.edits" @click="onEdits()">修改</el-button>
-                <el-button type="primary" v-if="!this.edits" @click="onSubmit">新增</el-button>
-                <el-button @click="close">取消</el-button>
-              </el-form-item>
-          </el-col>
-
-
          </el-row>
+         <el-form-item >
+           <el-button type="primary" v-if="this.edits" @click="onEdits()">修改</el-button>
+           <el-button type="primary" v-if="!this.edits" @click="onSubmit">新增</el-button>
+           <el-button @click="close">取消</el-button>
+         </el-form-item>
         </el-form>
       </div>
     </el-dialog>
@@ -82,33 +79,56 @@
 </template>
 
 <script>
-import E from 'wangeditor'
 import {getAction,postAction} from "../../../api/manage";
+var editor;
 export default {
   name: "planTaskEdit",
-  computed: {},
+
   data() {
     return {
-      wEditor: '',
-      name: '',
-      editor: null,
-      editorContent: '',
-      edits: false,
-      listChangeCallback: null,
-      showDialog: false,
-      isLoging: false,
-      dutyUser: [],
-      fileList: [],
-      props: ['catchData'], // 接收父组件的方法
-      demandEdit: {
+      context: " ", //输入的数据
+      toolbars: {
+        bold: true, // 粗体
+        italic: true, // 斜体
+        header: true, // 标题
+        underline: true, // 下划线
+        mark: true, // 标记
+        superscript: true, // 上角标
+        quote: true, // 引用
+        ol: true, // 有序列表
+        link: true, // 链接
+        imagelink: true, // 图片链接
+        help: true, // 帮助
+        code: true, // code
+        subfield: true, // 是否需要分栏
+        fullscreen: true, // 全屏编辑
+        readmodel: true, // 沉浸式阅读
+        /* 1.3.5 */
+        undo: true, // 上一步
+        trash: true, // 清空
+        save: true, // 保存（触发events中的save事件）
+        /* 1.4.2 */
+        navigation: true, // 导航目录
 
-      },
-      projects: [],
-      rules: {
-        fullname: [{ required: true, message: "姓名不可为空", trigger: "blur" }],
-      },
-
-    };
+        Title: '',
+        Content: '',
+        name: '',
+        editor: null,
+        editorContent: '',
+        edits: false,
+        listChangeCallback: null,
+        showDialog: false,
+        isLoging: false,
+        dutyUser: [],
+        fileList: [],
+        props: ['catchData'], // 接收父组件的方法
+        demandEdit: {},
+        projects: [],
+        rules: {
+          fullname: [{required: true, message: "姓名不可为空", trigger: "blur"}],
+        },
+      }
+    }
   },
 
 
@@ -117,8 +137,7 @@ export default {
     openDialogs: function (platform, callback) {
 
       //获取人员
-      this.getUsers()
-      this.getProjectAll()
+
       if (platform == null) {
         //新增
         this.edits = false;
@@ -128,37 +147,15 @@ export default {
       }
       this.showDialog = true;
       this.listChangeCallback = callback;
-    },
 
-    getUsers () {
-      getAction("/sys/user/getUserAll").then((data) => {
-        if (data && data.code === 200) {
-          this.dutyUser = data.result.userData
-          console.log(this.dutyUser)
-        }else {
-          this.$message({
-            showClose: true,
-            message: '获取组织信息失败，请联系管理员',
-            type: 'error'
-          });
-        }
-      })
     },
-
-    getProjectAll () {
-      getAction("/sysProject/getProjectAll").then((data) => {
-        if (data && data.code === 200) {
-          this.projects = data.result.projectData
-        }else {
-          this.$message({
-            showClose: true,
-            message: '获取组织信息失败，请联系管理员',
-            type: 'error'
-          });
-        }
-      })
+    // 绑定@imgAdd event
+    $imgAdd() {
+      console.log("添加图片");
     },
-
+    $imgDel() {
+      console.log("删除图片");
+    },
     //修改
     onEdits () {
       let params = {
