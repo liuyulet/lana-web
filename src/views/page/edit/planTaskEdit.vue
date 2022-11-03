@@ -9,50 +9,25 @@
         :destroy-on-close="true"
         @close="close()"
     >
-
       <div id="shared" style="text-align: right; margin-top: 1rem;">
-       <el-form :rules="rules" :model="demandEdit"  label-width="120px" >
+       <el-form :rules="rules" :model="planTaskEdit"  label-width="120px" >
          <el-row :gutter="24">
-           <el-col :span="12">
-              <el-form-item  label="名称：" prop="demanName">
-                <el-input v-model="demandEdit.demanName" placeholder="请填需求名称"></el-input>
+           <el-col :span="11">
+              <el-form-item  label="名称：" prop="planDemanName">
+                <el-input v-model="planTaskEdit.planDemanName" placeholder="请填项名称"></el-input>
               </el-form-item>
           </el-col>
-          <el-col :span="12">
-              <el-form-item label="结束日期：" prop="demanDeadline">
+          <el-col :span="11">
+              <el-form-item label="结束日期：" prop="planDemanEndTime">
                 <div class="block">
                   <el-date-picker
                       style="width: 100%"
-                      v-model="demandEdit.demanDeadline"
-                      type="datetime"
-                      value-format="yyyy-MM-dd HH:mm:ss"
+                      v-model="planTaskEdit.planDemanEndTime"
+                      type="date"
+                      value-format="yyyy-MM-dd"
                       placeholder="选择日期时间">
                   </el-date-picker>
                 </div>
-              </el-form-item>
-          </el-col>
-          <el-col :span="12">
-              <el-form-item  label="关联项目：" prop="status">
-                <el-select class="selects"  v-model="demandEdit.demanProject" placeholder="请选择项目">
-                  <el-option
-                      v-for="item in projects"
-                      :key="item.projectId"
-                      :label="item.projectName"
-                      :value="item.projectId">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-          </el-col>
-          <el-col :span="12">
-              <el-form-item label="计划负责人：" prop="demanConsci">
-                <el-select class="selects"  v-model="demandEdit.demanConsci" placeholder="请选择计划负责人">
-                  <el-option
-                      v-for="item in dutyUser"
-                      :key="item.userId"
-                      :label="item.fullname+item.mobile"
-                      :value="item.userId">
-                  </el-option>
-                </el-select>
               </el-form-item>
           </el-col>
            <el-col :span="24">
@@ -66,9 +41,8 @@
              </div>
            </el-col>
          </el-row>
-         <el-form-item >
-           <el-button type="primary" v-if="this.edits" @click="onEdits()">修改</el-button>
-           <el-button type="primary" v-if="!this.edits" @click="onSubmit">新增</el-button>
+         <el-form-item style="margin-top: 10px">
+           <el-button type="primary" v-if="this.edits" @click="onSubmit()">保存</el-button>
            <el-button @click="close">取消</el-button>
          </el-form-item>
         </el-form>
@@ -86,24 +60,23 @@ export default {
 
   data() {
     return {
-      Title: '',
-      Content: '',
-      name: '',
       editor: null,
       editorContent: '',
       edits: false,
       listChangeCallback: null,
       showDialog: false,
       isLoging: false,
-      dutyUser: [],
-      fileList: [],
       props: ['catchData'], // 接收父组件的方法
-      demandEdit: {},
+      planTaskEdit: {
+        planName: '',
+        planDemanEndTime: ''
+      },
+      demandData: {},
       projects: [],
       rules: {
         fullname: [{required: true, message: "姓名不可为空", trigger: "blur"}],
       },
-      context: " ", //输入的数据
+      context: "  ", //输入的数据
       toolbars: {
         bold: true, // 粗体
         italic: true, // 斜体
@@ -134,7 +107,6 @@ export default {
   methods: {
 
     openDialogs: function (platform, callback) {
-      debugger;
       //获取人员
       if (platform == null) {
         //新增
@@ -142,6 +114,7 @@ export default {
       }else {
         //修改
         this.edits = true;
+        this.demandData = platform;
       }
       this.showDialog = true;
       this.listChangeCallback = callback;
@@ -158,17 +131,7 @@ export default {
     onEdits () {
       let params = {
         //数据怼上去
-        demanChange: this.demandEdit.demanChange,
-        demanConsci: this.demandEdit.demanConsci,
-        demanConsciAcoun: this.demandEdit.demanConsciAcoun,
-        demanDeadline: this.demandEdit.demanDeadline,
-        demanDisclose: this.demandEdit.demanDisclose,
-        demanDisoName: this.demandEdit.demanDisoName,
-        demanName: this.demandEdit.demanName,
-        demanNum: this.demandEdit.demanNum,
-        demanProject: this.demandEdit.demanProject,
-        id:this.demandEdit.id,
-        createUser: localStorage.getItem('userAccount')
+
       }
       postAction("/sysDeman/updateProject",params).then((data) => {
         if (data && data.code === 200) {
@@ -178,7 +141,7 @@ export default {
             type: 'success'
           });
           this.close()
-
+          this.$emit('get-planiteams')
         }else {
           this.$message({
             showClose: true,
@@ -189,21 +152,19 @@ export default {
       })
     },
 
+    //新增
     onSubmit () {
       let params = {
-        createTime: this.demandEdit.createTime,
-        demanChange: this.demandEdit.demanChange,
-        demanConsci: this.demandEdit.demanConsci,
-        demanConsciAcoun: this.demandEdit.demanConsciAcoun,
-        demanDeadline: this.demandEdit.demanDeadline,
-        demanDisclose: this.demandEdit.demanDisclose,
-        demanDisoName: this.demandEdit.demanDisoName,
-        demanName: this.demandEdit.demanName,
-        demanNum: this.demandEdit.demanNum,
-        demanProject: this.demandEdit.demanProject,
+        planName: this.planTaskEdit.planDemanName,
+        //富文本的内容
+        planCont: this.context,
+        planStatus: 0,
+        planDemanName: this.demandData.demanName,
+        planDemanEndTime: this.planTaskEdit.planDemanEndTime,
+        planDemanId: this.demandData.id,
         createUser: localStorage.getItem('userAccount')
       }
-      postAction("/sysDeman/addDeman",params).then((data) => {
+      postAction("/palnItem/addPalnItem",params).then((data) => {
         if (data && data.code === 200) {
           this.$message({
             showClose: true,
@@ -211,6 +172,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.$emit('get-planiteams',{id:this.demandData.id})
         }else {
           this.$message({
             showClose: true,
@@ -220,6 +182,7 @@ export default {
         }
       })
     },
+
     close () {
       this.showDialog = false;
     },

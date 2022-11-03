@@ -118,12 +118,12 @@
             sizeChangeHandle(val) {
                 this.pageSize = val;
                 this.pageIndex = 1;
-                this.getDataList()
+                this.getUser()
             },
             // 当前页
             currentChangeHandle(val) {
                 this.pageIndex = val;
-                this.getDataList()
+                this.getUser()
             },
         },
     }

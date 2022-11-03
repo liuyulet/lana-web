@@ -15,7 +15,7 @@
       </div>
       <!--    用户信息-->
         <el-table
-            :data="uerDataList"
+            :data="palnItem"
             style="width: 100%;font-size: 13px;margin-top: 2rem;"
             header-row-class-name="table-header"
             @selection-change="handleSelectionChange">
@@ -26,19 +26,32 @@
           </el-table-column>
           <el-table-column align="center" type="index" label="序号" width="80">
           </el-table-column>
-          <el-table-column align="center" prop="fullname" label="名称" min-width="200">
+          <el-table-column align="center" prop="planName" label="名称" min-width="200">
           </el-table-column>
-          <el-table-column align="center" prop="username" label="计划要求内容描述" min-width="300">
+          <el-table-column align="center"  label="计划内要求内容描述" min-width="300">
+            <template slot-scope="scope">
+              {{scope.row.planCont.substring(0,31)}}
+            </template>
           </el-table-column>
           <el-table-column align="center" label="状态" min-width="120">
             <template slot-scope="scope">
               <div slot="reference" class="name-wrapper">
-                <el-tag size="medium" v-if="scope.row.status == 1">正常</el-tag>
-                <el-tag size="medium" type="info" v-if="scope.row.status == 0">禁用</el-tag>
-                <el-tag size="medium" type="info" v-if="scope.row.status == 2">新注册</el-tag>
+                <el-tag size="medium" >新建</el-tag>
+                <el-tag size="medium" type="info" v-if="scope.row.planStatus == 1">进行中</el-tag>
+                <el-tag size="medium" type="info" v-if="scope.row.planStatus == 2">驳回</el-tag>
+                <el-tag size="medium" type="info" v-if="scope.row.planStatus == 3">完成</el-tag>
               </div>
             </template>
           </el-table-column>
+
+          <el-table-column align="center" prop="username" label="操作" min-width="200">
+            <el-button size="medium" icon="el-icon-edit" type="text">编辑</el-button>
+            <el-divider direction="vertical"></el-divider>
+            <el-button size="medium" icon="el-icon-edit" type="text">绑定过程</el-button>
+            <el-divider direction="vertical"></el-divider>
+            <el-button size="medium" icon="el-icon-edit" type="text">指定人员</el-button>
+          </el-table-column>
+
         </el-table>
         <el-pagination
             style="float: right"
@@ -54,7 +67,7 @@
             <el-button @click="close">关闭</el-button>
         </div>
     </el-dialog>
-    <planTaskEdit ref="planTaskEdit"></planTaskEdit>
+    <planTaskEdit ref="planTaskEdit" @get-planiteams="getPalnItem"></planTaskEdit>
 
   </div>
 </template>
@@ -69,6 +82,7 @@ export default {
   },
   data() {
     return {
+      demendData: '',
       edits: false,
       listChangeCallback: null,
       showDialog: false,
@@ -77,26 +91,10 @@ export default {
       pageSize: 10,
       totalPage: 0,
       userSelection: '',
-      demendId: '',
-      uerDataList: {
-        pams:''
+      palnItem: {
+
       },
-      demandEdit: {
-        createTime: '',
-        createUser: '',
-        demanChange: '',
-        demanConsci: '',
-        demanConsciAcoun: '',
-        demanDeadline: '',
-        demanDisclose: '',
-        demanName: '',
-        demanNum: '',
-        demanProject: '',
-        demanStatus: '',
-        demanDisoName: '',
-        demanProjectNam: '',
-        id: ''
-      },
+
       rules: {
       },
     };
@@ -106,10 +104,11 @@ export default {
     openDialog(platform, callback) {
       //console.log(platform);
       //判断是新增还是修改
-      this.demendId = platform;
       if (platform == null) {
-        this.uerDataList.pams = 1
+
       }else {
+        this.demendData = platform
+        this.getPalnItem(platform);
       }
       this.showDialog = true;
       this.listChangeCallback = callback;
@@ -118,18 +117,34 @@ export default {
     //变更需求planAdd
     planAdd() {
       console.log(this.$refs.planTaskEdit)
-      this.$refs.planTaskEdit.openDialogs(null, this.initData)
+      this.$refs.planTaskEdit.openDialogs(this.demendData, this.initData)
     },
+    //获取r任务计划列表
+    getPalnItem(platform) {
+      let params = {
+        'page': this.pageIndex,
+        'limit': this.pageSize,
+        'planDemanId': platform.id
+      }
+      getAction("/palnItem/getPalnItem", params).then((data) => {
+        if (data && data.code === 200) {
+          this.palnItem = data.result.list
+          //处理数据
+          this.totalPage = data.result.totalCount
+        }
+      })
+    },
+
     // 每页数
     sizeChangeHandle(val) {
       this.pageSize = val
       this.pageIndex = 1
-      this.getDataList()
+      this.getPalnItem(this.demendData.id)
     },
     // 当前页
     currentChangeHandle(val) {
       this.pageIndex = val
-      this.getDataList()
+      this.getPalnItem(this.demendData.id)
     },
     close () {
       this.showDialog = false;

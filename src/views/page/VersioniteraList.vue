@@ -76,7 +76,7 @@ export default {
   },
   methods: {
     //获取需求管理列表
-    //用户列表
+    //过程列表
     getStep() {
       let params = {
         'page': this.pageIndex,
@@ -86,7 +86,6 @@ export default {
         if (data && data.code === 200) {
           this.stepList = data.result.list
           //处理数据
-          this.changeRoleData()
           this.totalPage = data.result.totalCount
         }
       })
@@ -129,12 +128,12 @@ export default {
     sizeChangeHandle(val) {
       this.pageSize = val
       this.pageIndex = 1
-      this.getDataList()
+      this.getStep()
     },
     // 当前页
     currentChangeHandle(val) {
       this.pageIndex = val
-      this.getDataList()
+      this.getStep()
     },
   },
 

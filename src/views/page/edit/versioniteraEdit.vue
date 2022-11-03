@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-        title="开发过程管理"
+        title="过程管理"
         width="80%"
         top="2rem"
         :close-on-click-modal="false"

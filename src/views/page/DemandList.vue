@@ -63,11 +63,12 @@
 <!--          <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-refresh"
                      v-if="scope.row.demanStatus<2" @click="getTooltipContent(scope.row.id)">需求分配
           </el-button>-->
-          <el-button size="medium" icon="el-icon-edit" type="text" @click="getTooltipContent(scope.row.id)">维护</el-button>
+
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="editDemandPlatform(scope.row)">计划变更</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-edit" type="text" @click="editDemandPlatform(scope.row)">变更</el-button>
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="getTooltipContent(scope.row)">任务维护</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-view" type="text" @click="demandStatus(scope.row.id)">进度</el-button>
+          <el-button size="medium" icon="el-icon-view" type="text" @click="demandStatus(scope.row.id)">进度查看</el-button>
           <el-divider direction="vertical"></el-divider>
           <el-button size="medium" icon="el-icon-delete" v-if="scope.row.demanStatus<2" type="text" @click="deleteDemand(scope.row.id)" style="color: #f56c6c">删除</el-button>
 
@@ -133,29 +134,28 @@ export default {
         if (data && data.code === 200) {
           this.demandList = data.result.list
           //处理数据
-          this.changeRoleData()
           this.totalPage = data.result.totalCount
         }
       })
     },
-    //需求状态
+    //计划状态
     demandStatus(demanId){
       this.$refs.collaboratorsEdit.openDialog(demanId, this.initData)
     },
-    //新增需求
+    //新增计划
     addDemandPlatform() {
       this.$refs.demandEdit.openDialog(null, this.initData)
     },
-    //变更需求
+    //变更计划
     editDemandPlatform(demandData) {
       this.$refs.demandEdit.openDialog(demandData, this.initData)
     },
 
-    //需求变更历史
+    //计划变更历史
     changeDemEdit(demandData) {
       this.$refs.changeDemEdit.openDialog(demandData, this.initData)
     },
-    //变更需求
+    //维护计划
     getTooltipContent(demandData) {
         this.$refs.assignDemdEdit.openDialog(demandData, this.initData)
     },
@@ -195,12 +195,12 @@ export default {
     sizeChangeHandle(val) {
       this.pageSize = val
       this.pageIndex = 1
-      this.getDataList()
+      this.getDeman()
     },
     // 当前页
     currentChangeHandle(val) {
       this.pageIndex = val
-      this.getDataList()
+      this.getDeman()
     },
   },
 

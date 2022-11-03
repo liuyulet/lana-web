@@ -215,12 +215,12 @@ export default {
     sizeChangeHandle(val) {
       this.pageSize = val
       this.pageIndex = 1
-      this.getDataList()
+      this.getAllOver()
     },
     // 当前页
     currentChangeHandle(val) {
       this.pageIndex = val
-      this.getDataList()
+      this.getAllOver()
     },
   },
 
