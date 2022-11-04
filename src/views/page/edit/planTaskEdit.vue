@@ -13,8 +13,8 @@
        <el-form :rules="rules" :model="planTaskEdit"  label-width="120px" >
          <el-row :gutter="24">
            <el-col :span="11">
-              <el-form-item  label="名称：" prop="planDemanName">
-                <el-input v-model="planTaskEdit.planDemanName" placeholder="请填项名称"></el-input>
+              <el-form-item  label="名称：" prop="planName">
+                <el-input v-model="planTaskEdit.planName" placeholder="请填项名称"></el-input>
               </el-form-item>
           </el-col>
           <el-col :span="11">
@@ -34,15 +34,18 @@
              <div>
                <mavon-editor
                    v-model="context"
+                   ref="md"
                    @imgAdd="$imgAdd"
                    @imgDel="$imgDel"
-                   :toolbars="toolbars"
+                   @change="change"
+                   style="min-height: 400px"
                />
              </div>
            </el-col>
          </el-row>
          <el-form-item style="margin-top: 10px">
-           <el-button type="primary" v-if="this.edits" @click="onSubmit()">保存</el-button>
+           <el-button type="primary" v-if="this.edits==false" @click="onSubmit()">新增</el-button>
+           <el-button type="primary" v-if="this.edits==true" @click="onEdits()">修改</el-button>
            <el-button @click="close">取消</el-button>
          </el-form-item>
         </el-form>
@@ -77,44 +80,26 @@ export default {
         fullname: [{required: true, message: "姓名不可为空", trigger: "blur"}],
       },
       context: "  ", //输入的数据
-      toolbars: {
-        bold: true, // 粗体
-        italic: true, // 斜体
-        header: true, // 标题
-        underline: true, // 下划线
-        mark: true, // 标记
-        superscript: true, // 上角标
-        quote: true, // 引用
-        ol: true, // 有序列表
-        link: true, // 链接
-        imagelink: true, // 图片链接
-        help: true, // 帮助
-        code: true, // code
-        subfield: true, // 是否需要分栏
-        fullscreen: true, // 全屏编辑
-        readmodel: true, // 沉浸式阅读
-        /* 1.3.5 */
-        undo: true, // 上一步
-        trash: true, // 清空
-        save: true, // 保存（触发events中的save事件）
-        /* 1.4.2 */
-        navigation: true, // 导航目录
-      }
+      html: "",//html格式编辑器
     }
   },
 
 
   methods: {
 
-    openDialogs: function (platform, callback) {
-      //获取人员
-      if (platform == null) {
-        //新增
+    openDialogs: function (platform,types,callback) {
+      //新增
+      if (types == 0) {
         this.edits = false;
+        this.demandData = platform;
       }else {
         //修改
         this.edits = true;
         this.demandData = platform;
+        //获取回显数据
+        this.planTaskEdit.planName = platform.planName
+        this.planTaskEdit.planDemanEndTime = platform.planDemanEndTime
+        this.context = platform.planCont
       }
       this.showDialog = true;
       this.listChangeCallback = callback;
@@ -131,7 +116,6 @@ export default {
     onEdits () {
       let params = {
         //数据怼上去
-
       }
       postAction("/sysDeman/updateProject",params).then((data) => {
         if (data && data.code === 200) {
@@ -155,7 +139,7 @@ export default {
     //新增
     onSubmit () {
       let params = {
-        planName: this.planTaskEdit.planDemanName,
+        planName: this.planTaskEdit.planName,
         //富文本的内容
         planCont: this.context,
         planStatus: 0,

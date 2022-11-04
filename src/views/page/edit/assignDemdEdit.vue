@@ -11,7 +11,7 @@
       @close="close()"
     >
       <div style="text-align: center;">
-        <el-button type="primary" v-if="!this.edits" @click="planAdd">新增</el-button>
+        <el-button type="primary" v-if="!this.edits" @click="planAdd">新增计划项</el-button>
       </div>
       <!--    用户信息-->
         <el-table
@@ -30,7 +30,7 @@
           </el-table-column>
           <el-table-column align="center"  label="计划内要求内容描述" min-width="300">
             <template slot-scope="scope">
-              {{scope.row.planCont.substring(0,31)}}
+              {{scope.row.planCont.substring(0,50)}}
             </template>
           </el-table-column>
           <el-table-column align="center" label="状态" min-width="120">
@@ -45,11 +45,13 @@
           </el-table-column>
 
           <el-table-column align="center" prop="username" label="操作" min-width="200">
-            <el-button size="medium" icon="el-icon-edit" type="text">编辑</el-button>
+            <template slot-scope="scope">
+            <el-button size="medium" icon="el-icon-edit" type="text" @click="planEdit(scope.row)">编辑</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button size="medium" icon="el-icon-edit" type="text">绑定过程</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button size="medium" icon="el-icon-edit" type="text">指定人员</el-button>
+            </template>
           </el-table-column>
 
         </el-table>
@@ -82,7 +84,7 @@ export default {
   },
   data() {
     return {
-      demendData: '',
+      demendData: null,
       edits: false,
       listChangeCallback: null,
       showDialog: false,
@@ -114,10 +116,13 @@ export default {
       this.listChangeCallback = callback;
     },
 
-    //变更需求planAdd
+    //新增需求planAdd
     planAdd() {
-      console.log(this.$refs.planTaskEdit)
-      this.$refs.planTaskEdit.openDialogs(this.demendData, this.initData)
+      this.$refs.planTaskEdit.openDialogs(this.demendData,0, this.initData)
+    },
+    //编辑需求planAdd
+    planEdit(planData) {
+      this.$refs.planTaskEdit.openDialogs(planData,1, this.initData)
     },
     //获取r任务计划列表
     getPalnItem(platform) {
