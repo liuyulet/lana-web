@@ -87,7 +87,7 @@ export default {
   },
   methods: {
 
-    openDialog: function (step, callback) {
+    openDialoga: function (step, callback) {
       if (step == null) {
         //新增
       } else {

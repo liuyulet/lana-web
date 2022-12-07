@@ -17,13 +17,8 @@
         <el-table
             :data="palnItem"
             style="width: 100%;font-size: 13px;margin-top: 2rem;"
-            header-row-class-name="table-header"
-            @selection-change="handleSelectionChange">
-          <el-table-column
-              type="selection"
-              style="color: #1e1e1e"
-              width="55">
-          </el-table-column>
+            header-row-class-name="table-header">
+
           <el-table-column align="center" type="index" label="序号" width="80">
           </el-table-column>
           <el-table-column align="center" prop="planName" label="名称" min-width="200">
@@ -48,7 +43,7 @@
             <template slot-scope="scope">
             <el-button size="medium" icon="el-icon-edit" type="text" @click="planEdit(scope.row)">编辑</el-button>
             <el-divider direction="vertical"></el-divider>
-            <el-button size="medium" icon="el-icon-edit" type="text">绑定过程</el-button>
+            <el-button size="medium" icon="el-icon-edit" type="text" @click="binDing(scope.row.id)">绑定过程</el-button>
             <el-divider direction="vertical"></el-divider>
             <el-button size="medium" icon="el-icon-edit" type="text">指定人员</el-button>
             </template>
@@ -70,6 +65,7 @@
         </div>
     </el-dialog>
     <planTaskEdit ref="planTaskEdit" @get-planiteams="getPalnItem"></planTaskEdit>
+    <binDingEdit ref="binDingEdit" @get-planiteams="getPalnItem"></binDingEdit>
 
   </div>
 </template>
@@ -77,10 +73,12 @@
 <script>
 import {getAction,postAction} from "../../../api/manage";
 import planTaskEdit from './planTaskEdit'
+import binDingEdit from './binDingEdit'
 export default {
   name: "orgEdit",
   components: {
-    planTaskEdit
+    planTaskEdit,
+    binDingEdit
   },
   data() {
     return {
@@ -124,6 +122,12 @@ export default {
     planEdit(planData) {
       this.$refs.planTaskEdit.openDialogs(planData,1, this.initData)
     },
+
+    //任务绑定流程
+    binDing(id) {
+      this.$refs.binDingEdit.openDialogz(id, this.initData)
+    },
+
     //获取r任务计划列表
     getPalnItem(platform) {
       let params = {

@@ -7,7 +7,7 @@
         <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
       </div>
     </div>
-    <!--设备列表-->
+    <!--列表-->
     <el-table :data="stepList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
       <el-table-column align="center" prop="stepName" label="协作过程名称" min-width="250">
       </el-table-column>
@@ -96,9 +96,9 @@ export default {
     },
     //查看节点信息
     findStep(step){
-      this.$refs.versionDtiolEdit.openDialog(step, this.initData)
+      this.$refs.versionDtiolEdit.openDialoga(step, this.initData)
     },
-    //修改项目
+    //修改节点
     editStep(step) {
       this.$refs.versioniteraEdit.openDialog(step, this.initData)
     },

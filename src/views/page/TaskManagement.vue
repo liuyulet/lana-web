@@ -2,13 +2,9 @@
   <div id="app">
     <div class="page-header">
       <div class="page-title">任务管理列表</div>
-      <spen style="color: darkcyan ">请在结束日期之前完成哦，如果有疑问请找分配人员协商！</spen>
       <div class="page-header-btn">
 
-
-
-<!--        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addDemandPlatform">添加新需求</el-button>
-        <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>-->
+        <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
       </div>
     </div>
     <!--设备列表-->

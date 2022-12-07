@@ -125,7 +125,7 @@
                     @selection-change="handleSelectionChange">
                 <el-table-column
                         type="selection"
-                        style="color: #1e1e1e"
+                        style="color: #050505"
                         width="55">
                 </el-table-column>
                 <el-table-column align="center" type="index" label="序号" width="80">
