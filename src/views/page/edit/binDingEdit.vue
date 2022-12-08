@@ -73,16 +73,20 @@ export default {
       totalPage: 0,
       stepList: null,
       palnItemId: '',
+      planItemName: '',
+      planName: '',
       stepId: '',
       selectionL: [],
     };
   },
 
   methods: {
-    openDialogz: function (id, callback) {
+    openDialogz: function (id,planItemName,planName, callback) {
       //console.log(platform);
       //任务id
       this.palnItemId = id;
+      this.planItemName = planItemName;
+      this.planName = planName;
       this.showDialog = true;
       this.listChangeCallback = callback;
       this.getStep();
@@ -105,10 +109,11 @@ export default {
       let params = {
         stepId: this.stepId,
         palnItemId: this.palnItemId,
+        palnItemName: this.planItemName,
+        palnName: this.planName,
         createUser: localStorage.getItem('userAccount')
       }
       postAction("/busBinding/addBinding",params).then((data) => {
-        debugger;
         if (data && data.code === 200) {
           this.$message({
             showClose: true,

@@ -9,10 +9,10 @@
     </div>
     <!--设备列表-->
     <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
-      <el-table-column align="center" prop="demanName" label="名称" min-width="160">
+      <el-table-column align="center" prop="palnItemName" label="任务名称" min-width="160">
       </el-table-column>
 
-      <el-table-column align="center" prop="demanNum" label="任务编号" min-width="200" >
+      <el-table-column align="center" prop="palnName" label="所属计划" min-width="200" >
       </el-table-column>
 
       <el-table-column align="center" prop="demanDisoName" label="需求交底文件" min-width="200" >
@@ -123,18 +123,18 @@ export default {
     this.getTaskDeman();
   },
   methods: {
-    //获取需求管理列表
+    //获取需求任务管理列表
     getTaskDeman() {
       let params = {
         'page': this.pageIndex,
         'limit': this.pageSize,
         'userId': localStorage.getItem('userId')
       }
-      getAction("/sysTask/getDemanTask", params).then((data) => {
+      getAction("/sysDemanUser/getTesk", params).then((data) => {
         if (data && data.code === 200) {
           this.demandList = data.result.list
           //处理数据
-          this.changeRoleData()
+          //this.changeRoleData()
           this.totalPage = data.result.totalCount
         }
       })

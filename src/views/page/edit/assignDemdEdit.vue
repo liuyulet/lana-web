@@ -31,10 +31,11 @@
           <el-table-column align="center" label="状态" min-width="120">
             <template slot-scope="scope">
               <div slot="reference" class="name-wrapper">
-                <el-tag size="medium" >新建</el-tag>
-                <el-tag size="medium" type="info" v-if="scope.row.planStatus == 1">进行中</el-tag>
-                <el-tag size="medium" type="info" v-if="scope.row.planStatus == 2">驳回</el-tag>
-                <el-tag size="medium" type="info" v-if="scope.row.planStatus == 3">完成</el-tag>
+                <el-tag size="medium" v-if="scope.row.planStatus == 1">新建</el-tag>
+                <el-tag size="medium" type="success" v-if="scope.row.planStatus == 1">进行中</el-tag>
+                <el-tag size="medium" type="success" v-if="scope.row.planStatus == 2">驳回</el-tag>
+                <el-tag size="medium" type="success" v-if="scope.row.planStatus == 3">完成</el-tag>
+                <el-tag size="medium" type="success" v-if="scope.row.planStatus == 4">已分配</el-tag>
               </div>
             </template>
           </el-table-column>
@@ -43,9 +44,11 @@
             <template slot-scope="scope">
             <el-button size="medium" icon="el-icon-edit" type="text" @click="planEdit(scope.row)">编辑</el-button>
             <el-divider direction="vertical"></el-divider>
-            <el-button size="medium" icon="el-icon-edit" type="text" @click="binDing(scope.row.id)">绑定过程</el-button>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 1 && scope.row.planStatus == 2" type="text" @click="binDing(scope.row.id,scope.row.planName)">绑定过程</el-button>
+              <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus != 1 && scope.row.planStatus != 2" type="text" @click="checkPrecee(scope.row.id)">进度查看</el-button>
             <el-divider direction="vertical"></el-divider>
-            <el-button size="medium" icon="el-icon-edit" type="text">指定人员</el-button>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 1 && scope.row.planStatus == 2" type="text">指定人员</el-button>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 4 " type="text">撤销绑定</el-button>
             </template>
           </el-table-column>
 
@@ -106,6 +109,7 @@ export default {
       //判断是新增还是修改
       if (platform == null) {
 
+
       }else {
         this.demendData = platform
         this.getPalnItem(platform);
@@ -124,8 +128,8 @@ export default {
     },
 
     //任务绑定流程
-    binDing(id) {
-      this.$refs.binDingEdit.openDialogz(id, this.initData)
+    binDing(id,planItemName) {
+      this.$refs.binDingEdit.openDialogz(id,planItemName,this.demendData.demanName, this.initData)
     },
 
     //获取r任务计划列表

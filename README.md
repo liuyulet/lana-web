@@ -16,6 +16,7 @@ yarn run serve
 ```
 yarn run build
 ```
+打包有问题？就试试 npm run build:dev（或其他分支）
 
 ### Lints和修复文件
 ```
