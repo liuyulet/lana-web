@@ -9,70 +9,69 @@
     </div>
     <!--设备列表-->
     <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
-      <el-table-column align="center" prop="palnItemName" label="任务名称" min-width="160">
+      <el-table-column align="center" prop="planName" label="任务名称" min-width="160">
       </el-table-column>
 
-      <el-table-column align="center" prop="palnName" label="所属计划" min-width="200" >
+      <el-table-column align="center" prop="demanName" label="所属计划" min-width="160" >
       </el-table-column>
 
-      <el-table-column align="center" prop="demanDisoName" label="需求交底文件" min-width="200" >
+      <el-table-column align="center" prop="demanFileName" label="计划交底文件" min-width="160" >
 
         <template slot-scope="scope">
-          <el-button size="medium" type="text" @click="getFiles(scope.row.demanDisclose)">{{ scope.row.demanDisoName }}</el-button>
+          <el-button size="medium" type="text" @click="getFiles(scope.row.demanFileUrl)">{{ scope.row.demanFileName }}</el-button>
         </template>
+      </el-table-column>
+<!--      <el-table-column align="center" prop="demanProjectNam" label="所属项目" min-width="200" >
+      </el-table-column>-->
+
+      <el-table-column align="center" prop="demanPersName" label="计划负责人" min-width="140" >
 
       </el-table-column>
 
-
-      <el-table-column align="center" prop="demanProjectNam" label="所属项目" min-width="200" >
-      </el-table-column>
-
-      <el-table-column align="center" prop="demanConsciAcoun" label="需求负责人" min-width="140" >
+      <el-table-column align="center" prop="planCreatTime" label="任务创建时间" min-width="140" >
 
       </el-table-column>
+      <el-table-column align="center" prop="planEndTime" label="任务完成日期" min-width="140" >
 
-      <el-table-column align="center" prop="taskStatus" label="任务状态"  min-width="160">
+      </el-table-column>
+
+<!--自己任务状态1:进行中，2:驳回，3应做，0待办（刚分配），只有为3的时候才会显示到任务中
+计划中任务的整体数据状态。1:任务被驳回，2:任务完成，3:进行中
+-->
+      <el-table-column align="center" prop="taskMeStatus" label="我得任务状态"  min-width="100">
         <template slot-scope="scope">
           <div slot="reference" class="name-wrapper">
-            <el-tag size="medium" v-if="scope.row.taskStatus == 0">未开始</el-tag>
-            <el-tag size="medium" v-if="scope.row.taskStatus == 1">进行中</el-tag>
-            <el-tag size="medium" v-if="scope.row.taskStatus == 2">已完成</el-tag>
-            <el-tag size="medium" v-if="scope.row.taskStatus == 3">已到下一阶段</el-tag>
+            <el-tag size="medium" v-if="scope.row.taskMeStatus == 0">预置</el-tag>
+            <el-tag size="medium" v-if="scope.row.taskMeStatus == 1">进行中</el-tag>
+            <el-tag size="medium" v-if="scope.row.taskMeStatus == 2">驳回</el-tag>
+            <el-tag size="medium" v-if="scope.row.taskMeStatus == 3">未开始</el-tag>
+            <el-tag size="medium" v-if="scope.row.taskMeStatus == 4">完成</el-tag>
           </div>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" prop="demanDeadline" label="结束日期" min-width="160" >
-      </el-table-column>
 
+      <el-table-column align="center" prop="taskDataStatus" label="整体任务情况"  min-width="100">
 
-      <el-table-column align="center" prop="createTime" label="分配日期" min-width="160" >
-      </el-table-column>
-      <el-table-column align="center" prop="createUser" label="分配人员" min-width="160" >
-      </el-table-column>
+            <template slot-scope="scope">
+<!--              整体数据状态。1:任务被驳回，2:任务完成，3:进行中中-->
+              <el-button size="medium" type="text"  v-if="scope.row.taskMeStatus == 1" @click="getFiles(scope.row.id)">驳回</el-button>
+              <el-button size="medium" type="text"  v-if="scope.row.taskMeStatus == 2" @click="getFiles(scope.row.id)">任务完成</el-button>
+              <el-button size="medium" type="text"  v-if="scope.row.taskMeStatus == 3" @click="getFiles(scope.row.id)">进行中</el-button>
+            </template>
 
-<!--      <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
       </el-table-column>
-      <el-table-column align="center" prop="createTime" label="创建时间"  min-width="160">
-      </el-table-column>-->
-      <!--      <el-table-column prop="updateTime" label="更新时间"  width="140">-->
-      <!--      </el-table-column>-->
-      <!--      <el-table-column prop="createTime" label="创建时间"  width="140">-->
-      <!--      </el-table-column>-->
-<!--      <el-table-column align="center" prop="demanDeadline" label="截止日期" min-width="160" >
-      </el-table-column>-->
 
       <el-table-column align="center" label="操作" min-width="350" fixed="right">
         <template slot-scope="scope">
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-video-play" v-if="scope.row.taskStatus == 0" type="text" @click="startTask(scope.row.id)">开始任务</el-button>
+          <el-button size="medium" icon="el-icon-video-play"  type="text"  @click="startTask(scope.row.id)">开始任务</el-button>
           <!-- 点击我已完成，如果是开发人员就需要填写代码提交记录；如果是测试人员，需要填写测试结果；如果是实施人员，需要填写实施信息；如果是产品验收人员，需要填写验收信息； -->
-          <el-button size="medium" icon="el-icon-finished" v-if="scope.row.taskStatus == 1" type="text" @click="overTask(scope.row.id)">我已完成</el-button>
+          <el-button size="medium" icon="el-icon-finished" type="text" @click="overTask(scope.row.id)">我已完成</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button type="text" size="medium"  icon="el-icon-s-custom"
-                     v-if="scope.row.demanStatus<13" @click="getLookColla(scope.row.demanId)">协作者
+          <el-button type="text" size="medium"  icon="el-icon-s-custom" @click="getLookColla(scope.row.demanId)">协作者
           </el-button>
-          <el-button type="text" size="medium" v-if="scope.row.taskStatus==2" icon="el-icon-right"
+          <el-button type="text" size="medium" icon="el-icon-right"
                       @click="getNext(scope.row)">下一步
           </el-button>
           <el-divider direction="vertical"></el-divider>
