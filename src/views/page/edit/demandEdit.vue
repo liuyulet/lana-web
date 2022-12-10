@@ -232,7 +232,7 @@ export default {
             type: 'success'
           });
           this.close()
-
+          this.$emit('get-demand')
         }else {
           this.$message({
             showClose: true,
@@ -265,6 +265,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.$emit('get-demand')
         }else {
           this.$message({
             showClose: true,
@@ -276,6 +277,7 @@ export default {
     },
     close () {
       this.showDialog = false;
+      this.demandEdit ={};
     },
 
   },

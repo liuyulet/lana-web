@@ -85,7 +85,7 @@
         :total="totalPage"
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
-    <demandEdit ref="demandEdit"></demandEdit>
+    <demandEdit ref="demandEdit" @get-demand="getDeman"></demandEdit>
 
     <changeDemEdit ref="changeDemEdit"></changeDemEdit>
 
@@ -138,7 +138,7 @@ export default {
         }
       })
     },
-    //计划状态
+    //进度查看
     demandStatus(demanId){
       this.$refs.collaboratorsEdit.openDialog(demanId, this.initData)
     },
@@ -151,7 +151,7 @@ export default {
       this.$refs.demandEdit.openDialog(demandData, this.initData)
     },
 
-    //计划变更历史
+    //计划变更记录
     changeDemEdit(demandData) {
       this.$refs.changeDemEdit.openDialog(demandData, this.initData)
     },

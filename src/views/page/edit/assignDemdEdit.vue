@@ -11,7 +11,7 @@
       @close="close()"
     >
       <div style="text-align: center;">
-        <el-button type="primary" v-if="!this.edits" @click="planAdd">新增计划项</el-button>
+        <el-button type="primary" v-if="!this.edits" @click="planAdd">新增任务项</el-button>
       </div>
       <!--    用户信息-->
         <el-table
@@ -21,7 +21,10 @@
 
           <el-table-column align="center" type="index" label="序号" width="80">
           </el-table-column>
-          <el-table-column align="center" prop="planName" label="名称" min-width="200">
+          <el-table-column align="center" prop="planName" label="名称" min-width="200" >
+            <template slot-scope="scope">
+              <el-button size="medium" type="text"@click="planEdit(scope.row)">{{scope.row.planName}}</el-button>
+            </template>
           </el-table-column>
           <el-table-column align="center"  label="计划内要求内容描述" min-width="300">
             <template slot-scope="scope">
@@ -31,7 +34,7 @@
           <el-table-column align="center" label="状态" min-width="120">
             <template slot-scope="scope">
               <div slot="reference" class="name-wrapper">
-                <el-tag size="medium" v-if="scope.row.planStatus == 1">新建</el-tag>
+                <el-tag size="medium" v-if="scope.row.planStatus == 0">新建</el-tag>
                 <el-tag size="medium" type="success" v-if="scope.row.planStatus == 1">进行中</el-tag>
                 <el-tag size="medium" type="success" v-if="scope.row.planStatus == 2">驳回</el-tag>
                 <el-tag size="medium" type="success" v-if="scope.row.planStatus == 3">完成</el-tag>
@@ -42,12 +45,12 @@
 
           <el-table-column align="center" prop="username" label="操作" min-width="200">
             <template slot-scope="scope">
-            <el-button size="medium" icon="el-icon-edit" type="text" @click="planEdit(scope.row)">编辑</el-button>
-            <el-divider direction="vertical"></el-divider>
-            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 1 && scope.row.planStatus == 2" type="text" @click="binDing(scope.row.id,scope.row.planName)">绑定过程</el-button>
-              <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus != 1 && scope.row.planStatus != 2" type="text" @click="checkPrecee(scope.row.id)">进度查看</el-button>
-            <el-divider direction="vertical"></el-divider>
-            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 1 && scope.row.planStatus == 2" type="text">指定人员</el-button>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="planEdit(scope.row)">编辑</el-button>
+            <el-divider direction="vertical"v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" ></el-divider>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="binDing(scope.row.id,scope.row.planName)">绑定过程</el-button>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 4 || scope.row.planStatus == 1 || scope.row.planStatus == 3" type="text" @click="checkPrecee(scope.row.id)">进度查看</el-button>
+            <el-divider direction="vertical" ></el-divider>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text">指定人员</el-button>
             <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 4 " type="text">撤销绑定</el-button>
             </template>
           </el-table-column>

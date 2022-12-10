@@ -121,6 +121,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.$emit('get-planiteams',{id:this.palnItemId.id})
         }else {
           this.$message({
             showClose: true,

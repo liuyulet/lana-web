@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-        title="计划维护"
+        title="任务项维护"
         width="80%"
         top="2rem"
         :close-on-click-modal="false"
@@ -117,8 +117,16 @@ export default {
     onEdits () {
       let params = {
         //数据怼上去
+        id: this.demandData.id,
+        planName: this.planTaskEdit.planName,
+        //富文本的内容
+        planCont: this.context,
+        planStatus: 0,
+        planDemanName: this.demandData.demanName,
+        planDemanEndTime: this.planTaskEdit.planDemanEndTime,
+        createUser: localStorage.getItem('userAccount')
       }
-      postAction("/sysDeman/updateProject",params).then((data) => {
+      postAction("/palnItem/editPalnItem",params).then((data) => {
         if (data && data.code === 200) {
           this.$message({
             showClose: true,
@@ -126,7 +134,7 @@ export default {
             type: 'success'
           });
           this.close()
-          this.$emit('get-planiteams')
+          this.$emit('get-planiteams',{id:this.demandData.planDemanId})
         }else {
           this.$message({
             showClose: true,
@@ -157,7 +165,7 @@ export default {
             type: 'success'
           });
           this.close()
-          this.$emit('get-planiteams',{id:this.demandData.id})
+          this.$emit('get-planiteams',{id:this.demandData.planDemanId})
         }else {
           this.$message({
             showClose: true,
