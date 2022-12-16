@@ -1,7 +1,7 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-        title="协作过程列表"
+        title="流程信息"
         width="80%"
         top="2rem"
         :close-on-click-modal="false"
@@ -73,6 +73,7 @@ export default {
       totalPage: 0,
       stepList: null,
       palnItemId: '',
+      planId: '',
       planItemName: '',
       planName: '',
       stepId: '',
@@ -81,12 +82,13 @@ export default {
   },
 
   methods: {
-    openDialogz: function (id,planItemName,planName, callback) {
+    openDialogz: function (id,planItemName,planProject, callback) {
       //console.log(platform);
       //任务id
       this.palnItemId = id;
+      this.planId = planProject.id;
       this.planItemName = planItemName;
-      this.planName = planName;
+      this.planName = planProject.planName;
       this.showDialog = true;
       this.listChangeCallback = callback;
       this.getStep();
@@ -121,7 +123,7 @@ export default {
             type: 'success'
           });
           this.close()
-          this.$emit('get-planiteams',{id:this.palnItemId.id})
+          this.$emit('get-planiteams',{id:this.planId})
         }else {
           this.$message({
             showClose: true,

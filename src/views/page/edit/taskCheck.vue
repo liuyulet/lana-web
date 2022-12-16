@@ -18,11 +18,11 @@
               </el-form-item>
           </el-col>
           <el-col :span="11">
-              <el-form-item label="结束日期：" prop="planDemanEndTime">
+              <el-form-item label="结束日期：" prop="planEndTime">
                 <div class="block">
                   <el-date-picker
                       style="width: 100%"
-                      v-model="planTaskEdit.planDemanEndTime"
+                      v-model="planTaskEdit.planEndTime"
                       type="date"
                       value-format="yyyy-MM-dd"
                       placeholder="选择日期时间">
@@ -44,9 +44,7 @@
            </el-col>
          </el-row>
          <el-form-item style="margin-top: 10px">
-           <el-button type="primary" v-if="this.edits==false" @click="onSubmit()">新增</el-button>
-           <el-button type="primary" v-if="this.edits==true" @click="onEdits()">修改</el-button>
-           <el-button @click="close">取消</el-button>
+           <el-button type="primary" @click="close">关闭</el-button>
          </el-form-item>
         </el-form>
       </div>
@@ -99,7 +97,7 @@ export default {
         this.demandData = platform;
         //获取回显数据
         this.planTaskEdit.planName = platform.planName
-        this.planTaskEdit.planDemanEndTime = platform.planDemanEndTime
+        this.planTaskEdit.planEndTime = platform.planEndTime
         this.context = platform.planCont
       }
       this.showDialog = true;

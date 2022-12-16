@@ -34,7 +34,7 @@
           <el-table-column align="center" label="状态" min-width="120">
             <template slot-scope="scope">
               <div slot="reference" class="name-wrapper">
-                <el-tag size="medium" v-if="scope.row.planStatus == 0">新建</el-tag>
+                <el-tag size="medium" v-if="scope.row.planStatus == 0">未分配</el-tag>
                 <el-tag size="medium" type="success" v-if="scope.row.planStatus == 1">进行中</el-tag>
                 <el-tag size="medium" type="success" v-if="scope.row.planStatus == 2">驳回</el-tag>
                 <el-tag size="medium" type="success" v-if="scope.row.planStatus == 3">完成</el-tag>
@@ -47,11 +47,13 @@
             <template slot-scope="scope">
             <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="planEdit(scope.row)">编辑</el-button>
             <el-divider direction="vertical"v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" ></el-divider>
-            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="binDing(scope.row.id,scope.row.planName)">绑定过程</el-button>
-            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 4 || scope.row.planStatus == 1 || scope.row.planStatus == 3" type="text" @click="checkPrecee(scope.row.id)">进度查看</el-button>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="binDing(scope.row.id,scope.row.planName)">绑定流程</el-button>
+            <el-button size="medium" icon="el-icon-view" v-if="scope.row.planStatus == 4 || scope.row.planStatus == 1 || scope.row.planStatus == 3" type="text" @click="checkPrecee(scope.row.id)">进度查看</el-button>
             <el-divider direction="vertical" ></el-divider>
-            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text">指定人员</el-button>
-            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 4 " type="text">撤销绑定</el-button>
+<!--            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text">指定人员</el-button>-->
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 4 " type="text" @click="openBinDing(scope.row.id)">撤销绑定</el-button>
+
+            <el-button size="medium" icon="el-icon-delete" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" style="color: #f56c6c"  @click="deleteTast(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
 
@@ -132,9 +134,21 @@ export default {
 
     //任务绑定流程
     binDing(id,planItemName) {
-      this.$refs.binDingEdit.openDialogz(id,planItemName,this.demendData.demanName, this.initData)
+      this.$refs.binDingEdit.openDialogz(id,planItemName,this.demendData, this.initData)
     },
 
+    //解除绑定流程
+    openBinDing(id) {
+      let params = {
+        'id':id
+      }
+      getAction("/busBinding/delBinding", params).then((data) => {
+        if (data && data.code === 200) {
+
+          this.getPalnItem(this.demendData);
+        }
+      })
+    },
     //获取r任务计划列表
     getPalnItem(platform) {
       let params = {
@@ -147,6 +161,20 @@ export default {
           this.palnItem = data.result.list
           //处理数据
           this.totalPage = data.result.totalCount
+        }
+      })
+    },
+
+    deleteTast(id) {
+      let params = {
+        'id': id
+      }
+      getAction("/palnItem/delPalnItem", params).then((data) => {
+        if (data && data.code === 200) {
+          this.palnItem = data.result.list
+          //处理数据
+          this.totalPage = data.result.totalCount
+          this.getPalnItem(this.demendData);
         }
       })
     },

@@ -205,7 +205,7 @@ export default {
     //保存过程节点
     updateStep() {
       //输入过程名称
-      this.$prompt('如果要修改过程名称，重新输入即可，如果不输入则默认不修改', '提示', {
+      this.$prompt('如果要修改人选，则流程名称也需要修改', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
       }).then(({value}) => {
@@ -223,6 +223,7 @@ export default {
     },
     //保存/修改数据
     pushStepData(stepId,stepName,type){
+      debugger;
       if (stepName !=null && stepName !='') {
         //步骤节点
         //用户--节点信息

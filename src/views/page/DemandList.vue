@@ -26,7 +26,7 @@
       <el-table-column align="center" prop="demanProjectNam" label="关联项目" min-width="200" >
       </el-table-column>
 
-      <el-table-column align="center" prop="demanConsciAcoun" label="计划负责人" min-width="140" >
+      <el-table-column align="center" prop="demanConsciAcoun" label="计划负责人" min-width="160" >
 
       </el-table-column>
 

@@ -10,6 +10,9 @@
     <!--设备列表-->
     <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
       <el-table-column align="center" prop="planName" label="任务名称" min-width="160">
+        <template slot-scope="scope">
+          <el-button size="medium" type="text"@click="taskPlan(scope.row)">{{scope.row.planName}}</el-button>
+        </template>
       </el-table-column>
 
       <el-table-column align="center" prop="demanName" label="所属计划" min-width="160" >
@@ -55,26 +58,26 @@
 
             <template slot-scope="scope">
 <!--              整体数据状态。1:任务被驳回，2:任务完成，3:进行中中-->
-              <el-button size="medium" type="text"  v-if="scope.row.taskMeStatus == 1" @click="getFiles(scope.row.id)">驳回</el-button>
-              <el-button size="medium" type="text"  v-if="scope.row.taskMeStatus == 2" @click="getFiles(scope.row.id)">任务完成</el-button>
-              <el-button size="medium" type="text"  v-if="scope.row.taskMeStatus == 3" @click="getFiles(scope.row.id)">进行中</el-button>
+              <el-tag size="medium" v-if="scope.row.taskDataStatus == 1">驳回</el-tag>
+              <el-tag size="medium" v-if="scope.row.taskDataStatus == 2">任务完成</el-tag>
+              <el-tag size="medium" v-if="scope.row.taskDataStatus == 3">进行中</el-tag>
+
             </template>
 
       </el-table-column>
 
-      <el-table-column align="center" label="操作" min-width="350" fixed="right">
+      <el-table-column align="center" label="操作" min-width="200" fixed="right">
         <template slot-scope="scope">
-          <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-video-play"  type="text"  @click="startTask(scope.row.id)">开始任务</el-button>
+          <el-button size="medium" icon="el-icon-video-play"  type="text" v-if="scope.row.taskMeStatus == 3" @click="startTask(scope.row.id)">开始任务</el-button>
           <!-- 点击我已完成，如果是开发人员就需要填写代码提交记录；如果是测试人员，需要填写测试结果；如果是实施人员，需要填写实施信息；如果是产品验收人员，需要填写验收信息； -->
-          <el-button size="medium" icon="el-icon-finished" type="text" @click="overTask(scope.row.id)">我已完成</el-button>
+          <el-button size="medium" icon="el-icon-finished" type="text" v-if="scope.row.taskMeStatus == 1" @click="overTask(scope.row.id)">完成提交</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button type="text" size="medium"  icon="el-icon-s-custom" @click="getLookColla(scope.row.demanId)">协作者
-          </el-button>
-          <el-button type="text" size="medium" icon="el-icon-right"
-                      @click="getNext(scope.row)">下一步
+          <el-button type="text" size="medium"  icon="el-icon-s-custom" @click="getLookColla(scope.row.id)">协作者
           </el-button>
           <el-divider direction="vertical"></el-divider>
+          <el-button type="text" size="medium" icon="el-icon-right" v-if="scope.row.taskMeStatus == 3"
+                      @click="getNext(scope.row)">驳回
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -89,23 +92,25 @@
         layout="total, sizes, prev, pager, next, jumper">
     </el-pagination>
     <nextDemdEdit ref="nextDemdEdit"></nextDemdEdit>
-    <collaboratorsEdit ref="collaboratorsEdit"></collaboratorsEdit>
+    <taskApprovalEdit ref="taskApprovalEdit"></taskApprovalEdit>
     <overTeskEdit ref="overTeskEdit"></overTeskEdit>
-
+    <taskCheck ref="taskCheck"></taskCheck>
   </div>
 </template>
 
 <script>
 import {getAction} from "../../api/manage";
 import nextDemdEdit from './edit/nextDemdEdit.vue'
-import collaboratorsEdit from './edit/collaboratorsEdit.vue'
+import taskApprovalEdit from './edit/taskApprovalEdit.vue'
 import overTeskEdit from './edit/overTeskEdit.vue'
+import taskCheck from './edit/taskCheck'
 export default {
   name: "",
   components:{
     nextDemdEdit,
-    collaboratorsEdit,
-    overTeskEdit
+    taskApprovalEdit,
+    overTeskEdit,
+    taskCheck
   },
   data() {
     return {
@@ -186,10 +191,13 @@ export default {
       //提交任务完成信息
       this.$refs.overTeskEdit.openDialog(demanId, this.initData)
     },
-
+    //查看需求
+    taskPlan(planData) {
+      this.$refs.taskCheck.openDialogs(planData,1, this.initData)
+    },
     //查看协作者信息
-    getLookColla(demanId){
-      this.$refs.collaboratorsEdit.openDialog(demanId, this.initData)
+    getLookColla(id){
+      this.$refs.taskApprovalEdit.openDialog(id, this.initData)
     },
     //下一步
     getTooltipContent(demandData) {
