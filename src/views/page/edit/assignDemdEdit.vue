@@ -48,7 +48,7 @@
             <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="planEdit(scope.row)">编辑</el-button>
             <el-divider direction="vertical"v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" ></el-divider>
             <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="binDing(scope.row.id,scope.row.planName)">绑定流程</el-button>
-            <el-button size="medium" icon="el-icon-view" v-if="scope.row.planStatus == 4 || scope.row.planStatus == 1 || scope.row.planStatus == 3" type="text" @click="checkPrecee(scope.row.id)">进度查看</el-button>
+            <el-button size="medium" icon="el-icon-view" v-if="scope.row.planStatus == 4 || scope.row.planStatus == 1 || scope.row.planStatus == 3" type="text" @click="getLookColla(scope.row.id)">进度查看</el-button>
             <el-divider direction="vertical" ></el-divider>
 <!--            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text">指定人员</el-button>-->
             <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 4 " type="text" @click="openBinDing(scope.row.id)">撤销绑定</el-button>
@@ -74,7 +74,7 @@
     </el-dialog>
     <planTaskEdit ref="planTaskEdit" @get-planiteams="getPalnItem"></planTaskEdit>
     <binDingEdit ref="binDingEdit" @get-planiteams="getPalnItem"></binDingEdit>
-
+    <taskApprovalEdit ref="taskApprovalEdit"></taskApprovalEdit>
   </div>
 </template>
 
@@ -82,11 +82,13 @@
 import {getAction,postAction} from "../../../api/manage";
 import planTaskEdit from './planTaskEdit'
 import binDingEdit from './binDingEdit'
+import taskApprovalEdit from './taskApprovalEdit.vue'
 export default {
   name: "orgEdit",
   components: {
     planTaskEdit,
-    binDingEdit
+    binDingEdit,
+    taskApprovalEdit
   },
   data() {
     return {
@@ -136,7 +138,10 @@ export default {
     binDing(id,planItemName) {
       this.$refs.binDingEdit.openDialogz(id,planItemName,this.demendData, this.initData)
     },
-
+    //查看任务进度
+    getLookColla(id){
+      this.$refs.taskApprovalEdit.openDialog(id,1, this.initData)
+    },
     //解除绑定流程
     openBinDing(id) {
       let params = {

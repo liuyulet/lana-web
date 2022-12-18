@@ -11,17 +11,19 @@
     <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
       <el-table-column align="center" prop="planName" label="任务名称" min-width="160">
         <template slot-scope="scope">
-          <el-button size="medium" type="text"@click="taskPlan(scope.row)">{{scope.row.planName}}</el-button>
+          <el-tooltip class="item" effect="dark" content="点击查看该任务的详情信息" placement="top">
+            <el-button size="medium" type="text"@click="taskPlan(scope.row)">{{scope.row.planName}}</el-button>
+          </el-tooltip>
         </template>
       </el-table-column>
 
       <el-table-column align="center" prop="demanName" label="所属计划" min-width="160" >
       </el-table-column>
-
-      <el-table-column align="center" prop="demanFileName" label="计划交底文件" min-width="160" >
-
+        <el-table-column align="center" prop="demanFileName" label="计划交底文件" min-width="160" >
         <template slot-scope="scope">
-          <el-button size="medium" type="text" @click="getFiles(scope.row.demanFileUrl)">{{ scope.row.demanFileName }}</el-button>
+          <el-tooltip class="item" effect="dark" content="点击下载计划交底文件" placement="top">
+            <el-button size="medium" type="text" @click="getFiles(scope.row.demanFileUrl)">{{ scope.row.demanFileName }}</el-button>
+          </el-tooltip>
         </template>
       </el-table-column>
 <!--      <el-table-column align="center" prop="demanProjectNam" label="所属项目" min-width="200" >
@@ -44,10 +46,14 @@
       <el-table-column align="center" prop="taskMeStatus" label="我得任务状态"  min-width="100">
         <template slot-scope="scope">
           <div slot="reference" class="name-wrapper">
-            <el-tag size="medium" v-if="scope.row.taskMeStatus == 0">预置</el-tag>
+            <el-tooltip class="item" effect="dark" content="上一个节点的人没有完成，自己是无法接受的哦，但是可以提前看到已经分配给自己的任务。" placement="top">
+              <el-tag size="medium" v-if="scope.row.taskMeStatus == 0">任务预告</el-tag>
+            </el-tooltip>
             <el-tag size="medium" v-if="scope.row.taskMeStatus == 1">进行中</el-tag>
             <el-tag size="medium" v-if="scope.row.taskMeStatus == 2">驳回</el-tag>
-            <el-tag size="medium" v-if="scope.row.taskMeStatus == 3">未开始</el-tag>
+            <el-tooltip class="item" effect="dark" content="上一个节点的人已经完成了，自己可以接受该任务了哦。" placement="top">
+              <el-tag size="medium" v-if="scope.row.taskMeStatus == 3">未开始</el-tag>
+            </el-tooltip>
             <el-tag size="medium" v-if="scope.row.taskMeStatus == 4">完成</el-tag>
           </div>
         </template>
@@ -58,10 +64,12 @@
 
             <template slot-scope="scope">
 <!--              整体数据状态。1:任务被驳回，2:任务完成，3:进行中中-->
-              <el-tag size="medium" v-if="scope.row.taskDataStatus == 1">驳回</el-tag>
-              <el-tag size="medium" v-if="scope.row.taskDataStatus == 2">任务完成</el-tag>
-              <el-tag size="medium" v-if="scope.row.taskDataStatus == 3">进行中</el-tag>
 
+              <el-tooltip class="item" effect="dark" content="这里的状态是整条任务的状态哦，不是自己一个人的。可以通过右侧【协作者】查看共同执行这条任务的人员信息。" placement="top">
+                <el-tag size="medium" v-if="scope.row.taskDataStatus == 1">驳回</el-tag>
+                <el-tag size="medium" v-if="scope.row.taskDataStatus == 2">任务完成</el-tag>
+                <el-tag size="medium" v-if="scope.row.taskDataStatus == 3">进行中</el-tag>
+              </el-tooltip>
             </template>
 
       </el-table-column>
@@ -197,7 +205,7 @@ export default {
     },
     //查看协作者信息
     getLookColla(id){
-      this.$refs.taskApprovalEdit.openDialog(id, this.initData)
+      this.$refs.taskApprovalEdit.openDialog(id,0, this.initData)
     },
     //下一步
     getTooltipContent(demandData) {

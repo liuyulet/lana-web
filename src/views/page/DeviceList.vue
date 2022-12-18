@@ -1,9 +1,9 @@
 <template>
     <div id="app">
       <div class="page-header">
-        <div class="page-title">统计信息列表</div>
+        <div class="page-title"></div>
         <div class="page-header-btn">
-          <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
+
         </div>
       </div>
         <!--统计列表-->

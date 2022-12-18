@@ -11,6 +11,7 @@
     >
 
       <div id="shared" style="text-align: right; margin-top: 1rem;">
+
         <H2 style="text-align: center">任务进度：{{dataType}}</H2>
         <div>
           <el-steps :active="active" align-center >
@@ -54,17 +55,21 @@ export default {
   },
 
   methods: {
-    openDialog: function (platformid, callback) {
-      this.getByStuts(platformid);
+    openDialog: function (platformid,type, callback) {
+      if(type==1){
+        this.getByStuts(platformid,"/sysDemanUser/taskByStatus");
+      }else {
+        this.getByStuts(platformid,"/sysDemanUser/findByStatus");
+      }
       this.showDialog = true;
       this.listChangeCallback = callback;
     },
 
-    getByStuts (platformid) {
+    getByStuts (platformid,url) {
       let params = {
         itemid: platformid
       }
-      getAction("/sysDemanUser/findByStatus",params).then((data) => {
+      getAction(url,params).then((data) => {
         if (data && data.code === 200) {
           this.handleStep(data.result);
         }else {

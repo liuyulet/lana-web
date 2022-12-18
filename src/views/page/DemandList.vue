@@ -3,74 +3,96 @@
     <div class="page-header">
       <div class="page-title">计划管理列表</div>
       <div class="page-header-btn">
-        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addDemandPlatform">添加新计划</el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary"
+                   @click="addDemandPlatform">添加新计划
+        </el-button>
         <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
       </div>
     </div>
     <!--设备列表-->
-    <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
+    <el-table :data="demandList" style="width: 100%;font-size: 13px;" :height="winHeight"
+              header-row-class-name="table-header">
       <el-table-column align="center" prop="demanName" label="计划名称" min-width="160">
       </el-table-column>
 
-      <el-table-column align="center" prop="demanNum" label="计划编号" min-width="200" >
+      <el-table-column align="center" prop="demanNum" label="计划编号" min-width="160">
       </el-table-column>
 
-      <el-table-column align="center" prop="demanDisoName" label="计划交底文件" min-width="200" >
+      <el-table-column align="center" prop="demanDisoName" label="计划交底文件" min-width="160">
 
         <template slot-scope="scope">
-          <el-button size="medium" type="text" @click="getFiles(scope.row.demanDisclose)">{{ scope.row.demanDisoName }}</el-button>
+          <el-button size="medium" type="text" @click="getFiles(scope.row.demanDisclose)">{{
+              scope.row.demanDisoName
+            }}
+          </el-button>
         </template>
 
       </el-table-column>
 
-      <el-table-column align="center" prop="demanProjectNam" label="关联项目" min-width="200" >
+      <el-table-column align="center" prop="demanProjectNam" label="关联项目" min-width="160">
       </el-table-column>
 
-      <el-table-column align="center" prop="demanConsciAcoun" label="计划负责人" min-width="160" >
+      <el-table-column align="center" prop="demanConsciAcoun" label="计划负责人" min-width="160">
 
       </el-table-column>
 
-      <el-table-column align="center" prop="demanStatus" label="计划状态状态"  min-width="120">
+      <el-table-column align="center" prop="demanChange" label="计划变更记录" min-width="100">
+        <template slot-scope="scope">
+          <el-button size="medium" type="text" @click="changeDemEdit(scope.row.id)">{{
+              scope.row.demanChange
+            }}
+          </el-button>
+        </template>
+
+      </el-table-column>
+
+      <el-table-column align="center" prop="demanStatus" label="计划状态" min-width="120">
         <template slot-scope="scope">
           <div slot="reference" class="name-wrapper">
-            <el-tag size="medium" v-if="scope.row.demanStatus == 1">新建</el-tag>
-            <el-tag size="medium" v-if="scope.row.demanStatus == 2">执行中</el-tag>
+            <el-tag size="medium" v-if="scope.row.demanStatus == 1">执行中</el-tag>
             <el-tag size="medium" v-if="scope.row.demanStatus == 3">完成</el-tag>
           </div>
         </template>
       </el-table-column>
 
-      <el-table-column align="center" prop="demanChange" label="计划变更记录"  min-width="100" >
+      <el-table-column align="center" prop="progresss" label="已分配任务执行进度" min-width="160">
         <template slot-scope="scope">
-          <el-button size="medium" type="text" @click="changeDemEdit(scope.row.id)">{{ scope.row.demanChange }}</el-button>
+          <el-tooltip class="item" effect="dark" content="未分配的任务默认不计入进度汇总里" placement="top">
+            <el-progress :percentage=scope.row.progresss></el-progress>
+<!--            <el-progress :text-inside="true" :stroke-width="26" :percentage=scope.row.progresss></el-progress>-->
+          </el-tooltip>
         </template>
-
       </el-table-column>
 
-      <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
+
+      <el-table-column align="center" prop="createUser" label="创建人" min-width="160">
       </el-table-column>
-      <el-table-column align="center" prop="createTime" label="创建时间"  min-width="160">
+      <el-table-column align="center" prop="createTime" label="创建时间" min-width="160">
       </el-table-column>
       <!--      <el-table-column prop="updateTime" label="更新时间"  width="140">-->
       <!--      </el-table-column>-->
       <!--      <el-table-column prop="createTime" label="创建时间"  width="140">-->
       <!--      </el-table-column>-->
-      <el-table-column align="center" prop="demanDeadline" label="结束日期" min-width="160" >
+      <el-table-column align="center" prop="demanDeadline" label="结束日期" min-width="160">
       </el-table-column>
 
       <el-table-column align="center" label="操作" min-width="350" fixed="right">
         <template slot-scope="scope">
-<!--          <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-refresh"
-                     v-if="scope.row.demanStatus<2" @click="getTooltipContent(scope.row.id)">需求分配
-          </el-button>-->
+          <!--          <el-button type="text" size="medium" v-bind:disabled="scope.row.online==0" icon="el-icon-refresh"
+                               v-if="scope.row.demanStatus<2" @click="getTooltipContent(scope.row.id)">需求分配
+                    </el-button>-->
 
-          <el-button size="medium" icon="el-icon-edit" type="text" @click="editDemandPlatform(scope.row)">计划变更</el-button>
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="editDemandPlatform(scope.row)">编辑
+          </el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-edit" type="text" @click="getTooltipContent(scope.row)">任务维护</el-button>
+          <el-button size="medium" icon="el-icon-edit" type="text" @click="getTooltipContent(scope.row)">任务维护
+          </el-button>
+          <!-- <el-divider direction="vertical"></el-divider>
+           <el-button size="medium" icon="el-icon-view" type="text" @click="demandStatus(scope.row.id)">进度查看</el-button>-->
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-view" type="text" @click="demandStatus(scope.row.id)">进度查看</el-button>
-          <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-delete" v-if="scope.row.demanStatus<2" type="text" @click="deleteDemand(scope.row.id)" style="color: #f56c6c">删除</el-button>
+          <el-button size="medium" icon="el-icon-delete" v-if="scope.row.demanStatus<2" type="text"
+                     @click="deleteDemand(scope.row.id)" style="color: #f56c6c">删除
+          </el-button>
 
         </template>
       </el-table-column>
@@ -101,9 +123,10 @@ import demandEdit from './edit/demandEdit.vue'
 import changeDemEdit from './edit/changeDemEdit.vue'
 import assignDemdEdit from './edit/assignDemdEdit.vue'
 import collaboratorsEdit from './edit/collaboratorsEdit.vue'
+
 export default {
   name: "",
-  components:{
+  components: {
     demandEdit,
     changeDemEdit,
     assignDemdEdit,
@@ -117,9 +140,7 @@ export default {
       demandList: null
     }
   },
-  computed: {
-
-  },
+  computed: {},
   created() {
     this.getDeman();
   },
@@ -139,7 +160,7 @@ export default {
       })
     },
     //进度查看
-    demandStatus(demanId){
+    demandStatus(demanId) {
       this.$refs.collaboratorsEdit.openDialog(demanId, this.initData)
     },
     //新增计划
@@ -157,14 +178,14 @@ export default {
     },
     //维护计划
     getTooltipContent(demandData) {
-        this.$refs.assignDemdEdit.openDialog(demandData, this.initData)
+      this.$refs.assignDemdEdit.openDialog(demandData, this.initData)
     },
 
-    getFiles (fileUrl){
+    getFiles(fileUrl) {
       window.open(fileUrl);
     },
 
-    deleteDemand (id) {
+    deleteDemand(id) {
       let params = {
         'id': id
       }
@@ -227,6 +248,7 @@ export default {
 .page-header-btn {
   text-align: right;
 }
+
 .el-table-column {
   text-align: center;
 }
