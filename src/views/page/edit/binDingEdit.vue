@@ -20,17 +20,19 @@
         <el-table-column align="center" prop="stepName" label="协作过程名称" min-width="150">
         </el-table-column>
 
-        <el-table-column align="center" prop="stepNum" label="过程节点数" min-width="50" >
+        <el-table-column align="center" prop="stepNum" label="过程节点数" min-width="50">
           <template slot-scope="scope">
-            <el-button size="medium" type="text" @click="findStep(scope.row)">{{ scope.row.stepNum }}</el-button>
+            <el-tooltip class="item" effect="dark" content="点击查看具体流程节点信息" placement="top">
+              <el-button size="medium" type="text" @click="findStep(scope.row)">{{ scope.row.stepNum }}</el-button>
+            </el-tooltip>
           </template>
 
         </el-table-column>
 
-        <el-table-column align="center" prop="createUser" label="创建人"  min-width="100">
+        <el-table-column align="center" prop="createUser" label="创建人" min-width="100">
         </el-table-column>
 
-        <el-table-column align="center" prop="createTime" label="创建时间"  min-width="150">
+        <el-table-column align="center" prop="createTime" label="创建时间" min-width="150">
         </el-table-column>
 
       </el-table>
@@ -45,7 +47,7 @@
           layout="total, sizes, prev, pager, next, jumper">
       </el-pagination>
       <div style="margin-top: 50px;text-align: center;">
-        <el-button type="primary"  @click="onSubmit">保存</el-button>
+        <el-button type="primary" @click="onSubmit">保存</el-button>
         <el-button @click="close">取消</el-button>
       </div>
     </el-dialog>
@@ -54,8 +56,9 @@
 </template>
 
 <script>
-import {getAction,postAction} from "../../../api/manage";
+import {getAction, postAction} from "../../../api/manage";
 import versionDtiolEdit from "./versionDtiolEdit";
+
 export default {
   name: "binDingEdit",
   components: {
@@ -82,7 +85,7 @@ export default {
   },
 
   methods: {
-    openDialogz: function (id,planItemName,planProject, callback) {
+    openDialogz: function (id, planItemName, planProject, callback) {
       //console.log(platform);
       //任务id
       this.palnItemId = id;
@@ -107,7 +110,7 @@ export default {
         }
       })
     },
-    onSubmit () {
+    onSubmit() {
       let params = {
         stepId: this.stepId,
         palnItemId: this.palnItemId,
@@ -115,7 +118,7 @@ export default {
         palnName: this.planName,
         createUser: localStorage.getItem('userAccount')
       }
-      postAction("/busBinding/addBinding",params).then((data) => {
+      postAction("/busBinding/addBinding", params).then((data) => {
         if (data && data.code === 200) {
           this.$message({
             showClose: true,
@@ -123,8 +126,8 @@ export default {
             type: 'success'
           });
           this.close()
-          this.$emit('get-planiteams',{id:this.planId})
-        }else {
+          this.$emit('get-planiteams', {id: this.planId})
+        } else {
           this.$message({
             showClose: true,
             message: data.message,
@@ -134,7 +137,7 @@ export default {
       })
     },
     handleSelectionChange(val) {
-      if(this.selectionL.length<1){
+      if (this.selectionL.length < 1) {
         this.selectionL = [];
         val.forEach(item => {
           if (item.stepId != null && item.stepId != '') {
@@ -142,7 +145,7 @@ export default {
             this.selectionL.push(item.stepId);
           }
         });
-      }else {
+      } else {
         this.selectionL = [];
         this.$message({
           showClose: true,
@@ -154,10 +157,10 @@ export default {
 
     },
     //查看节点信息
-    findStep(step){
+    findStep(step) {
       this.$refs.versionDtiolEdit.openDialoga(step, this.initData)
     },
-    close () {
+    close() {
       this.showDialog = false;
     },
     // 每页数
@@ -184,9 +187,10 @@ input::-webkit-inner-spin-button {
   appearance: none;
   margin: 0;
 }
+
 /* 火狐 */
-input{
-  -moz-appearance:textfield;
+input {
+  -moz-appearance: textfield;
 }
 
 .control-btn i {
@@ -196,7 +200,6 @@ input{
   justify-content: center;
   align-items: center;
 }
-
 
 
 .control-top i {
@@ -231,6 +234,7 @@ input{
 .control-left .fa {
   transform: rotate(-45deg) translateX(-7px);
 }
+
 .selects {
   width: 100%;
 }

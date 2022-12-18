@@ -1,8 +1,8 @@
 <template>
   <div id="addlatform" v-loading="isLoging">
     <el-dialog
-      title="完成内容"
-      width="50%"
+      title="描述内容"
+      width="70%"
       top="2rem"
       :close-on-click-modal="false"
       :visible.sync="showDialog"
@@ -11,14 +11,14 @@
     >
       <div id="shared" style="text-align: right; margin-top: 1rem;">
         <el-row >
-          <el-col :span="20">
+          <el-col :span="22">
             <el-form :rules="rules" :model="overTeskEdit" label-width="160px">
 
               <el-form-item label="完成内容：" prop="contents">
                 <el-input
                     style="min-height: 200px"
                     type="textarea"
-                    placeholder="产品填写需求简介，开发人员填写git提交记录，测试人员填写测试评价，实施人员填写实施记录"
+                    placeholder="驳回则填写因为什么原因驳回；产品请填写需求简介；开发人员请填写git提交记录，标注好代码注释；测试人员请填写测试评价；实施人员请填写实施记录"
                     v-model="overTeskEdit.contents"
                     maxlength="2000"
                     show-word-limit>
@@ -52,6 +52,7 @@ export default {
       dutyUser: [],
       urls:'',
       fileList: [],
+      taskType: '',
       overTeskEdit: {
         contents: '',
         demanId: ''
@@ -70,8 +71,10 @@ export default {
 
   methods: {
 
-    openDialog: function (platform, callback) {
+    openDialog: function (platform,submitType, callback) {
+      //是否完成，1是，0驳回
       this.overTeskEdit.demanId = platform
+      this.taskType = submitType
       this.showDialog = true;
       this.listChangeCallback = callback;
     },
@@ -80,9 +83,9 @@ export default {
       let params = {
         contents: this.overTeskEdit.contents,
         demanId: this.overTeskEdit.demanId,
-        createUser: localStorage.getItem('userAccount')
+        taskType: this.taskType
       }
-      postAction("/sysDemanUser/overTesk",params).then((data) => {
+      postAction("/sysDemanUser/overTask",params).then((data) => {
         if (data && data.code === 200) {
           this.$message({
             showClose: true,
@@ -90,6 +93,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.$emit('get-task')
         }else {
           this.$message({
             showClose: true,

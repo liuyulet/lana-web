@@ -223,7 +223,6 @@ export default {
     },
     //保存/修改数据
     pushStepData(stepId,stepName,type){
-      debugger;
       if (stepName !=null && stepName !='') {
         //步骤节点
         //用户--节点信息

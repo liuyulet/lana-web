@@ -3,26 +3,29 @@
     <div class="page-header">
       <div class="page-title">协作过程列表</div>
       <div class="page-header-btn">
-        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addPlatform">创建协作过程</el-button>
+        <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary" @click="addPlatform">
+          创建协作过程
+        </el-button>
         <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
       </div>
     </div>
     <!--列表-->
-    <el-table :data="stepList" style="width: 100%;font-size: 13px;" :height="winHeight" header-row-class-name="table-header">
+    <el-table :data="stepList" style="width: 100%;font-size: 13px;" :height="winHeight"
+              header-row-class-name="table-header">
       <el-table-column align="center" prop="stepName" label="协作过程名称" min-width="250">
       </el-table-column>
-
-      <el-table-column align="center" prop="stepNum" label="过程节点数" min-width="50" >
+      <el-table-column align="center" prop="stepNum" label="过程节点数" min-width="50">
         <template slot-scope="scope">
-          <el-button size="medium" type="text" @click="findStep(scope.row)">{{ scope.row.stepNum }}</el-button>
+          <el-tooltip class="item" effect="dark" content="点击查看具体流程节点信息" placement="top">
+            <el-button size="medium" type="text" @click="findStep(scope.row)">{{ scope.row.stepNum }}</el-button>
+          </el-tooltip>
         </template>
-
       </el-table-column>
 
-      <el-table-column align="center" prop="createUser" label="创建人"  min-width="160">
+      <el-table-column align="center" prop="createUser" label="创建人" min-width="160">
       </el-table-column>
 
-      <el-table-column align="center" prop="createTime" label="创建时间"  min-width="160">
+      <el-table-column align="center" prop="createTime" label="创建时间" min-width="160">
       </el-table-column>
 
 
@@ -30,7 +33,9 @@
         <template slot-scope="scope">
           <el-button size="medium" icon="el-icon-edit" type="text" @click="editStep(scope.row)">修改</el-button>
           <el-divider direction="vertical"></el-divider>
-          <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteStep(scope.row.stepId)" style="color: #f56c6c">删除</el-button>
+          <el-button size="medium" icon="el-icon-delete" type="text" @click="deleteStep(scope.row.stepId)"
+                     style="color: #f56c6c">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -68,9 +73,7 @@ export default {
       stepList: null
     }
   },
-  computed: {
-
-  },
+  computed: {},
   created() {
     this.getStep();
   },
@@ -95,14 +98,14 @@ export default {
       this.$refs.versioniteraEdit.openDialog(null, this.initData)
     },
     //查看节点信息
-    findStep(step){
+    findStep(step) {
       this.$refs.versionDtiolEdit.openDialoga(step, this.initData)
     },
     //修改节点
     editStep(step) {
       this.$refs.versioniteraEdit.openDialog(step, this.initData)
     },
-    deleteStep(stepId){
+    deleteStep(stepId) {
       this.$confirm(`删除无法恢复，是否继续?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -111,7 +114,7 @@ export default {
         let params = {
           'stepId': stepId
         }
-        getAction("/sysStep/delstep",params).then((data) => {
+        getAction("/sysStep/delstep", params).then((data) => {
           if (data && data.code === 200) {
             this.$message({
               type: 'success',
@@ -160,6 +163,7 @@ export default {
 .page-header-btn {
   text-align: right;
 }
+
 .el-table-column {
   text-align: center;
 }

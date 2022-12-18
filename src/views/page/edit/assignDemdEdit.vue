@@ -36,8 +36,10 @@
               <div slot="reference" class="name-wrapper">
                 <el-tag size="medium" v-if="scope.row.planStatus == 0">未分配</el-tag>
                 <el-tag size="medium" type="success" v-if="scope.row.planStatus == 1">进行中</el-tag>
-                <el-tag size="medium" type="success" v-if="scope.row.planStatus == 2">驳回</el-tag>
-                <el-tag size="medium" type="success" v-if="scope.row.planStatus == 3">完成</el-tag>
+                <el-tag size="medium" type="success" v-if="scope.row.planStatus == 2">完成</el-tag>
+                <el-tooltip class="item" effect="dark" content="被驳回的信息，修改完成之后，需要重新绑定流程，才会进行新一轮的任务流程。">
+                <el-tag size="medium" type="success" v-if="scope.row.planStatus == 3">驳回</el-tag>
+                </el-tooltip>
                 <el-tag size="medium" type="success" v-if="scope.row.planStatus == 4">已分配</el-tag>
               </div>
             </template>
@@ -45,10 +47,10 @@
 
           <el-table-column align="center" prop="username" label="操作" min-width="200">
             <template slot-scope="scope">
-            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="planEdit(scope.row)">编辑</el-button>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 3" type="text" @click="planEdit(scope.row)">编辑</el-button>
             <el-divider direction="vertical"v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" ></el-divider>
-            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text" @click="binDing(scope.row.id,scope.row.planName)">绑定流程</el-button>
-            <el-button size="medium" icon="el-icon-view" v-if="scope.row.planStatus == 4 || scope.row.planStatus == 1 || scope.row.planStatus == 3" type="text" @click="getLookColla(scope.row.id)">进度查看</el-button>
+            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 3" type="text" @click="binDing(scope.row.id,scope.row.planName)">绑定流程</el-button>
+            <el-button size="medium" icon="el-icon-view" v-if="scope.row.planStatus !=0" type="text" @click="getLookColla(scope.row.id)">进度查看</el-button>
             <el-divider direction="vertical" ></el-divider>
 <!--            <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 0 || scope.row.planStatus == 2" type="text">指定人员</el-button>-->
             <el-button size="medium" icon="el-icon-edit" v-if="scope.row.planStatus == 4 " type="text" @click="openBinDing(scope.row.id)">撤销绑定</el-button>
