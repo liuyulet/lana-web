@@ -30,9 +30,9 @@
                 </el-select>
 
               </el-form-item>
-              <el-form-item label="项目章程" prop="projectConstitution">
+<!--              <el-form-item label="项目章程" prop="projectConstitution">
                 <el-input v-model="projectEdit.projectConstitution" placeholder="上传项目章程"></el-input>
-              </el-form-item>
+              </el-form-item>-->
               <el-form-item  label="状态" prop="status">
                 <el-select class="selects"  v-model="projectEdit.projectStatus" placeholder="请选择">
                   <el-option

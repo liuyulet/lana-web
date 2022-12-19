@@ -3,6 +3,13 @@
     <div class="page-header">
       <div class="page-title">计划管理列表</div>
       <div class="page-header-btn">
+        查找计划:
+        <el-input @input="getPushList" style="margin-right: 1rem; width: auto;" size="mini" placeholder="输入计划名称"
+                  prefix-icon="el-icon-search" v-model="searchSrt" clearable>
+        </el-input>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="ckeckData">搜索</el-button>
+
+
         <el-button icon="el-icon-plus" size="mini" style="margin-right: 1rem;" type="primary"
                    @click="addDemandPlatform">添加新计划
         </el-button>
@@ -137,7 +144,8 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
-      demandList: null
+      demandList: null,
+      searchSrt: null
     }
   },
   computed: {},
@@ -149,7 +157,8 @@ export default {
     getDeman() {
       let params = {
         'page': this.pageIndex,
-        'limit': this.pageSize
+        'limit': this.pageSize,
+        'searchSrt': this.searchSrt
       }
       getAction("/sysDeman/getDeman", params).then((data) => {
         if (data && data.code === 200) {
@@ -180,7 +189,10 @@ export default {
     getTooltipContent(demandData) {
       this.$refs.assignDemdEdit.openDialog(demandData, this.initData)
     },
-
+    //检索
+    ckeckData(){
+      this.getDeman();
+    },
     getFiles(fileUrl) {
       window.open(fileUrl);
     },

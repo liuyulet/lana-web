@@ -18,7 +18,7 @@
                 <el-input v-model="demandEdit.demanName" placeholder="请填需求名称"></el-input>
               </el-form-item>
               <el-form-item label="计划编号：" prop="demanNum">
-                <el-input v-model="demandEdit.demanNum" placeholder="项目编号，默认自动生成"></el-input>
+                <el-input v-model="demandEdit.demanNum" placeholder="计划编号，可以以创建日期为主"></el-input>
               </el-form-item>
           </el-col>
           <el-col :span="12">

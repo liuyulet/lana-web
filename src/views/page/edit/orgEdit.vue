@@ -119,6 +119,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.orgEdit = {}
           this.$emit('get-departs')
         }else {
           this.$message({
@@ -146,6 +147,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.orgEdit = {}
           this.$emit('get-departs')
         }else {
           this.$message({

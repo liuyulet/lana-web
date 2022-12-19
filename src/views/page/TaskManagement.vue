@@ -4,7 +4,23 @@
       <div class="page-title">任务管理列表</div>
       <div class="page-header-btn">
 
-        <el-button icon="el-icon-refresh-right" circle size="mini"></el-button>
+<!--        查找计划:
+        <el-input @input="getPushList" style="margin-right: 1rem; width: auto;" size="mini" placeholder="输入计划名称"
+                  prefix-icon="el-icon-search" v-model="searchSrt" clearable>
+        </el-input>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="ckeckData">搜索</el-button>-->
+
+        我的任务状态:
+        <el-select size="mini" style="margin-right: 1rem;" @change="getTaskDeman" v-model="taskStart" placeholder="请选择"
+                   default-first-option>
+          <el-option label="全部" value=""></el-option>
+          <el-option label="未开始" value="3"></el-option>
+          <el-option label="进行中" value="1"></el-option>
+          <el-option label="已完成" value="4"></el-option>
+          <el-option label="我的驳回" value="2"></el-option>
+          <el-option label="任务预告" value="0"></el-option>
+        </el-select>
+
       </div>
     </div>
     <!--设备列表-->
@@ -135,7 +151,8 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
-      demandList: null
+      demandList: null,
+      taskStart: '',
     }
   },
   computed: {},
@@ -148,6 +165,7 @@ export default {
       let params = {
         'page': this.pageIndex,
         'limit': this.pageSize,
+        'taskStart': this.taskStart,
         'userId': localStorage.getItem('userId')
       }
       getAction("/sysDemanUser/getTesk", params).then((data) => {

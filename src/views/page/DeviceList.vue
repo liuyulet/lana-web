@@ -49,11 +49,11 @@
             return {
                 pieName: [], //图例名称
                 pieData: [], //数据
-                tages: false
+                tages: false,
+                projectTask: [],//项目信息统计
+
             }
         },
-
-
         mounted() {
             //location. reload();
             this.drawPie();
@@ -70,7 +70,7 @@
                 //项目统计
                 let projects = {
                     title: {
-                        text: '项目任务占比：'
+                        text: '我的任务数量统计：'
                     },
                     tooltip: {
                         trigger: 'item'
@@ -105,11 +105,11 @@
                                 show: false
                             },
                             data: [
-                                {value: 1048, name: '青岛项目'},
-                                {value: 735, name: '曲阜项目'},
-                                {value: 580, name: '淄博项目'},
-                                {value: 484, name: '临沂项目'},
-                                {value: 300, name: '潍坊项目'}
+                                {value: 1048, name: '项目一'},
+                                {value: 735, name: '项目二'},
+                                {value: 580, name: '项目三'},
+                                {value: 484, name: '项目四'},
+                                {value: 300, name: '项目五'}
                             ]
                         }
                     ]
@@ -117,7 +117,7 @@
                 //任务统计
                 let tasks = {
                     title: {
-                        text: '角色人员任务统计：'
+                        text: '我的任务数量趋势统计：'
                     },
                     tooltip: {
                         trigger: 'axis'
@@ -180,7 +180,7 @@
                 //缺陷统计
                 let defect = {
                     title: {
-                        text: '人员协作占比：',
+                        text: '我的协作占比：',
                         subtext: '协作',
                         left: 'center'
                     },
@@ -216,7 +216,7 @@
                 //小组统计
                 let groupstatis = {
                   title: {
-                    text: '处理任务总数:',
+                    text: '我的完成度占比:',
                     left: 'left'
                   },
                     legend: {},

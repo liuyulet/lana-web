@@ -23,8 +23,8 @@
             <el-table-column align="center" prop="projectDutyUser" label="项目负责人" min-width="200">
             </el-table-column>
 
-            <el-table-column align="center" prop="projectConstitution" label="项目章程" min-width="200">
-            </el-table-column>
+<!--            <el-table-column align="center" prop="projectConstitution" label="项目章程" min-width="200">
+            </el-table-column>-->
 
             <el-table-column align="center" label="项目状态" min-width="200">
                 <template slot-scope="scope">

@@ -158,6 +158,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.orgEdit = {}
           this.$emit('get-user')
         }else {
           this.$message({
@@ -189,6 +190,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.orgEdit = {}
           this.$emit('get-user')
         }else {
           this.$message({

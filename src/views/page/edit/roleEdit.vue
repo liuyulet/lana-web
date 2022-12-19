@@ -89,6 +89,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.roleEdit = {}
           this.$emit('get-role')
         }else {
           this.$message({
@@ -115,6 +116,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.roleEdit = {}
           this.$emit('get-role')
         }else {
           this.$message({
