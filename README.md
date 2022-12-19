@@ -22,6 +22,8 @@ yarn run build
 
 Lints和修复文件：
 yarn run lint
+
+为了减少麻烦后端建议直接使用 lana：https://github.com/liuyulet/lana
 ```
 # 1.0 基础特性
 1. 项目管理;
