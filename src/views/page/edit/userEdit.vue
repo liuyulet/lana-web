@@ -158,7 +158,7 @@ export default {
             type: 'success'
           });
           this.close()
-
+          this.$emit('get-user')
         }else {
           this.$message({
             showClose: true,
@@ -189,6 +189,7 @@ export default {
             type: 'success'
           });
           this.close()
+          this.$emit('get-user')
         }else {
           this.$message({
             showClose: true,

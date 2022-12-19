@@ -181,10 +181,12 @@
                     layout="total, sizes, prev, pager, next, jumper">
             </el-pagination>
             <!--添加组织-->
-            <orgEdit ref="orgEdit"></orgEdit>
-            <roleEdit ref="roleEdit"></roleEdit>
-            <userEdit ref="userEdit"></userEdit>
-            <roleMenuEdit ref="roleMenuEdit"></roleMenuEdit>
+            <orgEdit ref="orgEdit"  @get-departs="getDeparts"></orgEdit>
+            <!--角色-->
+            <roleEdit ref="roleEdit"  @get-role="getRoles"></roleEdit>
+            <!--用户-->
+            <userEdit ref="userEdit"  @get-user="getUser"></userEdit>
+            <roleMenuEdit ref="roleMenuEdit"  @get-demand="getDeman"></roleMenuEdit>
         </div>
     </div>
 </template>
