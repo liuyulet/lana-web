@@ -35,17 +35,17 @@ yarn run lint
 # 截图
 
 
-![img.png](img.png)
+![img.png](src/assets/img.png)
 
-![img_2.png](img_2.png)
+![img_2.png](src/assets/img_2.png)
 
-![img_3.png](img_3.png)
-![img_4.png](img_4.png)
+![img_3.png](src/assets/img_3.png)
+![img_4.png](src/assets/img_4.png)
 
-![img_5.png](img_5.png)
-![img_6.png](img_6.png)
+![img_5.png](src/assets/img_5.png)
+![img_6.png](src/assets/img_6.png)
 
-![img_7.png](img_7.png)
+![img_7.png](src/assets/img_7.png)
 
-![img_8.png](img_8.png)
+![img_8.png](src/assets/img_8.png)
 
